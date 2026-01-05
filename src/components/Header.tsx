@@ -1,4 +1,4 @@
-import { Gift, Heart, ShoppingCart, Search, Sparkles, UserCircle, Menu, LogOut, User, Bell, ChevronDown, Headphones } from "lucide-react";
+import { Gift, Heart, ShoppingCart, Search, Sparkles, UserCircle, Menu, LogOut, User, Bell, ChevronDown, Headphones, X, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
@@ -95,24 +95,97 @@ export function Header() {
     navigate(`/products?${params.toString()}`);
   };
 
+  // Category data structure
+  const categoryGroups = [
+    {
+      header: "By Occasion",
+      items: [
+        { name: "Birthdays", link: "/products?occasion=Birthdays" },
+        { name: "Weddings", link: "/products?occasion=Weddings" },
+        { name: "Anniversaries", link: "/products?occasion=Anniversaries" },
+        { name: "Baby Showers", link: "/products?occasion=Baby%20Showers" },
+        { name: "Graduations", link: "/products?occasion=Graduations" },
+      ]
+    },
+    {
+      header: "By Recipient",
+      items: [
+        { name: "For Him", link: "/products?tag=For%20Him" },
+        { name: "For Her", link: "/products?tag=For%20Her" },
+        { name: "For Kids", link: "/products?tag=For%20Kids" },
+        { name: "For Teens", link: "/products" },
+        { name: "For Colleagues", link: "/products" },
+        { name: "For Couples", link: "/products" },
+      ]
+    },
+    {
+      header: "By Age",
+      items: [
+        { name: "Babies", link: "/products" },
+        { name: "Toddlers", link: "/products" },
+        { name: "Children", link: "/products" },
+        { name: "Teens", link: "/products" },
+        { name: "Adults", link: "/products" },
+        { name: "Seniors", link: "/products" },
+      ]
+    },
+    {
+      header: "By Type",
+      items: [
+        { name: "Toys & Games", link: "/products/toys-games" },
+        { name: "Home & Living", link: "/products/home-living" },
+        { name: "Beauty & Wellness", link: "/products/beauty-wellness" },
+        { name: "Fashion & Accessories", link: "/products/fashion-accessories" },
+        { name: "Tech & Gadgets", link: "/products/tech-gadgets" },
+        { name: "Food & Beverages", link: "/products/food-beverages" },
+      ]
+    }
+  ];
+
   return (
     <header className="absolute top-0 left-0 right-0 z-50 w-full">
       <div className="container mx-auto flex flex-col gap-2 px-4 max-w-full overflow-hidden pt-2">
-        {/* Top Row: Logo and Mobile Menu */}
-        <div className="flex h-16 items-center justify-between gap-4">
+        {/* Top Row: Logo on left, Cart and Menu on right */}
+        <div className="flex h-16 items-center justify-between">
           {/* Logo - Mobile First - Top Left */}
-          <Link to="/" className="flex flex-col flex-shrink-0 hover:opacity-80 transition-opacity order-1">
+          <Link to="/" className="flex flex-col flex-shrink-0 hover:opacity-80 transition-opacity">
             <span className="font-semibold text-white text-lg">Treelah</span>
             <span className="text-white/80 text-sm">Tag line</span>
           </Link>
 
-          {/* Mobile Menu Button - Top Right */}
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden rounded-full h-10 w-10 order-3">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
+          {/* Cart and Menu - Top Right */}
+          <div className="flex items-center gap-2">
+            {/* Cart Button - Shows when items in cart */}
+            {getTotalItems() > 0 && (
+              <Link to="/cart">
+                <div
+                  className="rounded-full relative transition-all duration-200 cursor-pointer"
+                  style={{
+                    backgroundColor: '#FF8C42',
+                    padding: '8px',
+                    border: 'none'
+                  }}
+                >
+                  <ShoppingCart
+                    className="h-5 w-5"
+                    style={{
+                      color: '#FFFFFF'
+                    }}
+                  />
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-white text-[#FF8C42] text-xs flex items-center justify-center font-semibold">
+                    {getTotalItems()}
+                  </span>
+                </div>
+              </Link>
+            )}
+
+            {/* Mobile Menu Button - Top Right */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="lg:hidden rounded-full h-10 w-10">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
             <SheetContent side="right" className="w-full sm:w-80 p-0 flex flex-col max-h-[80vh] overflow-y-auto">
             <SheetHeader className="p-4 sm:p-6 pb-4">
               <SheetDescription className="text-sm">
@@ -189,7 +262,7 @@ export function Header() {
                       fontWeight: '600',
                       border: 'none',
                       width: '100%',
-                      height: '48px'
+                      height: '40px'
                     }}
                     className="gap-2 mb-4 hover:opacity-90 transition-opacity"
                   >
@@ -198,17 +271,17 @@ export function Header() {
                   </Button>
                 </DialogTrigger>
 
-                <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[60vh] overflow-y-auto">
-                  <DialogHeader className="pb-4">
-                    <DialogTitle className="text-xl sm:text-2xl">Find Your Perfect Gift</DialogTitle>
-                    <DialogDescription className="text-sm sm:text-base">
-                      Answer a few quick questions and we'll suggest the best gifts for your special someone!
+                <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[35vh] overflow-y-auto">
+                  <DialogHeader className="pb-2">
+                    <DialogTitle className="text-lg sm:text-xl">Find Your Perfect Gift</DialogTitle>
+                    <DialogDescription className="text-xs sm:text-sm">
+                      Answer a few quick questions and we'll suggest the best gifts!
                     </DialogDescription>
                   </DialogHeader>
 
-                  <form onSubmit={handleGiftFinderSubmit} className="space-y-4 sm:space-y-6 mt-4">
+                  <form onSubmit={handleGiftFinderSubmit} className="space-y-2 sm:space-y-3 mt-2">
                     {/* Recipient Gender */}
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <Label className="text-sm sm:text-base">Who's the gift for?</Label>
                       <RadioGroup
                         value={formData.recipient}
@@ -230,7 +303,7 @@ export function Header() {
                     </div>
 
                     {/* Relationship */}
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <Label htmlFor="relationship" className="text-sm sm:text-base">Relationship</Label>
                       <Select
                         value={formData.relationship}
@@ -251,7 +324,7 @@ export function Header() {
                     </div>
 
                     {/* Occasion */}
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <Label htmlFor="occasion" className="text-sm sm:text-base">Occasion</Label>
                       <Select
                         value={formData.occasion}
@@ -272,7 +345,7 @@ export function Header() {
                     </div>
 
                     {/* Age Group */}
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <Label htmlFor="age" className="text-sm sm:text-base">Age Group</Label>
                       <Select
                         value={formData.ageGroup}
@@ -290,7 +363,7 @@ export function Header() {
                       </Select>
                     </div>
 
-                    <Button type="submit" className="w-full rounded-full h-12 text-base" size="lg">
+                    <Button type="submit" className="w-full rounded-full h-10 text-sm" size="lg">
                       Find My Perfect Gift
                     </Button>
                   </form>
@@ -343,267 +416,103 @@ export function Header() {
                 </div>
               )}
 
-              {/* Categories */}
-              <div className="space-y-4 sm:space-y-6">
-                <div>
-                  <h3 className="font-semibold mb-3 text-primary text-base sm:text-sm">By Occasion</h3>
-                  <ul className="space-y-2 sm:space-y-3">
-                    <li>
-                      <Link 
-                        to="/products?occasion=Birthdays" 
-                        className="block py-2 hover:text-primary transition-colors text-sm sm:text-base"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Birthdays
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products?occasion=Weddings" 
-                        className="block py-2 hover:text-primary transition-colors text-sm sm:text-base"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Weddings
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products?occasion=Anniversaries" 
-                        className="block py-2 hover:text-primary transition-colors text-sm sm:text-base"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Anniversaries
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products?occasion=Baby%20Showers" 
-                        className="block py-2 hover:text-primary transition-colors text-sm sm:text-base"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Baby Showers
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products?occasion=Graduations" 
-                        className="block py-2 hover:text-primary transition-colors text-sm sm:text-base"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Graduations
-                      </Link>
-                    </li>
-                  </ul>
+              {/* Categories Navigation Drawer */}
+              <div className="pt-2">
+                {/* Header Section */}
+                <div className="flex items-center justify-between mb-6">
+                  {/* Left: Categories */}
+                  <button
+                    onClick={() => setCategoriesOpen(!categoriesOpen)}
+                    className="flex items-center gap-2 text-[#1A1A1A]"
+                  >
+                    <span className="text-2xl font-bold">Categories</span>
+                    <ChevronDown 
+                      className={`h-5 w-5 transition-transform duration-200 ${categoriesOpen ? 'rotate-180' : ''}`} 
+                    />
+                  </button>
+
+                  {/* Right: X (Close) */}
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <X className="h-6 w-6 text-[#1A1A1A]" />
+                  </button>
                 </div>
 
-                <Separator />
+                {/* Categories Dropdown Content */}
+                {categoriesOpen && (
+                  <div className="space-y-8 pb-4">
+                    {categoryGroups.map((group, groupIndex) => (
+                      <div key={groupIndex}>
+                        <h4 className="text-sm font-medium text-[#8F90A6] mb-4 uppercase tracking-wide">
+                          {group.header}
+                        </h4>
+                        <ul className="space-y-4">
+                          {group.items.map((item, itemIndex) => (
+                            <li key={itemIndex}>
+                              <Link
+                                to={item.link}
+                                className="block py-1 text-lg text-[#374151] hover:text-[#FF8C42] transition-colors duration-150"
+                                onClick={() => {
+                                  setMobileMenuOpen(false);
+                                  setCategoriesOpen(false);
+                                }}
+                              >
+                                {item.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-                <div>
-                  <h3 className="font-semibold mb-3 text-primary">By Recipient</h3>
-                  <ul className="space-y-3">
-                    <li>
-                      <Link 
-                        to="/products?tag=For%20Him" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
+                {/* Quick Links (Cart & Support) when categories collapsed */}
+                {!categoriesOpen && (
+                  <div className="space-y-4 pt-2">
+                    <Link
+                      to="/cart"
+                      className="flex items-center gap-3 py-3 text-[#1A1A1A] hover:text-[#FF8C42] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <div
+                        className="rounded-full relative transition-all duration-200 cursor-pointer"
+                        style={{
+                          backgroundColor: '#FF8C42',
+                          padding: '8px',
+                          border: 'none'
+                        }}
                       >
-                        For Him
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products?tag=For%20Her" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        For Her
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products?tag=For%20Kids" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        For Kids
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        For Teens
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        For Colleagues
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        For Couples
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-
-                <Separator />
-
-                <div>
-                  <h3 className="font-semibold mb-3 text-primary">By Age</h3>
-                  <ul className="space-y-3">
-                    <li>
-                      <Link 
-                        to="/products" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Children
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Teens
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Adults
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Seniors
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-
-                <Separator />
-
-                <div>
-                  <h3 className="font-semibold mb-3 text-primary">By Type</h3>
-                  <ul className="space-y-3">
-                    <li>
-                      <Link 
-                        to="/products/toys-games" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Toys & Games
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products/home-living" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Home & Living
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products/beauty-wellness" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Beauty & Wellness
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products/fashion-accessories" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Fashion & Accessories
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products/tech-gadgets" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Tech & Gadgets
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products/food-beverages" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Food & Beverages
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="/products" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        View All
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-
-                <Separator />
-
-                {/* Quick Links */}
-                <div>
-                  <h3 className="font-semibold mb-3 text-primary">Quick Links</h3>
-                  <ul className="space-y-3">
-                    <li>
-                      <Link 
-                        to="/bulk-orders" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Souvenirs & Bulk Orders
-                      </Link>
-                    </li>
-                    <li>
-                      <Link 
-                        to="#" 
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Support
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+                        <ShoppingCart
+                          className="h-5 w-5"
+                          style={{ color: '#FFFFFF' }}
+                        />
+                        {getTotalItems() > 0 && (
+                          <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-white text-[#FF8C42] text-xs flex items-center justify-center font-semibold">
+                            {getTotalItems()}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xl font-medium">Cart</span>
+                    </Link>
+                    <Link
+                      to="#"
+                      className="flex items-center gap-3 py-3 text-[#1A1A1A] hover:text-[#FF8C42] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Headphones className="h-5 w-5" />
+                      <span className="text-xl font-medium">Support</span>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </SheetContent>
         </Sheet>
         </div>
+      </div>
 
         {/* Mobile Search Bar - Below Logo and Hamburger Menu */}
         <div className="w-full lg:hidden px-4">

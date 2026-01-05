@@ -116,18 +116,18 @@ export function GiftFinder() {
             </DialogTrigger>
           </div>
           
-          <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[60vh] overflow-y-auto">
-            <DialogHeader className="pb-4">
-              <DialogTitle className="text-xl sm:text-2xl">Find Your Perfect Gift</DialogTitle>
-              <DialogDescription className="text-sm sm:text-base">
-                Answer a few quick questions and we'll suggest the best gifts for your special someone!
+          <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[35vh] overflow-y-auto">
+            <DialogHeader className="pb-2">
+              <DialogTitle className="text-lg sm:text-xl">Find Your Perfect Gift</DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm">
+                Answer a few quick questions and we'll suggest the best gifts!
               </DialogDescription>
             </DialogHeader>
             
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 mt-4">
+            <form onSubmit={handleSubmit} className="space-y-2 sm:space-y-3 mt-2">
               {/* Recipient Gender */}
-              <div className="space-y-3">
-                <Label className="text-sm sm:text-base">Who's the gift for?</Label>
+              <div className="space-y-2">
+                <Label className="text-xs sm:text-sm">Who's the gift for?</Label>
                 <RadioGroup
                   value={formData.recipient}
                   onValueChange={(value) => setFormData({ ...formData, recipient: value })}
@@ -148,8 +148,8 @@ export function GiftFinder() {
               </div>
 
               {/* Relationship */}
-              <div className="space-y-3">
-                <Label htmlFor="relationship" className="text-sm sm:text-base">Relationship</Label>
+              <div className="space-y-2">
+                <Label htmlFor="relationship" className="text-xs sm:text-sm">Relationship</Label>
                 <Select
                   value={formData.relationship}
                   onValueChange={(value) => setFormData({ ...formData, relationship: value })}
@@ -169,8 +169,8 @@ export function GiftFinder() {
               </div>
 
               {/* Occasion */}
-              <div className="space-y-3">
-                <Label htmlFor="occasion" className="text-sm sm:text-base">Occasion</Label>
+              <div className="space-y-2">
+                <Label htmlFor="occasion" className="text-xs sm:text-sm">Occasion</Label>
                 <Select
                   value={formData.occasion}
                   onValueChange={(value) => setFormData({ ...formData, occasion: value })}
@@ -190,8 +190,8 @@ export function GiftFinder() {
               </div>
 
               {/* Age Group */}
-              <div className="space-y-3">
-                <Label htmlFor="age" className="text-sm sm:text-base">Age Group</Label>
+              <div className="space-y-2">
+                <Label htmlFor="age" className="text-xs sm:text-sm">Age Group</Label>
                 <Select
                   value={formData.ageGroup}
                   onValueChange={(value) => setFormData({ ...formData, ageGroup: value })}
@@ -208,7 +208,7 @@ export function GiftFinder() {
                 </Select>
               </div>
 
-              <Button type="submit" className="w-full rounded-full h-12 text-base" size="lg">
+              <Button type="submit" className="w-full rounded-full h-10 text-sm" size="lg">
                 Find My Perfect Gift
               </Button>
             </form>
@@ -218,4 +218,5 @@ export function GiftFinder() {
     </section>
   );
 }
+
 
