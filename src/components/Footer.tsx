@@ -49,37 +49,29 @@ export function Footer() {
             <p className="text-xs sm:text-sm text-gray-400 mb-4 leading-relaxed">
               Get inspiration and exclusive deals delivered to your inbox!
             </p>
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <div style={{ width: '300px', minWidth: '200px', maxWidth: '200px' }}>
+            <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center w-full sm:w-auto">
+              <div className="w-full sm:w-48 md:w-64">
                 <Input
                   type="text"
                   placeholder="Search for the Perfect Gift"
-                  className="border-0 bg-transparent text-white placeholder:text-gray-400"
+                  className="border-0 bg-transparent text-white placeholder:text-gray-400 w-full h-9 sm:h-10 text-sm"
                   style={{
-                    width: '100%',
-                    height: '36px',
                     paddingLeft: '12px',
                     paddingRight: '12px',
                     borderRadius: '20px',
                     borderWidth: '0.2px',
                     backgroundColor: '#FFFFFF',
-                    color: '#717182',
-                    fontSize: '12px'
+                    color: '#717182'
                   }}
                 />
               </div>
               <button 
-                className="rounded-full border-0 text-white flex items-center justify-center whitespace-nowrap cursor-pointer hover:opacity-80 transition-opacity hover:shadow-lg"
+                className="rounded-full border-0 text-white flex items-center justify-center whitespace-nowrap cursor-pointer hover:opacity-80 transition-opacity hover:shadow-lg w-full sm:w-auto px-4 h-9 sm:h-10"
                 style={{
-                  width: '80px',
-                  height: '36px',
-                  gap: '6px',
-                  paddingLeft: '8px',
-                  paddingRight: '10px',
                   borderRadius: '16px',
                   backgroundColor: '#FF8C42',
                   opacity: 1,
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontWeight: '600',
                   flexShrink: 0
                 }}

@@ -228,7 +228,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen max-w-full overflow-x-hidden">
       <Header />
-      <div className="w-full max-w-full overflow-x-hidden">
+      <div className="w-full max-w-full overflow-x-hidden mx-auto">
         <Hero />
         <GiftFinder />
       
@@ -240,8 +240,8 @@ export function HomePage() {
       />
 
       <FeaturedProducts
-        title="Trending Now ✨"
-        subtitle="The most loved gifts this week — handpicked just for you!"
+        title="Trending Now"
+        subtitle="The most loved gifts this week, handpicked just for you!"
         products={featuredProducts}
       />
 
@@ -259,8 +259,8 @@ export function HomePage() {
       />
 
       <FeaturedProducts
-        title="Personalized Gifts 🎁"
-        subtitle="Make it unique — add their name, initials, or a special message!"
+        title="Customizable Gifts"
+        subtitle="Make it unique, add their name, initials, or a special message!"
         products={personalizedProducts}
       />
 
@@ -271,10 +271,10 @@ export function HomePage() {
           backgroundColor: '#3B82F6',
           width: '100%',
           minHeight: '320px',
-          paddingTop: '60px',
-          paddingRight: '60px',
-          paddingBottom: '60px',
-          paddingLeft: '60px'
+          paddingTop: '40px',
+          paddingRight: '20px',
+          paddingBottom: '40px',
+          paddingLeft: '20px'
         }}
       >
         <div className="absolute inset-0 opacity-10">
@@ -282,13 +282,13 @@ export function HomePage() {
           <div className="absolute bottom-10 right-10 w-40 h-40 rounded-full bg-white blur-3xl" />
         </div>
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl mb-4">Need Something Custom?</h2>
-          <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl mb-4">Need Something Custom?</h2>
+          <p className="text-base sm:text-lg mb-6 sm:mb-8 max-w-2xl mx-auto opacity-90 px-4">
             We specialize in personalized gifts and bulk orders. Let us help you create something truly memorable!
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-sm sm:max-w-none mx-auto">
             <button 
-              className="px-8 py-3 rounded-full cursor-pointer hover:shadow-lg"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 rounded-full cursor-pointer hover:shadow-lg text-sm sm:text-base"
               style={{
                 backgroundColor: '#FF8C42',
                 color: 'white',
@@ -298,7 +298,7 @@ export function HomePage() {
               Request Custom Gift
             </button>
             <button 
-              className="px-8 py-3 rounded-full cursor-pointer hover:shadow-lg"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 rounded-full cursor-pointer hover:shadow-lg text-sm sm:text-base"
               style={{
                 backgroundColor: '#FFFFFF',
                 color: '#FF8C42',
@@ -316,5 +316,6 @@ export function HomePage() {
     </div>
   );
 }
+
 
 

@@ -50,40 +50,84 @@ export function Header() {
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50 w-full">
-      <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4 max-w-full overflow-hidden pt-2">
-        {/* Mobile Menu Button */}
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="lg:hidden rounded-full h-10 w-10">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-full sm:w-80 p-0 flex flex-col h-full">
+      <div className="container mx-auto flex flex-col gap-2 px-4 max-w-full overflow-hidden pt-2">
+        {/* Top Row: Logo and Mobile Menu */}
+        <div className="flex h-16 items-center justify-between gap-4">
+          {/* Logo - Mobile First - Top Left */}
+          <Link to="/" className="flex flex-col flex-shrink-0 hover:opacity-80 transition-opacity order-1">
+            <span className="font-semibold text-white text-lg">Treelah</span>
+            <span className="text-white/80 text-sm">Tag line</span>
+          </Link>
+
+          {/* Mobile Menu Button - Top Right */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="lg:hidden rounded-full h-10 w-10 order-3">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full sm:w-80 p-0 flex flex-col h-full">
             <SheetHeader className="p-4 sm:p-6 pb-4">
-              <SheetTitle className="text-left flex items-center gap-2">
-                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-secondary">
-                  <Gift className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-semibold text-base sm:text-base">Gifted & Co.</span>
-                  <span className="text-xs text-muted-foreground hidden sm:block">Tag line</span>
-                </div>
-              </SheetTitle>
               <SheetDescription className="text-sm">
                 Navigate our gift collections and services
               </SheetDescription>
             </SheetHeader>
 
             <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-6">
-              {/* Search Bar */}
-              <div className="mb-4 sm:mb-6">
-                <div className="relative w-full">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    placeholder="Search for the perfect gift..."
-                    className="pl-10 rounded-full border-muted bg-accent/50 h-10"
-                  />
-                </div>
+              {/* Quick Actions Icons */}
+              <div className="flex items-center justify-center gap-4 mb-6">
+                {/* Cart Icon */}
+                <Link to="/cart" onClick={() => setMobileMenuOpen(false)}>
+                  <div
+                    className="rounded-full relative transition-all duration-200 cursor-pointer"
+                    style={{
+                      backgroundColor: getTotalItems() > 0 ? '#FF8C42' : 'transparent',
+                      padding: '8px',
+                      border: getTotalItems() > 0 ? 'none' : '1px solid rgba(255, 255, 255, 0.2)'
+                    }}
+                  >
+                    <ShoppingCart 
+                      className="h-5 w-5" 
+                      style={{
+                        color: getTotalItems() > 0 ? '#FFFFFF' : '#FFFFFF'
+                      }}
+                    />
+                    {getTotalItems() > 0 && (
+                      <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-white text-[#FF8C42] text-xs flex items-center justify-center font-semibold">
+                        {getTotalItems()}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+                
+                {/* Heart Icon */}
+                <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Wishlist">
+                  <Heart className="h-5 w-5" />
+                </Button>
+                
+                {/* Headphone Icon */}
+                <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Support">
+                  <Headphones className="h-5 w-5" />
+                </Button>
+                
+                {/* User Profile Icon */}
+                {loading ? (
+                  <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+                ) : user ? (
+                  <div className="relative group">
+                    <Link to="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Account">
+                        <UserCircle className="h-5 w-5" />
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <Link to="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Sign In">
+                      <UserCircle className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                )}
               </div>
 
               {/* Shopping Assistant */}
@@ -412,12 +456,34 @@ export function Header() {
             </div>
           </SheetContent>
         </Sheet>
+        </div>
 
-        {/* Logo */}
-        <Link to="/" className="flex flex-col flex-shrink-0 hover:opacity-80 transition-opacity">
-          <span className="font-semibold text-white text-lg">Treelah</span>
-          <span className="text-white/80 text-sm">Tag line.</span>
-        </Link>
+        {/* Mobile Search Bar - Below Logo and Hamburger Menu */}
+        <div className="w-full lg:hidden px-2">
+          <div 
+            className="relative w-full flex items-center justify-between"
+            style={{
+              width: '358px',
+              height: '48px',
+              justifyContent: 'space-between',
+              angle: '0 deg',
+              opacity: 1,
+              borderRadius: '24px',
+              borderWidth: '0.2px',
+              paddingRight: '16px',
+              paddingLeft: '16px',
+              backgroundColor: '#F6F6F6',
+              margin: '0 auto'
+            }}
+          >
+            <Input
+              placeholder="Search for the perfect gift..."
+              className="border-0 bg-transparent text-gray-600 placeholder:text-[#717182] flex-1 px-0 text-sm"
+              style={{ color: '#717182' }}
+            />
+            <Search className="h-4 w-4 text-[#717182]" />
+          </div>
+        </div>
 
         {/* Main Navigation - Hidden on mobile */}
         <div className="hidden lg:flex items-center gap-2 xl:gap-2 flex-1 justify-center max-w-5xl">
@@ -576,78 +642,6 @@ export function Header() {
               <Search className="h-3 w-3 text-[#717182]" />
             </div>
           </div>
-        </div>
-
-        {/* Right Navigation */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          {/* Cart Icon */}
-          <Link to="/cart">
-            <div
-              className="rounded-full relative transition-all duration-200 cursor-pointer"
-              style={{
-                backgroundColor: getTotalItems() > 0 ? '#FF8C42' : 'transparent',
-                padding: '6px',
-                border: getTotalItems() > 0 ? 'none' : '1px solid rgba(255, 255, 255, 0.2)'
-              }}
-            >
-              <ShoppingCart 
-                className="h-4 w-4" 
-                style={{
-                  color: getTotalItems() > 0 ? '#FFFFFF' : '#FFFFFF'
-                }}
-              />
-              {getTotalItems() > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-white text-[#FF8C42] text-xs flex items-center justify-center font-semibold">
-                  {getTotalItems()}
-                </span>
-              )}
-            </div>
-          </Link>
-          
-          {/* Heart Icon */}
-          <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Wishlist">
-            <Heart className="h-4 w-4" />
-          </Button>
-          
-          {/* Headphone Icon */}
-          <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Support">
-            <Headphones className="h-4 w-4" />
-          </Button>
-          
-          {/* User Profile Icon */}
-          {loading ? (
-            <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
-          ) : user ? (
-            <div className="relative group">
-              <Link to="/auth/login">
-                <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Account">
-                  <UserCircle className="h-4 w-4" />
-                </Button>
-              </Link>
-              {/* Dropdown Menu */}
-              <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                <div className="p-3 border-b">
-                  <p className="font-medium truncate">{user.email}</p>
-                </div>
-                <div className="p-2">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-2 text-sm"
-                    onClick={handleSignOut}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <Link to="/auth/login">
-              <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Sign In">
-                <UserCircle className="h-4 w-4" />
-              </Button>
-            </Link>
-          )}
         </div>
       </div>
     </header>

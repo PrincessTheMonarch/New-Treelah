@@ -111,8 +111,8 @@ export function LoginPage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Field */}
-          <div className="space-y-1">
-            <Label htmlFor="email" className="text-sm font-medium text-[#1A1A1A]">
+          <div className="space-y-2 sm:space-y-1">
+            <Label htmlFor="email" className="text-sm font-light text-[#1A1A1A]">
               Email Address
             </Label>
             <Input
@@ -121,16 +121,19 @@ export function LoginPage() {
               placeholder="email@mail.com"
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              className="w-full h-12 border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3"
+              className="w-full border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3"
               style={{
-                backgroundColor: '#F6F6F6'
+                backgroundColor: '#F6F6F6',
+                height: '48px',
+                fontSize: '14px',
+                fontWeight: '300'
               }}
             />
           </div>
 
           {/* Password Field */}
-          <div className="space-y-1">
-            <Label htmlFor="password" className="text-sm font-medium text-[#1A1A1A]">
+          <div className="space-y-2 sm:space-y-1">
+            <Label htmlFor="password" className="text-sm font-light text-[#1A1A1A]">
               Password
             </Label>
             <div className="relative">
@@ -140,9 +143,12 @@ export function LoginPage() {
                 placeholder="Create a strong password"
                 value={formData.password}
                 onChange={(e) => handleInputChange('password', e.target.value)}
-                className="w-full h-12 border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3 pr-10"
+                className="w-full border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3 pr-10"
                 style={{
-                  backgroundColor: '#F6F6F6'
+                  backgroundColor: '#F6F6F6',
+                  height: '48px',
+                  fontSize: '14px',
+                  fontWeight: '300'
                 }}
               />
               <button

@@ -172,8 +172,8 @@ export function SignupPage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name Field */}
-          <div className="space-y-1">
-            <Label htmlFor="fullName" className="text-sm font-medium text-[#1A1A1A]">
+          <div className="space-y-2 sm:space-y-1">
+            <Label htmlFor="fullName" className="text-sm font-light text-[#1A1A1A]">
               Full Name
             </Label>
             <Input
@@ -182,16 +182,19 @@ export function SignupPage() {
               placeholder="John Doe"
               value={formData.fullName}
               onChange={(e) => handleInputChange('fullName', e.target.value)}
-              className="w-full h-12 border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3"
+              className="w-full border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3"
               style={{
-                backgroundColor: '#F6F6F6'
+                backgroundColor: '#F6F6F6',
+                height: '48px',
+                fontSize: '14px',
+                fontWeight: '300'
               }}
             />
           </div>
 
           {/* Email Field */}
-          <div className="space-y-1">
-            <Label htmlFor="email" className="text-sm font-medium text-[#1A1A1A]">
+          <div className="space-y-2 sm:space-y-1">
+            <Label htmlFor="email" className="text-sm font-light text-[#1A1A1A]">
               Email Address
             </Label>
             <Input
@@ -200,16 +203,19 @@ export function SignupPage() {
               placeholder="email@mail.com"
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              className="w-full h-12 border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3"
+              className="w-full border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3"
               style={{
-                backgroundColor: '#F6F6F6'
+                backgroundColor: '#F6F6F6',
+                height: '48px',
+                fontSize: '14px',
+                fontWeight: '300'
               }}
             />
           </div>
 
           {/* Phone Number Field */}
-          <div className="space-y-1">
-            <Label htmlFor="phoneNumber" className="text-sm font-medium text-[#1A1A1A]">
+          <div className="space-y-2 sm:space-y-1">
+            <Label htmlFor="phoneNumber" className="text-sm font-light text-[#1A1A1A]">
               Phone Number
             </Label>
             <Input
@@ -218,16 +224,19 @@ export function SignupPage() {
               placeholder="081234567890"
               value={formData.phoneNumber}
               onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-              className="w-full h-12 border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3"
+              className="w-full border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3"
               style={{
-                backgroundColor: '#F6F6F6'
+                backgroundColor: '#F6F6F6',
+                height: '48px',
+                fontSize: '14px',
+                fontWeight: '300'
               }}
             />
           </div>
 
           {/* Password Field */}
-          <div className="space-y-1">
-            <Label htmlFor="password" className="text-sm font-medium text-[#1A1A1A]">
+          <div className="space-y-2 sm:space-y-1">
+            <Label htmlFor="password" className="text-sm font-light text-[#1A1A1A]">
               Password
             </Label>
             <div className="relative">
@@ -237,9 +246,12 @@ export function SignupPage() {
                 placeholder="Create a strong password"
                 value={formData.password}
                 onChange={(e) => handleInputChange('password', e.target.value)}
-                className="w-full h-12 border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3 pr-10"
+                className="w-full border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3 pr-10"
                 style={{
-                  backgroundColor: '#F6F6F6'
+                  backgroundColor: '#F6F6F6',
+                  height: '48px',
+                  fontSize: '14px',
+                  fontWeight: '300'
                 }}
               />
               <button
@@ -253,8 +265,8 @@ export function SignupPage() {
           </div>
 
           {/* Confirm Password Field */}
-          <div className="space-y-1">
-            <Label htmlFor="confirmPassword" className="text-sm font-medium text-[#1A1A1A]">
+          <div className="space-y-2 sm:space-y-1">
+            <Label htmlFor="confirmPassword" className="text-sm font-light text-[#1A1A1A]">
               Confirm Password
             </Label>
             <div className="relative">
@@ -264,9 +276,12 @@ export function SignupPage() {
                 placeholder="Re-enter password"
                 value={formData.confirmPassword}
                 onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                className="w-full h-12 border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3 pr-10"
+                className="w-full border-[#E5E7EB] rounded-lg text-[#1A1A1A] px-3 pr-10"
                 style={{
-                  backgroundColor: '#F6F6F6'
+                  backgroundColor: '#F6F6F6',
+                  height: '48px',
+                  fontSize: '14px',
+                  fontWeight: '300'
                 }}
               />
               <button

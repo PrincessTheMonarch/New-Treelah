@@ -65,41 +65,58 @@ export function GiftFinder() {
 
   return (
     <div 
-      className="bg-secondary"
+      className="w-full"
       style={{
+        backgroundColor: '#3B82F6',
         width: '100%',
-        minHeight: '72px',
-        paddingTop: '20px',
-        paddingRight: '60px',
-        paddingBottom: '20px',
-        paddingLeft: '60px',
+        minHeight: '148px',
+        paddingTop: '24px',
+        paddingRight: '16px',
+        paddingBottom: '24px',
+        paddingLeft: '16px',
         opacity: 1,
-        marginTop: '0px'
+        marginTop: '0px',
+        gap: '16px'
       }}
     >
-      <div className="container mx-auto flex items-center justify-center gap-4">
+      <div className="container mx-auto flex flex-col items-center justify-center" style={{ gap: '16px', maxWidth: '390px' }}>
         <Dialog open={open} onOpenChange={setOpen}>
-          <div className="flex items-center justify-center gap-4 text-white">
-            <span className="text-sm sm:text-base lg:text-lg leading-tight">
+          <div className="flex flex-col items-center justify-center text-white" style={{ gap: '16px', width: '358px' }}>
+            <span 
+              className="text-center"
+              style={{
+                width: '358px',
+                height: '44px',
+                angle: '0 deg',
+                opacity: 1,
+                fontFamily: 'Poppins',
+                fontWeight: '400',
+                fontStyle: 'Regular',
+                fontSize: '14px',
+                leadingTrim: 'NONE',
+                lineHeight: '160%',
+                letterSpacing: '0%',
+                textAlign: 'center',
+                verticalAlign: 'middle'
+              }}
+            >
               Not sure what to get? Let's help you find the perfect gift — tell us about the receiver!
             </span>
             <DialogTrigger asChild>
               <div 
                 className="flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
                 style={{
-                  backgroundColor: '#FFFFFF',
-                  color: '#FF8C42',
+                  width: '358px',
+                  height: '40px',
+                  paddingRight: '16px',
+                  paddingLeft: '16px',
+                  gap: '8px',
+                  angle: '0 deg',
+                  opacity: 1,
                   borderRadius: '24px',
-                  paddingLeft: '14px',
-                  paddingRight: '14px',
-                  fontSize: '0.8rem',
-                  fontWeight: '600',
+                  backgroundColor: '#FFFFFF',
                   border: 'none',
-                  boxShadow: 'none',
-                  width: '280px',
-                  height: '36px',
-                  gap: '4px',
-                  opacity: 1
+                  boxShadow: 'none'
                 }}
               >
                 <span 
@@ -219,6 +236,3 @@ export function GiftFinder() {
     </div>
   );
 }
-
-
-

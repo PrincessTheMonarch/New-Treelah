@@ -41,17 +41,15 @@ export function CategorySection({ title, subtitle, categories, type = "occasion"
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 justify-items-center">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 justify-items-center max-w-sm sm:max-w-md md:max-w-4xl mx-auto">
           {categories.map((category, index) => {
             const Icon = category.icon;
             return (
               <Link
                 key={index}
                 to={getCategoryLink(category.name)}
-                className="group relative overflow-hidden bg-accent hover:bg-accent/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 block cursor-pointer"
+                className="group relative overflow-hidden bg-accent hover:bg-accent/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 block cursor-pointer w-full aspect-square max-w-[160px] sm:max-w-[180px] md:max-w-[200px]"
                 style={{
-                  width: '240px',
-                  height: '220px',
                   borderRadius: '16px'
                 }}
               >

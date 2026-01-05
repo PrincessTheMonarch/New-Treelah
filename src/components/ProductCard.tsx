@@ -37,37 +37,34 @@ export function ProductCard({ id, image, title, price, originalPrice, badge, tag
 
   return (
     <Link to={`/product/${id}`}>
-      <Card 
-        className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer"
+      <div
+        className="group relative overflow-hidden bg-accent hover:bg-accent/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 block cursor-pointer w-full aspect-square max-w-[160px] sm:max-w-[180px] md:max-w-[200px]"
         style={{
-          width: '240px',
-          height: '220px',
           borderRadius: '16px'
         }}
       >
-      <CardContent className="p-0 w-full h-full">
-        {/* Image Container */}
-        <div className="relative overflow-hidden bg-accent/50" style={{ width: '100%', height: '140px' }}>
+        <div className="relative w-full h-full">
           <ImageWithFallback
             src={image}
             alt={title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
           />
-          
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
           {/* Badge */}
           {badge && (
             <Badge className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-primary text-white border-0 shadow-md text-xs">
               {badge}
             </Badge>
           )}
-          
+
           {/* Tag */}
           {tag && (
             <Badge className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-secondary text-white border-0 shadow-md text-xs">
               {tag}
             </Badge>
           )}
-          
+
           {/* Quick Actions - Always visible on mobile, hover on desktop */}
           <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex flex-col gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
             <Button
@@ -78,11 +75,11 @@ export function ProductCard({ id, image, title, price, originalPrice, badge, tag
               <Heart className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
           </div>
-          
+
           {/* Add to Cart - Bottom */}
           <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/60 to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-            <Button 
-              className="w-full rounded-full gap-1 sm:gap-2 text-xs sm:text-sm" 
+            <Button
+              className="w-full rounded-full gap-1 sm:gap-2 text-xs sm:text-sm"
               size="sm"
               onClick={handleAddToCart}
             >
@@ -91,20 +88,19 @@ export function ProductCard({ id, image, title, price, originalPrice, badge, tag
               <span className="xs:hidden">Add</span>
             </Button>
           </div>
-        </div>
-        
-        {/* Product Info */}
-        <div className="p-3 sm:p-4 space-y-2" style={{ height: '80px' }}>
-          <h3 className="text-sm line-clamp-2 leading-tight">{title}</h3>
-          <div className="flex items-center gap-2">
-            <span className="text-primary font-semibold text-sm">{price}</span>
-            {originalPrice && (
-              <span className="text-xs text-muted-foreground line-through">{originalPrice}</span>
-            )}
+
+          {/* Content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-white">
+            <h3 className="text-center text-sm mb-1">{title}</h3>
+            <div className="flex items-center gap-2">
+              <span className="text-white font-semibold text-sm">{price}</span>
+              {originalPrice && (
+                <span className="text-xs text-white/80 line-through">{originalPrice}</span>
+              )}
+            </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
     </Link>
   );
 }
