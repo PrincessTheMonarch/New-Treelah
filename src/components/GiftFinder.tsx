@@ -116,7 +116,7 @@ export function GiftFinder() {
             </DialogTrigger>
           </div>
           
-          <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[70vh] overflow-y-auto">
+          <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[60vh] overflow-y-auto">
             <DialogHeader className="pb-4">
               <DialogTitle className="text-xl sm:text-2xl">Find Your Perfect Gift</DialogTitle>
               <DialogDescription className="text-sm sm:text-base">

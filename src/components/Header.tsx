@@ -10,11 +10,15 @@ import {
   NavigationMenuTrigger,
 } from "./ui/navigation-menu";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Label } from "./ui/label";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Separator } from "./ui/separator";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
 import { toast } from "sonner";
 
 export function Header() {
@@ -22,6 +26,13 @@ export function Header() {
   const { user, signOut, loading } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [giftFinderOpen, setGiftFinderOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    recipient: "",
+    relationship: "",
+    occasion: "",
+    ageGroup: "",
+  });
   const navigate = useNavigate();
   const categoriesRef = useRef<HTMLDivElement>(null);
 
@@ -46,6 +57,42 @@ export function Header() {
     await signOut();
     toast.success("Signed out successfully");
     navigate("/");
+  };
+
+  const handleGiftFinderSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    // Build URL parameters based on form data
+    const params = new URLSearchParams();
+
+    // Add tag based on recipient
+    if (formData.recipient === "male") {
+      params.append("tag", "For Him");
+    } else if (formData.recipient === "female") {
+      params.append("tag", "For Her");
+    }
+
+    // Add occasion
+    if (formData.occasion) {
+      // Capitalize first letter
+      const occasionFormatted = formData.occasion.charAt(0).toUpperCase() + formData.occasion.slice(1);
+      params.append("occasion", occasionFormatted);
+    }
+
+    // Add gift finder flag to show restart button
+    params.append("fromGiftFinder", "true");
+
+    // Store additional criteria in params for display
+    if (formData.relationship) {
+      params.append("relationship", formData.relationship);
+    }
+    if (formData.ageGroup) {
+      params.append("ageGroup", formData.ageGroup);
+    }
+
+    setGiftFinderOpen(false);
+    setMobileMenuOpen(false);
+    navigate(`/products?${params.toString()}`);
   };
 
   return (
@@ -131,24 +178,124 @@ export function Header() {
               </div>
 
               {/* Shopping Assistant */}
-              <Link to="/?openGiftFinder=true" onClick={() => setMobileMenuOpen(false)}>
-                <Button 
-                  size="lg" 
-                  style={{
-                    backgroundColor: '#FF8C42',
-                    color: 'white',
-                    borderRadius: '9999px',
-                    fontWeight: '600',
-                    border: 'none',
-                    width: '100%',
-                    height: '48px'
-                  }}
-                  className="gap-2 mb-4 hover:opacity-90 transition-opacity"
-                >
-                  <Sparkles className="h-5 w-5" />
-                  Shopping Assistant
-                </Button>
-              </Link>
+              <Dialog open={giftFinderOpen} onOpenChange={setGiftFinderOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    size="lg"
+                    style={{
+                      backgroundColor: '#FF8C42',
+                      color: 'white',
+                      borderRadius: '9999px',
+                      fontWeight: '600',
+                      border: 'none',
+                      width: '100%',
+                      height: '48px'
+                    }}
+                    className="gap-2 mb-4 hover:opacity-90 transition-opacity"
+                  >
+                    <Sparkles className="h-5 w-5" />
+                    Shopping Assistant
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[60vh] overflow-y-auto">
+                  <DialogHeader className="pb-4">
+                    <DialogTitle className="text-xl sm:text-2xl">Find Your Perfect Gift</DialogTitle>
+                    <DialogDescription className="text-sm sm:text-base">
+                      Answer a few quick questions and we'll suggest the best gifts for your special someone!
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <form onSubmit={handleGiftFinderSubmit} className="space-y-4 sm:space-y-6 mt-4">
+                    {/* Recipient Gender */}
+                    <div className="space-y-3">
+                      <Label className="text-sm sm:text-base">Who's the gift for?</Label>
+                      <RadioGroup
+                        value={formData.recipient}
+                        onValueChange={(value) => setFormData({ ...formData, recipient: value })}
+                      >
+                        <div className="flex items-center space-x-2 p-2 sm:p-3 rounded-lg border hover:bg-accent cursor-pointer">
+                          <RadioGroupItem value="male" id="male" />
+                          <Label htmlFor="male" className="cursor-pointer flex-1 text-sm sm:text-base">For Him</Label>
+                        </div>
+                        <div className="flex items-center space-x-2 p-2 sm:p-3 rounded-lg border hover:bg-accent cursor-pointer">
+                          <RadioGroupItem value="female" id="female" />
+                          <Label htmlFor="female" className="cursor-pointer flex-1 text-sm sm:text-base">For Her</Label>
+                        </div>
+                        <div className="flex items-center space-x-2 p-2 sm:p-3 rounded-lg border hover:bg-accent cursor-pointer">
+                          <RadioGroupItem value="other" id="other" />
+                          <Label htmlFor="other" className="cursor-pointer flex-1 text-sm sm:text-base">Anyone</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
+                    {/* Relationship */}
+                    <div className="space-y-3">
+                      <Label htmlFor="relationship" className="text-sm sm:text-base">Relationship</Label>
+                      <Select
+                        value={formData.relationship}
+                        onValueChange={(value) => setFormData({ ...formData, relationship: value })}
+                      >
+                        <SelectTrigger id="relationship" className="h-10">
+                          <SelectValue placeholder="Select relationship" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="friend">Friend</SelectItem>
+                          <SelectItem value="partner">Partner</SelectItem>
+                          <SelectItem value="parent">Parent</SelectItem>
+                          <SelectItem value="sibling">Sibling</SelectItem>
+                          <SelectItem value="colleague">Colleague</SelectItem>
+                          <SelectItem value="boss">Boss</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Occasion */}
+                    <div className="space-y-3">
+                      <Label htmlFor="occasion" className="text-sm sm:text-base">Occasion</Label>
+                      <Select
+                        value={formData.occasion}
+                        onValueChange={(value) => setFormData({ ...formData, occasion: value })}
+                      >
+                        <SelectTrigger id="occasion" className="h-10">
+                          <SelectValue placeholder="Select occasion" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="birthday">Birthday</SelectItem>
+                          <SelectItem value="wedding">Wedding</SelectItem>
+                          <SelectItem value="anniversary">Anniversary</SelectItem>
+                          <SelectItem value="graduation">Graduation</SelectItem>
+                          <SelectItem value="promotion">Promotion</SelectItem>
+                          <SelectItem value="justbecause">Just Because</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Age Group */}
+                    <div className="space-y-3">
+                      <Label htmlFor="age" className="text-sm sm:text-base">Age Group</Label>
+                      <Select
+                        value={formData.ageGroup}
+                        onValueChange={(value) => setFormData({ ...formData, ageGroup: value })}
+                      >
+                        <SelectTrigger id="age" className="h-10">
+                          <SelectValue placeholder="Select age group" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="child">Child (0-12)</SelectItem>
+                          <SelectItem value="teen">Teen (13-19)</SelectItem>
+                          <SelectItem value="adult">Adult (20-59)</SelectItem>
+                          <SelectItem value="senior">Senior (60+)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <Button type="submit" className="w-full rounded-full h-12 text-base" size="lg">
+                      Find My Perfect Gift
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
 
               <Separator className="my-6" />
 
