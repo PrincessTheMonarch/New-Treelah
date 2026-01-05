@@ -66,7 +66,7 @@ export function Header() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full sm:w-80 p-0 flex flex-col h-full">
+            <SheetContent side="right" className="w-full sm:w-80 p-0 flex flex-col max-h-[80vh] overflow-y-auto">
             <SheetHeader className="p-4 sm:p-6 pb-4">
               <SheetDescription className="text-sm">
                 Navigate our gift collections and services
@@ -459,21 +459,17 @@ export function Header() {
         </div>
 
         {/* Mobile Search Bar - Below Logo and Hamburger Menu */}
-        <div className="w-full lg:hidden px-2">
-          <div 
-            className="relative w-full flex items-center justify-between"
+        <div className="w-full lg:hidden px-4">
+          <div
+            className="relative w-full flex items-center justify-between max-w-sm mx-auto"
             style={{
-              width: '358px',
-              height: '48px',
+              height: '40px',
               justifyContent: 'space-between',
-              angle: '0 deg',
-              opacity: 1,
               borderRadius: '24px',
               borderWidth: '0.2px',
               paddingRight: '16px',
               paddingLeft: '16px',
-              backgroundColor: '#F6F6F6',
-              margin: '0 auto'
+              backgroundColor: '#F6F6F6'
             }}
           >
             <Input
@@ -647,6 +643,7 @@ export function Header() {
     </header>
   );
 }
+
 
 
 
