@@ -79,40 +79,28 @@ export function GiftFinder() {
         gap: '16px'
       }}
     >
-      <div className="container mx-auto flex flex-col items-center justify-center" style={{ gap: '16px', maxWidth: '390px' }}>
+      <div className="container mx-auto flex flex-col items-center justify-center px-4" style={{ gap: '16px' }}>
         <Dialog open={open} onOpenChange={setOpen}>
-          <div className="flex flex-col items-center justify-center text-white" style={{ gap: '16px', width: '358px' }}>
-            <span 
-              className="text-center"
+          <div className="flex flex-col items-center justify-center text-white w-full max-w-sm">
+            <span
+              className="text-center text-sm sm:text-base"
               style={{
-                width: '358px',
-                height: '44px',
-                angle: '0 deg',
-                opacity: 1,
                 fontFamily: 'Poppins',
                 fontWeight: '400',
-                fontStyle: 'Regular',
-                fontSize: '14px',
-                leadingTrim: 'NONE',
                 lineHeight: '160%',
-                letterSpacing: '0%',
-                textAlign: 'center',
-                verticalAlign: 'middle'
+                letterSpacing: '0%'
               }}
             >
               Not sure what to get? Let's help you find the perfect gift — tell us about the receiver!
             </span>
             <DialogTrigger asChild>
-              <div 
-                className="flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
+              <div
+                className="flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity w-full max-w-sm"
                 style={{
-                  width: '358px',
                   height: '40px',
                   paddingRight: '16px',
                   paddingLeft: '16px',
                   gap: '8px',
-                  angle: '0 deg',
-                  opacity: 1,
                   borderRadius: '24px',
                   backgroundColor: '#FFFFFF',
                   border: 'none',

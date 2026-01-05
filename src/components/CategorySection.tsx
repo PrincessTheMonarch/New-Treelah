@@ -63,10 +63,10 @@ export function CategorySection({ title, subtitle, categories, type = "occasion"
                   
                   {/* Content */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-white">
-                    <Icon className="h-8 w-8 mb-2 group-hover:scale-110 transition-transform" />
-                    <h3 className="text-center text-sm mb-1">{category.name}</h3>
+                    <Icon className={`h-8 w-8 mb-2 group-hover:scale-110 transition-transform ${type === "occasion" ? "h-6 w-6" : "h-8 w-8"}`} />
+                    <h3 className={`text-center mb-1 ${type === "occasion" ? "text-xs" : "text-sm"}`}>{category.name}</h3>
                     {category.description && (
-                      <p className="text-xs text-white/80 text-center leading-tight">{category.description}</p>
+                      <p className={`text-white/80 text-center leading-tight ${type === "occasion" ? "text-xs" : "text-xs"}`}>{category.description}</p>
                     )}
                   </div>
                 </div>
