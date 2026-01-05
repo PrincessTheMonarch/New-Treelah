@@ -91,9 +91,9 @@ export function ProductCard({ id, image, title, price, originalPrice, badge, tag
 
           {/* Content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-white">
-            <h3 className="text-center text-sm mb-1">{title}</h3>
+            <h3 className="text-center text-xs mb-1">{title}</h3>
             <div className="flex items-center gap-2">
-              <span className="text-white font-semibold text-sm">{price}</span>
+              <span className="text-white font-semibold text-xs">{price}</span>
               {originalPrice && (
                 <span className="text-xs text-white/80 line-through">{originalPrice}</span>
               )}

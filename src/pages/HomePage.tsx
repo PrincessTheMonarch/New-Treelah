@@ -247,7 +247,7 @@ export function HomePage() {
 
       <CategorySection
         title="Shop by Recipient"
-        subtitle="Gifts curated for everyone on your list"
+        subtitle="Thoughtful gifts curated for everyone on your list"
         categories={recipientCategories}
         type="recipient"
       />

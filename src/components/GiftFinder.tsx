@@ -64,38 +64,32 @@ export function GiftFinder() {
   };
 
   return (
-    <div 
-      className="w-full"
+    <section
+      className="text-white relative overflow-hidden"
       style={{
         backgroundColor: '#3B82F6',
         width: '100%',
         minHeight: '148px',
         paddingTop: '24px',
-        paddingRight: '16px',
+        paddingRight: '20px',
         paddingBottom: '24px',
-        paddingLeft: '16px',
-        opacity: 1,
-        marginTop: '0px',
-        gap: '16px'
+        paddingLeft: '20px'
       }}
     >
-      <div className="container mx-auto flex flex-col items-center justify-center px-4" style={{ gap: '16px' }}>
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-4 left-4 w-16 h-16 rounded-full bg-white blur-2xl" />
+        <div className="absolute bottom-4 right-4 w-20 h-20 rounded-full bg-white blur-2xl" />
+      </div>
+      <div className="container mx-auto px-4 text-center relative z-10">
         <Dialog open={open} onOpenChange={setOpen}>
-          <div className="flex flex-col items-center justify-center text-white w-full max-w-sm">
-            <span
-              className="text-center text-sm sm:text-base"
-              style={{
-                fontFamily: 'Poppins',
-                fontWeight: '400',
-                lineHeight: '160%',
-                letterSpacing: '0%'
-              }}
-            >
-              Not sure what to get? Let's help you find the perfect gift — tell us about the receiver!
-            </span>
+          <div className="flex flex-col items-center justify-center text-white">
+            <h2 className="text-lg sm:text-xl md:text-2xl mb-2">Not sure what to get?</h2>
+            <p className="text-sm sm:text-base mb-4 max-w-xl mx-auto opacity-90 px-4">
+              Let's help you find the perfect gift, tell us about the receiver!
+            </p>
             <DialogTrigger asChild>
               <div
-                className="flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity w-full max-w-sm"
+                className="flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
                 style={{
                   height: '40px',
                   paddingRight: '16px',
@@ -107,7 +101,7 @@ export function GiftFinder() {
                   boxShadow: 'none'
                 }}
               >
-                <span 
+                <span
                   className="text-white whitespace-nowrap"
                   style={{
                     color: '#FF8C42',
@@ -221,6 +215,7 @@ export function GiftFinder() {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </section>
   );
 }
+

@@ -37,7 +37,7 @@ export function CategorySection({ title, subtitle, categories, type = "occasion"
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3">{title}</h2>
-          {subtitle && <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4">{subtitle}</p>}
+          {subtitle && <p className="text-sm sm:text-base text-muted-foreground max-w-sm sm:max-w-md md:max-w-2xl mx-auto px-4">{subtitle}</p>}
         </div>
 
         {/* Categories Grid */}
