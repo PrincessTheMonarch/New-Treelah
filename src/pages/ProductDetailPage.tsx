@@ -46,6 +46,11 @@ export function ProductDetailPage() {
   const [personalizeGift, setPersonalizeGift] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [commentLikes, setCommentLikes] = useState<{ [key: number]: { likes: number; liked: boolean; dislikes: number; disliked: boolean } }>({
+    1: { likes: 40, liked: false, dislikes: 40, disliked: false },
+    2: { likes: 35, liked: false, dislikes: 5, disliked: false },
+    3: { likes: 28, liked: false, dislikes: 3, disliked: false },
+  });
 
   if (!product) {
     return (
@@ -63,18 +68,49 @@ export function ProductDetailPage() {
     );
   }
 
+  // Price - Orange - Fixed (not based on quantity)
+  const basePrice = parseFloat(product.price.replace("$", ""));
+
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart({
         id: product.id,
         title: product.title,
-        price: parseFloat(product.price.replace("$", "")),
+        price: basePrice,
         image: product.image,
         category: product.category,
         personalization: personalizeGift ? messageText : undefined,
       });
     }
     toast.success(`${product.title} added to cart!`);
+  };
+
+  // Remove variant functionality (not needed)
+
+  const handleLikeToggle = (commentId: number) => {
+    setCommentLikes(prev => ({
+      ...prev,
+      [commentId]: {
+        ...prev[commentId],
+        liked: !prev[commentId].liked,
+        dislikes: prev[commentId].disliked ? prev[commentId].dislikes - 1 : prev[commentId].dislikes,
+        disliked: false,
+        likes: prev[commentId].liked ? prev[commentId].likes - 1 : prev[commentId].likes + 1,
+      }
+    }));
+  };
+
+  const handleDislikeToggle = (commentId: number) => {
+    setCommentLikes(prev => ({
+      ...prev,
+      [commentId]: {
+        ...prev[commentId],
+        disliked: !prev[commentId].disliked,
+        likes: prev[commentId].liked ? prev[commentId].likes - 1 : prev[commentId].likes,
+        liked: false,
+        dislikes: prev[commentId].disliked ? prev[commentId].dislikes - 1 : prev[commentId].dislikes + 1,
+      }
+    }));
   };
 
   // Mock additional images for gallery
@@ -104,8 +140,6 @@ export function ProductDetailPage() {
       date: "11/11/2011",
       rating: 5,
       text: "Include a heartfelt message with your gift",
-      likes: 40,
-      dislikes: 40,
     },
     {
       id: 2,
@@ -113,8 +147,6 @@ export function ProductDetailPage() {
       date: "12/12/2021",
       rating: 5,
       text: "Beautiful gift packaging and fast delivery!",
-      likes: 35,
-      dislikes: 5,
     },
     {
       id: 3,
@@ -122,20 +154,19 @@ export function ProductDetailPage() {
       date: "01/01/2022",
       rating: 4,
       text: "Great product, exactly as described. Would recommend!",
-      likes: 28,
-      dislikes: 3,
     },
   ];
 
-  const variants = ["Classic", "Premium", "Luxury", "Ultimate"];
+  let [variants] = useState(["Classic", "Premium", "Luxury", "Ultimate"]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      {/* 1. Header & Navigation */}
+      {/* 1. Header & Navigation - Full width like landing page */}
       <header 
-        className="sticky top-0 z-50 bg-white border-b border-gray-100"
+        className="sticky top-0 z-50 bg-white border-b border-gray-100 w-full"
+        style={{ width: '100%' }}
       >
-        <div className="px-4 py-3">
+        <div className="w-full px-4 py-3">
           {/* Top Bar */}
           <div className="flex items-center justify-between">
             {/* Left: Logo Placeholder - Grey Circular Background */}
@@ -240,9 +271,9 @@ export function ProductDetailPage() {
         </div>
       </header>
 
-      <main className="flex-1 pb-24">
+      <main className="flex-1 pb-24 w-full">
         {/* Back Button - Right above Save for Later */}
-        <div className="px-4 py-3">
+        <div className="w-full px-4 py-3">
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-1 transition-colors"
@@ -254,7 +285,7 @@ export function ProductDetailPage() {
         </div>
 
         {/* 2. Action Bar (Wishlist & Share) */}
-        <div className="px-4 py-3 border-b border-gray-100">
+        <div className="w-full px-4 py-3 border-b border-gray-100">
           <div className="flex items-center justify-between">
             {/* Left: Save for Later - Orange Heart */}
             <button className="flex items-center gap-2">
@@ -281,10 +312,10 @@ export function ProductDetailPage() {
         </div>
 
         {/* 3. Image Gallery */}
-        <div className="px-4 py-4">
+        <div className="w-full px-4 py-4">
           {/* Main Image */}
           <div 
-            className="rounded-xl overflow-hidden aspect-square mb-4"
+            className="rounded-xl overflow-hidden aspect-square mb-4 w-full"
             style={{ backgroundColor: '#E5E7EB' }}
           >
             <ImageWithFallback
@@ -295,7 +326,7 @@ export function ProductDetailPage() {
           </div>
 
           {/* Thumbnails */}
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          <div className="flex gap-2 overflow-x-auto pb-2 w-full">
             {productImages.map((img, index) => (
               <button
                 key={index}
@@ -319,7 +350,7 @@ export function ProductDetailPage() {
         </div>
 
         {/* 4. Product Info & Title */}
-        <div className="px-4 py-4">
+        <div className="w-full px-4 py-4">
           {/* Tags - 50% Off first, then Staff Pick, then In-stock */}
           <div className="flex gap-2 flex-wrap mb-3">
             <span
@@ -359,7 +390,7 @@ export function ProductDetailPage() {
             {product.title}
           </h1>
 
-          {/* Price - Orange */}
+          {/* Price - Orange - Updates with quantity */}
           <div className="flex items-baseline gap-2 mb-3">
             <span 
               className="text-2xl font-bold"
@@ -385,7 +416,7 @@ export function ProductDetailPage() {
                   key={i}
                   className="h-4 w-4"
                   style={{ 
-                    color: i < 4 ? '#FF8C42' : '#E5E7EB',
+                    color: '#FF8C42',
                     fill: i < 4 ? '#FF8C42' : 'none'
                   }}
                 />
@@ -413,17 +444,17 @@ export function ProductDetailPage() {
           </div>
         </div>
 
-        {/* 5. Selectors (Variants & Quantity) */}
-        <div className="px-4 py-4 border-t border-gray-100">
+        {/* 5. Selectors (Variant & Quantity) */}
+        <div className="w-full px-4 py-4 border-t border-gray-100">
           {/* Variants - Cards style */}
           <div className="mb-4">
             <Label 
               className="font-semibold mb-3 block"
               style={{ color: '#1A1A1A' }}
             >
-              Select a Variants
+              Select a Variant
             </Label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-2 w-full">
               {variants.map((variant, index) => (
                 <button
                   key={index}
@@ -446,7 +477,7 @@ export function ProductDetailPage() {
           </div>
 
           {/* Action Row */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 w-full">
             {/* Quantity Counter */}
             <div 
               className="flex items-center rounded-full overflow-hidden"
@@ -488,7 +519,7 @@ export function ProductDetailPage() {
 
         {/* 6. Trust/Delivery Strip - #FDF6F3 */}
         <div 
-          className="px-4 py-4 mx-4 rounded-xl"
+          className="w-full px-4 py-4 mx-4 rounded-xl"
           style={{ backgroundColor: '#FDF6F3' }}
         >
           <div className="flex items-center justify-between gap-4">
@@ -514,7 +545,7 @@ export function ProductDetailPage() {
         </div>
 
         {/* 7. Make It Extra Special - Updated with detailed specifications */}
-        <div className="px-4 py-4">
+        <div className="w-full px-4 py-4">
           {/* Page Header */}
           <h3 
             className="font-semibold text-center mb-6"
@@ -525,7 +556,7 @@ export function ProductDetailPage() {
 
           {/* Section 1: Custom Message Card */}
           <div 
-            className="rounded-xl mb-4 overflow-hidden"
+            className="rounded-xl mb-4 overflow-hidden w-full"
             style={{ 
               backgroundColor: 'white',
               border: '1px solid #E5E7EB'
@@ -562,10 +593,10 @@ export function ProductDetailPage() {
             {/* Expanded Content */}
             {addMessageCard && (
               <div 
-                className="px-4 pb-4"
+                className="px-4 pb-4 pt-4"
                 style={{ 
                   backgroundColor: 'white',
-                  borderTop: '1px solid #E5E7EB'
+                  borderTop: '1px solid #E5E7EB',
                 }}
               >
                 <div 
@@ -592,7 +623,7 @@ export function ProductDetailPage() {
 
           {/* Section 2: Delivery Card */}
           <div 
-            className="rounded-xl mb-4 overflow-hidden"
+            className="rounded-xl mb-4 overflow-hidden w-full"
             style={{ 
               backgroundColor: 'white',
               border: '1px solid #E5E7EB'
@@ -629,10 +660,10 @@ export function ProductDetailPage() {
             {/* Expanded Content */}
             {sendDirectly && (
               <div 
-                className="px-4 pb-4 space-y-4"
+                className="px-4 pb-4 space-y-4 pt-4"
                 style={{ 
                   backgroundColor: 'white',
-                  borderTop: '1px solid #E5E7EB'
+                  borderTop: '1px solid #E5E7EB',
                 }}
               >
                 {/* Recipient Name */}
@@ -692,7 +723,7 @@ export function ProductDetailPage() {
                   />
                 </div>
 
-                {/* Schedule Delivery Date */}
+                {/* Schedule Delivery Date - Date picker */}
                 <div>
                   <Label 
                     className="text-xs font-medium mb-1 block"
@@ -702,7 +733,7 @@ export function ProductDetailPage() {
                   </Label>
                   <div className="relative">
                     <Input
-                      placeholder="Choose a delivery date"
+                      type="date"
                       className="h-10 rounded-lg pr-10"
                       style={{ 
                         backgroundColor: '#FBFBFB',
@@ -722,7 +753,7 @@ export function ProductDetailPage() {
 
           {/* Section 3: Personalize Gift Card */}
           <div 
-            className="rounded-xl mb-4 overflow-hidden"
+            className="rounded-xl mb-4 overflow-hidden w-full"
             style={{ 
               backgroundColor: 'white',
               border: '1px solid #E5E7EB'
@@ -759,10 +790,10 @@ export function ProductDetailPage() {
             {/* Expanded Content */}
             {personalizeGift && (
               <div 
-                className="px-4 pb-4 space-y-4"
+                className="px-4 pb-4 space-y-4 pt-4"
                 style={{ 
                   backgroundColor: 'white',
-                  borderTop: '1px solid #E5E7EB'
+                  borderTop: '1px solid #E5E7EB',
                 }}
               >
                 {/* Custom Text */}
@@ -809,20 +840,22 @@ export function ProductDetailPage() {
 
           {/* Footer Actions */}
           <div 
-            className="flex items-center justify-between mt-6 pt-4"
+            className="flex items-center justify-between mt-6 pt-4 w-full"
             style={{ borderTop: '1px solid #E5E7EB' }}
           >
-            {/* Left: Continue Shopping */}
+            {/* Left: Continue Shopping - Navigate to products page */}
             <button 
               className="flex items-center gap-1"
-              style={{ color: '#FF8C42' }}
+              style={{ color: '#FF8C42', cursor: 'pointer' }}
+              onClick={() => navigate("/products")}
             >
               <ArrowLeft className="h-4 w-4" />
               <span className="text-sm font-medium">Continue Shopping</span>
             </button>
 
-            {/* Right: Proceed to Checkout */}
+            {/* Right: Proceed to Checkout - Navigate to checkout page */}
             <button
+              onClick={() => navigate("/checkout")}
               className="flex items-center justify-center rounded-full h-10 transition-colors"
               style={{
                 backgroundColor: '#FF8C42',
@@ -836,13 +869,13 @@ export function ProductDetailPage() {
               }}
             >
               Proceed to Checkout
-              <ShoppingCart className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4" />
             </button>
           </div>
         </div>
 
         {/* 8. Product Details - #717182 */}
-        <div className="px-4 py-4">
+        <div className="w-full px-4 py-4">
           {/* Product Description */}
           <div className="mb-6">
             <h3 
@@ -886,7 +919,7 @@ export function ProductDetailPage() {
         </div>
 
         {/* 9. Ratings and Review */}
-        <div className="px-4 py-4">
+        <div className="w-full px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <h3 
               className="font-semibold"
@@ -901,7 +934,7 @@ export function ProductDetailPage() {
                     key={i}
                     className="h-4 w-4"
                     style={{ 
-                      color: i < 4 ? '#FF8C42' : '#E5E7EB',
+                      color: '#FF8C42',
                       fill: i < 4 ? '#FF8C42' : 'none'
                     }}
                   />
@@ -928,7 +961,7 @@ export function ProductDetailPage() {
                 </span>
                 <div 
                   className="flex-1 h-2 rounded-full overflow-hidden"
-                  style={{ backgroundColor: '#E5E7EB' }}
+                  style={{ backgroundColor: '#F3E3DD' }}
                 >
                   <div
                     className="h-full rounded-full"
@@ -950,7 +983,7 @@ export function ProductDetailPage() {
         </div>
 
         {/* 10. Comments List - #F6F6F6 background */}
-        <div className="px-4 py-4">
+        <div className="w-full px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <h3 
               className="font-semibold"
@@ -973,75 +1006,101 @@ export function ProductDetailPage() {
 
           {/* Comment Items */}
           <div className="space-y-4">
-            {mockComments.map((comment) => (
-              <div
-                className="rounded-xl p-4"
-                style={{ backgroundColor: '#F6F6F6' }}
-              >
-                <div className="flex items-start gap-3 mb-2">
-                  <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: '#E5E7EB' }}
-                  >
-                    <span 
-                      className="font-medium"
-                      style={{ color: '#6B7280' }}
+            {mockComments.map((comment) => {
+              const likeState = commentLikes[comment.id] || { likes: 40, liked: false, dislikes: 40, disliked: false };
+              return (
+                <div
+                  className="rounded-xl p-4 w-full"
+                  style={{ backgroundColor: '#F6F6F6' }}
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    <div 
+                      className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: '#E5E7EB' }}
                     >
-                      {comment.name.charAt(0)}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
                       <span 
                         className="font-medium"
-                        style={{ color: '#1A1A1A' }}
-                      >
-                        {comment.name}
-                      </span>
-                      <span 
-                        className="text-xs"
                         style={{ color: '#6B7280' }}
                       >
-                        {comment.date}
+                        {comment.name.charAt(0)}
                       </span>
                     </div>
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-3 w-3"
-                          style={{ 
-                            color: i < comment.rating ? '#FF8C42' : '#E5E7EB',
-                            fill: i < comment.rating ? '#FF8C42' : 'none'
-                          }}
-                        />
-                      ))}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span 
+                          className="font-medium"
+                          style={{ color: '#1A1A1A' }}
+                        >
+                          {comment.name}
+                        </span>
+                        <span 
+                          className="text-xs"
+                          style={{ color: '#717182' }}
+                        >
+                          {comment.date}
+                        </span>
+                      </div>
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className="h-3 w-3"
+                            style={{ 
+                              color: '#FF8C42',
+                              fill: i < comment.rating ? '#FF8C42' : 'none'
+                            }}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
+                  <p 
+                    className="text-sm mb-3"
+                    style={{ color: '#717182' }}
+                  >
+                    {comment.text}
+                  </p>
+                  {/* Thumbs up/down - Bottom Right */}
+                  <div className="flex items-center gap-4 justify-end">
+                    <button 
+                      className="flex items-center gap-1"
+                      style={{ 
+                        color: likeState.liked ? '#FF8C42' : '#6B7280',
+                        fill: likeState.liked ? '#FF8C42' : 'none'
+                      }}
+                      onClick={() => handleLikeToggle(comment.id)}
+                    >
+                      <ThumbsUp 
+                      className="h-4 w-4"
+                      color={likeState.liked ? '#FF8C42' : '#FF8C42'}
+                      fill={likeState.liked ? '#FF8C42' : 'none'}
+                    />
+                      <span className="text-sm">{likeState.likes}</span>
+                    </button>
+                    <button 
+                      className="flex items-center gap-1"
+                      style={{ 
+                        color: likeState.disliked ? '#FF8C42' : '#6B7280',
+                        fill: likeState.disliked ? '#FF8C42' : 'none'
+                      }}
+                      onClick={() => handleDislikeToggle(comment.id)}
+                    >
+                      <ThumbsDown 
+                      className="h-4 w-4"
+                      color={likeState.disliked ? '#FF8C42' : '#FF8C42'}
+                      fill={likeState.disliked ? '#FF8C42' : 'none'}
+                    />
+                      <span className="text-sm">{likeState.dislikes}</span>
+                    </button>
+                  </div>
                 </div>
-                <p 
-                  className="text-sm mb-3"
-                  style={{ color: '#6B7280' }}
-                >
-                  {comment.text}
-                </p>
-                <div className="flex items-center gap-4">
-                  <button className="flex items-center gap-1" style={{ color: '#6B7280' }}>
-                    <ThumbsUp className="h-4 w-4" />
-                    <span className="text-sm">{comment.likes}</span>
-                  </button>
-                  <button className="flex items-center gap-1" style={{ color: '#6B7280' }}>
-                    <ThumbsDown className="h-4 w-4" />
-                    <span className="text-sm">{comment.dislikes}</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        {/* 11. Products you may also Love */}
-        <div className="px-4 py-4">
+        {/* 11. Products you may also Love - Horizontal scroll */}
+        <div className="w-full px-4 py-4">
           <h3 
             className="font-semibold mb-4"
             style={{ color: '#1A1A1A' }}
@@ -1050,15 +1109,22 @@ export function ProductDetailPage() {
           </h3>
 
           {/* Horizontal Scroll */}
-          <div className="flex gap-3 overflow-x-auto pb-4" style={{ marginLeft: '-16px', paddingLeft: '16px' }}>
+          <div 
+            className="flex gap-3 overflow-x-auto pb-4 w-full"
+            style={{ 
+              scrollSnapType: 'x mandatory',
+              WebkitOverflowScrolling: 'touch'
+            }}
+          >
             {relatedProducts.slice(0, 5).map((relatedProduct) => (
               <Link
                 key={relatedProduct.id}
                 to={`/product/${relatedProduct.id}`}
                 className="flex-shrink-0 w-40"
+                style={{ scrollSnapAlign: 'start' }}
               >
                 <div 
-                  className="rounded-xl aspect-square mb-2 overflow-hidden"
+                  className="rounded-xl aspect-square mb-2 overflow-hidden w-40"
                   style={{ backgroundColor: '#E5E7EB' }}
                 >
                   <ImageWithFallback
@@ -1068,7 +1134,7 @@ export function ProductDetailPage() {
                   />
                 </div>
                 <p 
-                  className="text-sm font-medium line-clamp-2 mb-1"
+                  className="text-sm font-medium line-clamp-2 mb-1 w-40"
                   style={{ color: '#1A1A1A' }}
                 >
                   {relatedProduct.title}
