@@ -326,7 +326,7 @@ export function ProductDetailPage() {
           </div>
 
           {/* Thumbnails */}
-          <div className="flex gap-2 overflow-x-auto pb-2 w-full">
+          <div className="flex gap-2 overflow-x-auto pb-2 w-full touch-x-auto overscroll-x-contain">
             {productImages.map((img, index) => (
               <button
                 key={index}
@@ -519,7 +519,7 @@ export function ProductDetailPage() {
 
         {/* 6. Trust/Delivery Strip - #FDF6F3 */}
         <div 
-          className="w-full px-4 py-4 mx-4 rounded-xl"
+          className="w-full px-4 py-4 rounded-xl"
           style={{ backgroundColor: '#FDF6F3' }}
         >
           <div className="flex items-center justify-between gap-4">
@@ -840,12 +840,12 @@ export function ProductDetailPage() {
 
           {/* Footer Actions */}
           <div 
-            className="flex items-center justify-between mt-6 pt-4 w-full"
+            className="flex flex-nowrap items-center justify-between gap-2 mt-6 pt-4 w-full"
             style={{ borderTop: '1px solid #E5E7EB' }}
           >
             {/* Left: Continue Shopping - Navigate to products page */}
             <button 
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 flex-shrink-0"
               style={{ color: '#FF8C42', cursor: 'pointer' }}
               onClick={() => navigate("/products")}
             >
@@ -856,13 +856,14 @@ export function ProductDetailPage() {
             {/* Right: Proceed to Checkout - Navigate to checkout page */}
             <button
               onClick={() => navigate("/checkout")}
-              className="flex items-center justify-center rounded-full h-10 transition-colors"
+              className="flex items-center justify-center rounded-full h-10 transition-colors flex-shrink-0"
               style={{
                 backgroundColor: '#FF8C42',
                 color: 'white',
                 border: 'none',
                 cursor: 'pointer',
-                width: '180px',
+                width: 'auto',
+                minWidth: '140px',
                 gap: '8px',
                 fontSize: '14px',
                 fontWeight: '500'
@@ -1005,7 +1006,7 @@ export function ProductDetailPage() {
           </div>
 
           {/* Comment Items */}
-          <div className="space-y-4">
+          <div className="-space-y-0">
             {mockComments.map((comment) => {
               const likeState = commentLikes[comment.id] || { likes: 40, liked: false, dislikes: 40, disliked: false };
               return (
