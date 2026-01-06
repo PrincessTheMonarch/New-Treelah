@@ -1,54 +1,60 @@
 import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Footer } from "../components/Footer";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { Switch } from "../components/ui/switch";
-import { Separator } from "../components/ui/separator";
 import { Badge } from "../components/ui/badge";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { getProductById, getRelatedProducts } from "../data/products";
 import { useCart } from "../context/CartContext";
+import { Footer } from "../components/Footer";
 import {
   Star,
   ShoppingCart,
   Heart,
   Share2,
-  CheckCircle,
   Truck,
-  Package,
+  Gift,
   PenLine,
   Upload,
   ArrowLeft,
+  ArrowRight,
+  Menu,
+  ThumbsUp,
+  ThumbsDown,
+  ChevronDown,
+  X,
+  Calendar,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { addToCart, getTotalItems } = useCart();
   const product = id ? getProductById(parseInt(id)) : null;
   const relatedProducts = id ? getRelatedProducts(parseInt(id)) : [];
 
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState(0);
   const [addMessageCard, setAddMessageCard] = useState(false);
   const [messageText, setMessageText] = useState("");
   const [sendDirectly, setSendDirectly] = useState(false);
-  const [recipientAddress, setRecipientAddress] = useState("");
   const [personalizeGift, setPersonalizeGift] = useState(false);
-  const [personalizationText, setPersonalizationText] = useState("");
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (!product) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-white">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-3xl mb-4">Product Not Found</h1>
+            <h1 className="text-3xl mb-4" style={{ color: '#1A1A1A' }}>Product Not Found</h1>
             <Link to="/">
-              <Button>Return to Home</Button>
+              <Button className="bg-[#FF8C42] text-white">Return to Home</Button>
             </Link>
           </div>
         </div>
@@ -57,192 +63,492 @@ export function ProductDetailPage() {
     );
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedImage(e.target.files[0]);
+  const handleAddToCart = () => {
+    for (let i = 0; i < quantity; i++) {
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: parseFloat(product.price.replace("$", "")),
+        image: product.image,
+        category: product.category,
+        personalization: personalizeGift ? messageText : undefined,
+      });
     }
+    toast.success(`${product.title} added to cart!`);
   };
 
+  // Mock additional images for gallery
+  const productImages = [
+    product.image,
+    "https://images.unsplash.com/photo-1602347880090-a144f5b4d62c?w=600",
+    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600",
+    "https://images.unsplash.com/photo-1560343076-ec342d670c95?w=600",
+  ];
+
+  // Mock reviews data with progress bar widths
+  const reviewsData = [
+    { stars: 5, count: 28 },
+    { stars: 4, count: 9 },
+    { stars: 3, count: 4 },
+    { stars: 2, count: 1 },
+    { stars: 1, count: 1 },
+  ];
+
+  // Calculate max count for progress bar scaling
+  const maxCount = Math.max(...reviewsData.map((r) => r.count));
+
+  const mockComments = [
+    {
+      id: 1,
+      name: "John Doe",
+      date: "11/11/2011",
+      rating: 5,
+      text: "Include a heartfelt message with your gift",
+      likes: 40,
+      dislikes: 40,
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      date: "12/12/2021",
+      rating: 5,
+      text: "Beautiful gift packaging and fast delivery!",
+      likes: 35,
+      dislikes: 5,
+    },
+    {
+      id: 3,
+      name: "Mike Johnson",
+      date: "01/01/2022",
+      rating: 4,
+      text: "Great product, exactly as described. Would recommend!",
+      likes: 28,
+      dislikes: 3,
+    },
+  ];
+
+  const variants = ["Classic", "Premium", "Luxury", "Ultimate"];
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 container mx-auto px-4 py-4 sm:py-6 lg:py-8">
-        {/* Back Button */}
-        <div className="mb-4">
-          <Button
-            variant="ghost"
-            onClick={() => navigate(-1)}
-            className="gap-2 hover:bg-primary/10 h-10 text-sm"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
-        </div>
-
-        {/* Breadcrumb */}
-        <div className="mb-4 sm:mb-6 text-xs sm:text-sm text-muted-foreground">
-          <Link to="/" className="hover:text-primary">Home</Link>
-          <span className="mx-2">/</span>
-          <Link to="/products" className="hover:text-primary">Products</Link>
-          <span className="mx-2">/</span>
-          <span>{product.title}</span>
-        </div>
-
-        {/* Product Details Section */}
-        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 mb-12 sm:mb-16">
-          {/* Product Image */}
-          <div className="rounded-2xl sm:rounded-3xl overflow-hidden bg-accent">
-            <ImageWithFallback
-              src={product.image}
-              alt={product.title}
-              className="w-full h-64 xs:h-80 sm:h-96 lg:h-full object-cover aspect-square"
-            />
-          </div>
-
-          {/* Product Info */}
-          <div className="space-y-4 sm:space-y-6">
-            {/* Badges and Tags */}
-            <div className="flex gap-2 flex-wrap">
-              {product.badge && (
-                <Badge className="bg-primary text-white text-xs">{product.badge}</Badge>
-              )}
-              {product.tag && (
-                <Badge variant="outline" className="text-xs">{product.tag}</Badge>
-              )}
-              <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
-                {product.availability}
-              </Badge>
-            </div>
-
-            {/* Title and Price */}
-            <div>
-              <h1 className="text-xl sm:text-2xl lg:text-4xl mb-2 sm:mb-3 leading-tight">{product.title}</h1>
-              <div className="flex items-baseline gap-2 sm:gap-3 mb-3 sm:mb-4">
-                <span className="text-2xl sm:text-3xl text-primary">{product.price}</span>
-                {product.originalPrice && (
-                  <span className="text-lg sm:text-xl text-muted-foreground line-through">
-                    {product.originalPrice}
-                  </span>
-                )}
+    <div className="min-h-screen flex flex-col bg-white">
+      {/* 1. Header & Navigation */}
+      <header 
+        className="sticky top-0 z-50 bg-white border-b border-gray-100"
+      >
+        <div className="px-4 py-3">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between">
+            {/* Left: Logo Placeholder - Grey Circular Background */}
+            <div className="flex items-center gap-2">
+              <div 
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: '#E5E7EB' }}
+              >
+                <span 
+                  className="text-xs font-medium"
+                  style={{ color: '#6B7280' }}
+                >
+                  Logo
+                </span>
               </div>
-              
-              {/* Rating */}
-              <div className="flex items-center gap-2">
-                <div className="flex">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${
-                        i < product.rating
-                          ? "fill-primary text-primary"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs sm:text-sm text-muted-foreground">
-                  ({product.reviews} reviews)
+              <div className="flex flex-col">
+                <span 
+                  className="font-bold text-lg"
+                  style={{ color: '#1A1A1A' }}
+                >
+                  Treelah
+                </span>
+                <span 
+                  className="text-xs"
+                  style={{ color: '#6B7280' }}
+                >
+                  Tag line
                 </span>
               </div>
             </div>
 
-            {/* Description */}
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              {product.description}
-            </p>
+            {/* Right: Hamburger Menu */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10">
+                  <Menu className="h-5 w-5" style={{ color: '#1A1A1A' }} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80 p-0">
+                <div className="p-4 border-b">
+                  <div className="flex items-center justify-between">
+                    <span 
+                      className="font-semibold"
+                      style={{ color: '#1A1A1A' }}
+                    >
+                      Menu
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="p-4 space-y-4">
+                  <Link
+                    to="/products"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-2"
+                    style={{ color: '#1A1A1A' }}
+                  >
+                    Shop All
+                  </Link>
+                  <Link
+                    to="/bulk-orders"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-2"
+                    style={{ color: '#1A1A1A' }}
+                  >
+                    Bulk Orders
+                  </Link>
+                  <Link
+                    to="#"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-2"
+                    style={{ color: '#1A1A1A' }}
+                  >
+                    Support
+                  </Link>
+                  <Link to="/cart" onClick={() => setMobileMenuOpen(false)}>
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <ShoppingCart className="h-5 w-5" style={{ color: '#FF8C42' }} />
+                        {getTotalItems() > 0 && (
+                          <span 
+                            className="absolute -top-2 -right-2 h-5 w-5 rounded-full flex items-center justify-center text-xs font-semibold"
+                            style={{ backgroundColor: '#FF8C42', color: 'white' }}
+                          >
+                            {getTotalItems()}
+                          </span>
+                        )}
+                      </div>
+                      <span style={{ color: '#1A1A1A' }}>Cart</span>
+                    </div>
+                  </Link>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </header>
 
-            {/* Features */}
-            <div>
-              <h3 className="mb-3 text-sm sm:text-base">Key Features:</h3>
-              <ul className="space-y-2">
-                {product.features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-xs sm:text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+      <main className="flex-1 pb-24">
+        {/* Back Button - Right above Save for Later */}
+        <div className="px-4 py-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1 transition-colors"
+            style={{ color: '#1A1A1A' }}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="text-sm font-medium">Back</span>
+          </button>
+        </div>
 
-            {/* Delivery Info */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-4 bg-accent rounded-2xl">
-              <div className="flex items-center gap-2">
-                <Truck className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                <span className="text-xs sm:text-sm">{product.deliveryTime} Delivery</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Package className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                <span className="text-xs sm:text-sm">Free Gift Wrap</span>
-              </div>
-            </div>
+        {/* 2. Action Bar (Wishlist & Share) */}
+        <div className="px-4 py-3 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            {/* Left: Save for Later - Orange Heart */}
+            <button className="flex items-center gap-2">
+              <Heart className="h-5 w-5" style={{ color: '#FF8C42' }} />
+              <span 
+                className="text-sm font-medium"
+                style={{ color: '#FF8C42' }}
+              >
+                Save for Later
+              </span>
+            </button>
 
-            {/* Quantity and Add to Cart */}
-            <div className="flex flex-col xs:flex-row gap-3 sm:gap-4">
-              <div className="flex items-center border rounded-full overflow-hidden w-full xs:w-auto">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3 sm:px-4 py-2 hover:bg-accent transition-colors text-sm sm:text-base"
-                >
-                  -
-                </button>
-                <span className="px-4 sm:px-6 py-2 text-sm sm:text-base">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="px-3 sm:px-4 py-2 hover:bg-accent transition-colors text-sm sm:text-base"
-                >
-                  +
-                </button>
-              </div>
-              <Button 
-                className="flex-1 rounded-full h-12 text-sm sm:text-base"
-                onClick={() => {
-                  for (let i = 0; i < quantity; i++) {
-                    addToCart({
-                      id: product.id,
-                      title: product.title,
-                      price: parseFloat(product.price.replace('$', '')),
-                      image: product.image,
-                      category: product.category,
-                      personalization: personalizeGift ? personalizationText : undefined,
-                    });
-                  }
-                  toast.success(`${product.title} added to cart!`);
+            {/* Right: Share */}
+            <button className="flex items-center gap-2">
+              <Share2 className="h-5 w-5" style={{ color: '#1A1A1A' }} />
+              <span 
+                className="text-sm font-medium"
+                style={{ color: '#1A1A1A' }}
+              >
+                Share
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* 3. Image Gallery */}
+        <div className="px-4 py-4">
+          {/* Main Image */}
+          <div 
+            className="rounded-xl overflow-hidden aspect-square mb-4"
+            style={{ backgroundColor: '#E5E7EB' }}
+          >
+            <ImageWithFallback
+              src={productImages[selectedImageIndex]}
+              alt={product.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Thumbnails */}
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {productImages.map((img, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedImageIndex(index)}
+                className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden ${
+                  selectedImageIndex === index ? "ring-2" : ""
+                }`}
+                style={{ 
+                  backgroundColor: '#E5E7EB',
+                  ringColor: '#FF8C42'
                 }}
               >
-                <ShoppingCart className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                Add to Cart
-              </Button>
+                <img
+                  src={img}
+                  alt={`Product ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 4. Product Info & Title */}
+        <div className="px-4 py-4">
+          {/* Tags - 50% Off first, then Staff Pick, then In-stock */}
+          <div className="flex gap-2 flex-wrap mb-3">
+            <span
+              className="px-3 py-1 rounded-full text-xs font-medium"
+              style={{ 
+                backgroundColor: '#6FC2E4', 
+                color: 'white' 
+              }}
+            >
+              50% Off
+            </span>
+            <span
+              className="px-3 py-1 rounded-full text-xs font-medium"
+              style={{ 
+                backgroundColor: '#E0F2FE', 
+                color: '#1A1A1A' 
+              }}
+            >
+              Staff Pick
+            </span>
+            <span
+              className="px-3 py-1 rounded-full text-xs font-medium"
+              style={{ 
+                backgroundColor: '#F3F4F6', 
+                color: '#1A1A1A' 
+              }}
+            >
+              In-stock
+            </span>
+          </div>
+
+          {/* Title */}
+          <h1 
+            className="text-2xl font-bold mb-2"
+            style={{ color: '#1A1A1A' }}
+          >
+            {product.title}
+          </h1>
+
+          {/* Price - Orange */}
+          <div className="flex items-baseline gap-2 mb-3">
+            <span 
+              className="text-2xl font-bold"
+              style={{ color: '#FF8C42' }}
+            >
+              {product.price}
+            </span>
+            {product.originalPrice && (
+              <span 
+                className="text-lg"
+                style={{ color: '#6B7280', textDecoration: 'line-through' }}
+              >
+                {product.originalPrice}
+              </span>
+            )}
+          </div>
+
+          {/* Reviews - Orange Stars */}
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className="h-4 w-4"
+                  style={{ 
+                    color: i < 4 ? '#FF8C42' : '#E5E7EB',
+                    fill: i < 4 ? '#FF8C42' : 'none'
+                  }}
+                />
+              ))}
+            </div>
+            <span 
+              className="text-sm"
+              style={{ color: '#6B7280' }}
+            >
+              4.5 from 100 review
+            </span>
+          </div>
+
+          {/* Short Description - Grey */}
+          <div className="mb-4">
+            <h3 className="font-semibold mb-1" style={{ color: '#1A1A1A' }}>
+              Why you should buy this.......
+            </h3>
+            <p 
+              className="text-sm leading-relaxed"
+              style={{ color: '#6B7280' }}
+            >
+              {product.description}
+            </p>
+          </div>
+        </div>
+
+        {/* 5. Selectors (Variants & Quantity) */}
+        <div className="px-4 py-4 border-t border-gray-100">
+          {/* Variants - Cards style */}
+          <div className="mb-4">
+            <Label 
+              className="font-semibold mb-3 block"
+              style={{ color: '#1A1A1A' }}
+            >
+              Select a Variants
+            </Label>
+            <div className="grid grid-cols-4 gap-2">
+              {variants.map((variant, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedVariant(index)}
+                  className="p-3 rounded-xl text-center transition-all"
+                  style={{
+                    backgroundColor: selectedVariant === index ? 'white' : '#F6F6F6',
+                    border: selectedVariant === index ? '2px solid #FF8C42' : 'none',
+                  }}
+                >
+                  <span 
+                    className="text-xs font-medium"
+                    style={{ color: '#1A1A1A' }}
+                  >
+                    {variant}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Action Row */}
+          <div className="flex items-center gap-4">
+            {/* Quantity Counter */}
+            <div 
+              className="flex items-center rounded-full overflow-hidden"
+              style={{ border: '1px solid #E5E7EB' }}
+            >
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="px-4 py-2 transition-colors"
+                style={{ backgroundColor: 'transparent' }}
+              >
+                -
+              </button>
+              <span className="px-4 py-2 text-sm font-medium">{quantity}</span>
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="px-4 py-2 transition-colors"
+                style={{ backgroundColor: 'transparent' }}
+              >
+                +
+              </button>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-2 sm:gap-3">
-              <Button variant="outline" className="flex-1 rounded-full h-10 text-xs sm:text-sm">
-                <Heart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                Save
-              </Button>
-              <Button variant="outline" className="flex-1 rounded-full h-10 text-xs sm:text-sm">
-                <Share2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                Share
-              </Button>
+            {/* Add to Cart Button */}
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 flex items-center justify-center rounded-full h-12 transition-colors"
+              style={{
+                backgroundColor: '#FF8C42',
+                color: 'white',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Add to Cart
+            </button>
+          </div>
+        </div>
+
+        {/* 6. Trust/Delivery Strip - #FDF6F3 */}
+        <div 
+          className="px-4 py-4 mx-4 rounded-xl"
+          style={{ backgroundColor: '#FDF6F3' }}
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Truck className="h-5 w-5" style={{ color: '#FF8C42' }} />
+              <span 
+                className="text-sm"
+                style={{ color: '#1A1A1A' }}
+              >
+                Delivery within 7days
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Gift className="h-5 w-5" style={{ color: '#FF8C42' }} />
+              <span 
+                className="text-sm"
+                style={{ color: '#1A1A1A' }}
+              >
+                Free Gift Wrap
+              </span>
             </div>
           </div>
         </div>
 
-        <Separator className="my-8 sm:my-12" />
+        {/* 7. Make It Extra Special - Updated with detailed specifications */}
+        <div className="px-4 py-4">
+          {/* Page Header */}
+          <h3 
+            className="font-semibold text-center mb-6"
+            style={{ color: '#1A1A1A', fontSize: '18px' }}
+          >
+            Make It Extra Special
+          </h3>
 
-        {/* Additional Options Section */}
-        <div className="max-w-3xl mx-auto space-y-6 sm:space-y-8 mb-12 sm:mb-16">
-          <h2 className="text-xl sm:text-2xl md:text-3xl text-center mb-6 sm:mb-8">
-            Make It Extra Special ✨
-          </h2>
-
-          {/* Add Custom Message Card */}
-          <div className="p-4 sm:p-6 border-2 border-dashed rounded-2xl sm:rounded-3xl hover:border-primary transition-colors">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-start gap-3">
-                <PenLine className="h-5 w-5 sm:h-6 sm:w-6 text-primary mt-1" />
+          {/* Section 1: Custom Message Card */}
+          <div 
+            className="rounded-xl mb-4 overflow-hidden"
+            style={{ 
+              backgroundColor: 'white',
+              border: '1px solid #E5E7EB'
+            }}
+          >
+            {/* Header (Always Visible) */}
+            <div 
+              className="flex items-center justify-between p-4 cursor-pointer"
+              onClick={() => setAddMessageCard(!addMessageCard)}
+            >
+              <div className="flex items-center gap-3">
+                <PenLine className="h-5 w-5" style={{ color: '#FF8C42' }} />
                 <div>
-                  <h3 className="mb-1 text-sm sm:text-base">Add a Custom Message Card ✍️</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
+                  <p 
+                    className="font-medium"
+                    style={{ color: '#1A1A1A', fontSize: '14px' }}
+                  >
+                    Add a custom message
+                  </p>
+                  <p 
+                    className="text-xs"
+                    style={{ color: '#6B7280' }}
+                  >
                     Include a heartfelt message with your gift
                   </p>
                 </div>
@@ -252,27 +558,64 @@ export function ProductDetailPage() {
                 onCheckedChange={setAddMessageCard}
               />
             </div>
+
+            {/* Expanded Content */}
             {addMessageCard && (
-              <div className="mt-4">
-                <Textarea
-                  placeholder="Write your message here..."
-                  value={messageText}
-                  onChange={(e) => setMessageText(e.target.value)}
-                  className="rounded-2xl"
-                  rows={4}
-                />
+              <div 
+                className="px-4 pb-4"
+                style={{ 
+                  backgroundColor: 'white',
+                  borderTop: '1px solid #E5E7EB'
+                }}
+              >
+                <div 
+                  className="rounded-lg p-4"
+                  style={{ 
+                    backgroundColor: '#F9FAFB',
+                    border: '1px solid #E5E7EB'
+                  }}
+                >
+                  <Textarea
+                    placeholder="Write your message here"
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                    className="w-full min-h-[100px] resize-none border-0 bg-transparent"
+                    style={{ 
+                      fontSize: '14px',
+                      color: '#1A1A1A'
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
 
-          {/* Send Directly to Receiver */}
-          <div className="p-4 sm:p-6 border-2 border-dashed rounded-2xl sm:rounded-3xl hover:border-primary transition-colors">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-start gap-3">
-                <Package className="h-5 w-5 sm:h-6 sm:w-6 text-primary mt-1" />
+          {/* Section 2: Delivery Card */}
+          <div 
+            className="rounded-xl mb-4 overflow-hidden"
+            style={{ 
+              backgroundColor: 'white',
+              border: '1px solid #E5E7EB'
+            }}
+          >
+            {/* Header (Always Visible) */}
+            <div 
+              className="flex items-center justify-between p-4 cursor-pointer"
+              onClick={() => setSendDirectly(!sendDirectly)}
+            >
+              <div className="flex items-center gap-3">
+                <Truck className="h-5 w-5" style={{ color: '#FF8C42' }} />
                 <div>
-                  <h3 className="mb-1 text-sm sm:text-base">Send Directly to Receiver 📦</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
+                  <p 
+                    className="font-medium"
+                    style={{ color: '#1A1A1A', fontSize: '14px' }}
+                  >
+                    Send Directly to Receiver
+                  </p>
+                  <p 
+                    className="text-xs"
+                    style={{ color: '#6B7280' }}
+                  >
                     We'll ship it straight to their door
                   </p>
                 </div>
@@ -282,48 +625,127 @@ export function ProductDetailPage() {
                 onCheckedChange={setSendDirectly}
               />
             </div>
+
+            {/* Expanded Content */}
             {sendDirectly && (
-              <div className="mt-4 space-y-3">
+              <div 
+                className="px-4 pb-4 space-y-4"
+                style={{ 
+                  backgroundColor: 'white',
+                  borderTop: '1px solid #E5E7EB'
+                }}
+              >
+                {/* Recipient Name */}
                 <div>
-                  <Label htmlFor="recipient-name" className="text-sm">Recipient Name</Label>
+                  <Label 
+                    className="text-xs font-medium mb-1 block"
+                    style={{ color: '#1A1A1A' }}
+                  >
+                    Recipient Name
+                  </Label>
                   <Input
-                    id="recipient-name"
-                    placeholder="Enter recipient's name"
-                    className="rounded-full mt-1"
+                    placeholder="Enter recipient name"
+                    className="h-10 rounded-lg"
+                    style={{ 
+                      backgroundColor: '#FBFBFB',
+                      border: '1px solid #E5E7EB',
+                      fontSize: '14px'
+                    }}
                   />
                 </div>
+
+                {/* Phone Number */}
                 <div>
-                  <Label htmlFor="recipient-address" className="text-sm">Delivery Address</Label>
-                  <Textarea
-                    id="recipient-address"
-                    placeholder="Enter full delivery address"
-                    value={recipientAddress}
-                    onChange={(e) => setRecipientAddress(e.target.value)}
-                    className="rounded-2xl mt-1"
-                    rows={3}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="recipient-phone" className="text-sm">Phone Number</Label>
+                  <Label 
+                    className="text-xs font-medium mb-1 block"
+                    style={{ color: '#1A1A1A' }}
+                  >
+                    Phone Number
+                  </Label>
                   <Input
-                    id="recipient-phone"
-                    type="tel"
                     placeholder="Enter phone number"
-                    className="rounded-full mt-1"
+                    className="h-10 rounded-lg"
+                    style={{ 
+                      backgroundColor: '#FBFBFB',
+                      border: '1px solid #E5E7EB',
+                      fontSize: '14px'
+                    }}
                   />
+                </div>
+
+                {/* Delivery Address */}
+                <div>
+                  <Label 
+                    className="text-xs font-medium mb-1 block"
+                    style={{ color: '#1A1A1A' }}
+                  >
+                    Delivery Address
+                  </Label>
+                  <Textarea
+                    placeholder="Enter address"
+                    className="h-20 rounded-lg resize-none"
+                    style={{ 
+                      backgroundColor: '#FBFBFB',
+                      border: '1px solid #E5E7EB',
+                      fontSize: '14px'
+                    }}
+                  />
+                </div>
+
+                {/* Schedule Delivery Date */}
+                <div>
+                  <Label 
+                    className="text-xs font-medium mb-1 block"
+                    style={{ color: '#1A1A1A' }}
+                  >
+                    Schedule Delivery Date (Optional)
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      placeholder="Choose a delivery date"
+                      className="h-10 rounded-lg pr-10"
+                      style={{ 
+                        backgroundColor: '#FBFBFB',
+                        border: '1px solid #E5E7EB',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <Calendar 
+                      className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4"
+                      style={{ color: '#FF8C42' }}
+                    />
+                  </div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Personalize Gift */}
-          <div className="p-4 sm:p-6 border-2 border-dashed rounded-2xl sm:rounded-3xl hover:border-primary transition-colors">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-start gap-3">
-                <Upload className="h-5 w-5 sm:h-6 sm:w-6 text-primary mt-1" />
+          {/* Section 3: Personalize Gift Card */}
+          <div 
+            className="rounded-xl mb-4 overflow-hidden"
+            style={{ 
+              backgroundColor: 'white',
+              border: '1px solid #E5E7EB'
+            }}
+          >
+            {/* Header (Always Visible) */}
+            <div 
+              className="flex items-center justify-between p-4 cursor-pointer"
+              onClick={() => setPersonalizeGift(!personalizeGift)}
+            >
+              <div className="flex items-center gap-3">
+                <Upload className="h-5 w-5" style={{ color: '#FF8C42' }} />
                 <div>
-                  <h3 className="mb-1 text-sm sm:text-base">Personalize Gift 🎨</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
+                  <p 
+                    className="font-medium"
+                    style={{ color: '#1A1A1A', fontSize: '14px' }}
+                  >
+                    Personalize Gift
+                  </p>
+                  <p 
+                    className="text-xs"
+                    style={{ color: '#6B7280' }}
+                  >
                     Add custom text or upload an image
                   </p>
                 </div>
@@ -333,96 +755,339 @@ export function ProductDetailPage() {
                 onCheckedChange={setPersonalizeGift}
               />
             </div>
+
+            {/* Expanded Content */}
             {personalizeGift && (
-              <div className="mt-4 space-y-4">
+              <div 
+                className="px-4 pb-4 space-y-4"
+                style={{ 
+                  backgroundColor: 'white',
+                  borderTop: '1px solid #E5E7EB'
+                }}
+              >
+                {/* Custom Text */}
                 <div>
-                  <Label htmlFor="personalization-text" className="text-sm">Custom Text</Label>
+                  <Label 
+                    className="text-xs font-medium mb-1 block"
+                    style={{ color: '#1A1A1A' }}
+                  >
+                    Custom Text
+                  </Label>
                   <Input
-                    id="personalization-text"
                     placeholder="Enter name, initials, or message"
-                    value={personalizationText}
-                    onChange={(e) => setPersonalizationText(e.target.value)}
-                    className="rounded-full mt-1"
+                    className="h-10 rounded-lg"
+                    style={{ 
+                      backgroundColor: '#FBFBFB',
+                      border: '1px solid #E5E7EB',
+                      fontSize: '14px'
+                    }}
                   />
                 </div>
-                <div>
-                  <Label htmlFor="personalization-image" className="text-sm">Upload Image</Label>
-                  <div className="mt-1">
-                    <label
-                      htmlFor="personalization-image"
-                      className="flex items-center justify-center w-full p-4 sm:p-6 border-2 border-dashed rounded-2xl cursor-pointer hover:border-primary transition-colors"
-                    >
-                      <div className="text-center">
-                        <Upload className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground mx-auto mb-2" />
-                        <span className="text-xs sm:text-sm text-muted-foreground">
-                          {selectedImage
-                            ? selectedImage.name
-                            : "Click to upload image"}
-                        </span>
-                      </div>
-                      <input
-                        id="personalization-image"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
+
+                {/* Upload Area */}
+                <div 
+                  className="rounded-xl p-6 text-center cursor-pointer"
+                  style={{ 
+                    backgroundColor: '#F9FAFB',
+                    border: '1px dashed #E5E7EB'
+                  }}
+                >
+                  <Upload 
+                    className="h-8 w-8 mx-auto mb-2"
+                    style={{ color: '#FF8C42' }}
+                  />
+                  <p 
+                    className="text-sm font-medium"
+                    style={{ color: '#FF8C42' }}
+                  >
+                    Click to upload image
+                  </p>
                 </div>
               </div>
             )}
           </div>
+
+          {/* Footer Actions */}
+          <div 
+            className="flex items-center justify-between mt-6 pt-4"
+            style={{ borderTop: '1px solid #E5E7EB' }}
+          >
+            {/* Left: Continue Shopping */}
+            <button 
+              className="flex items-center gap-1"
+              style={{ color: '#FF8C42' }}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span className="text-sm font-medium">Continue Shopping</span>
+            </button>
+
+            {/* Right: Proceed to Checkout */}
+            <button
+              className="flex items-center justify-center rounded-full h-10 transition-colors"
+              style={{
+                backgroundColor: '#FF8C42',
+                color: 'white',
+                border: 'none',
+                cursor: 'pointer',
+                width: '180px',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}
+            >
+              Proceed to Checkout
+              <ShoppingCart className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
-        {/* Related Products */}
-        {relatedProducts.length > 0 && (
-          <>
-            <Separator className="my-8 sm:my-12" />
-            <div className="mb-12 sm:mb-16">
-              <h2 className="text-xl sm:text-2xl md:text-3xl text-center mb-6 sm:mb-8">
-                You May Also Love... 💝
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {relatedProducts.map((relatedProduct) => (
-                  <Link
-                    key={relatedProduct.id}
-                    to={`/product/${relatedProduct.id}`}
-                    className="group"
-                  >
-                    <div className="rounded-2xl sm:rounded-3xl overflow-hidden bg-white shadow-sm hover:shadow-xl transition-shadow">
-                      <div className="aspect-square overflow-hidden bg-accent">
-                        <ImageWithFallback
-                          src={relatedProduct.image}
-                          alt={relatedProduct.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                      <div className="p-3 sm:p-4">
-                        <h3 className="mb-2 line-clamp-2 text-sm sm:text-base">
-                          {relatedProduct.title}
-                        </h3>
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-primary text-sm sm:text-base">
-                            {relatedProduct.price}
-                          </span>
-                          {relatedProduct.originalPrice && (
-                            <span className="text-xs sm:text-sm text-muted-foreground line-through">
-                              {relatedProduct.originalPrice}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
+        {/* 8. Product Details - #717182 */}
+        <div className="px-4 py-4">
+          {/* Product Description */}
+          <div className="mb-6">
+            <h3 
+              className="font-semibold mb-2"
+              style={{ color: '#1A1A1A' }}
+            >
+              Product Description
+            </h3>
+            <p 
+              className="text-sm leading-relaxed"
+              style={{ color: '#717182' }}
+            >
+              {product.description}
+            </p>
+          </div>
+
+          {/* Key Features */}
+          <div>
+            <h3 
+              className="font-semibold mb-3"
+              style={{ color: '#1A1A1A' }}
+            >
+              Key Features
+            </h3>
+            <ul className="space-y-2">
+              {product.features.map((feature, index) => (
+                <li
+                  key={index}
+                  className="flex items-start gap-2 text-sm"
+                  style={{ color: '#717182' }}
+                >
+                  <span 
+                    className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
+                    style={{ backgroundColor: '#FF8C42' }}
+                  />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* 9. Ratings and Review */}
+        <div className="px-4 py-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 
+              className="font-semibold"
+              style={{ color: '#1A1A1A' }}
+            >
+              Ratings and Review
+            </h3>
+            <div className="flex items-center gap-2">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="h-4 w-4"
+                    style={{ 
+                      color: i < 4 ? '#FF8C42' : '#E5E7EB',
+                      fill: i < 4 ? '#FF8C42' : 'none'
+                    }}
+                  />
                 ))}
               </div>
+              <span 
+                className="font-bold"
+                style={{ color: '#1A1A1A' }}
+              >
+                4.5
+              </span>
             </div>
-          </>
-        )}
+          </div>
+
+          {/* Rating Chart - Progress bars with varying widths */}
+          <div className="space-y-2">
+            {reviewsData.map((review) => (
+              <div key={review.stars} className="flex items-center gap-2">
+                <span 
+                  className="text-sm w-8"
+                  style={{ color: '#6B7280' }}
+                >
+                  {review.stars} ★
+                </span>
+                <div 
+                  className="flex-1 h-2 rounded-full overflow-hidden"
+                  style={{ backgroundColor: '#E5E7EB' }}
+                >
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${(review.count / maxCount) * 100}%`,
+                      backgroundColor: '#FF8C42',
+                    }}
+                  />
+                </div>
+                <span 
+                  className="text-sm w-8 text-right"
+                  style={{ color: '#6B7280' }}
+                >
+                  {review.count}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 10. Comments List - #F6F6F6 background */}
+        <div className="px-4 py-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 
+              className="font-semibold"
+              style={{ color: '#1A1A1A' }}
+            >
+              Comments
+            </h3>
+            <button
+              className="flex items-center gap-1 rounded-full px-4 h-8 text-sm transition-colors"
+              style={{ 
+                border: '1px solid #E5E7EB',
+                backgroundColor: 'white',
+                color: '#1A1A1A'
+              }}
+            >
+              Popularity
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </div>
+
+          {/* Comment Items */}
+          <div className="space-y-4">
+            {mockComments.map((comment) => (
+              <div
+                className="rounded-xl p-4"
+                style={{ backgroundColor: '#F6F6F6' }}
+              >
+                <div className="flex items-start gap-3 mb-2">
+                  <div 
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: '#E5E7EB' }}
+                  >
+                    <span 
+                      className="font-medium"
+                      style={{ color: '#6B7280' }}
+                    >
+                      {comment.name.charAt(0)}
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span 
+                        className="font-medium"
+                        style={{ color: '#1A1A1A' }}
+                      >
+                        {comment.name}
+                      </span>
+                      <span 
+                        className="text-xs"
+                        style={{ color: '#6B7280' }}
+                      >
+                        {comment.date}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className="h-3 w-3"
+                          style={{ 
+                            color: i < comment.rating ? '#FF8C42' : '#E5E7EB',
+                            fill: i < comment.rating ? '#FF8C42' : 'none'
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <p 
+                  className="text-sm mb-3"
+                  style={{ color: '#6B7280' }}
+                >
+                  {comment.text}
+                </p>
+                <div className="flex items-center gap-4">
+                  <button className="flex items-center gap-1" style={{ color: '#6B7280' }}>
+                    <ThumbsUp className="h-4 w-4" />
+                    <span className="text-sm">{comment.likes}</span>
+                  </button>
+                  <button className="flex items-center gap-1" style={{ color: '#6B7280' }}>
+                    <ThumbsDown className="h-4 w-4" />
+                    <span className="text-sm">{comment.dislikes}</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 11. Products you may also Love */}
+        <div className="px-4 py-4">
+          <h3 
+            className="font-semibold mb-4"
+            style={{ color: '#1A1A1A' }}
+          >
+            Products you may also Love
+          </h3>
+
+          {/* Horizontal Scroll */}
+          <div className="flex gap-3 overflow-x-auto pb-4" style={{ marginLeft: '-16px', paddingLeft: '16px' }}>
+            {relatedProducts.slice(0, 5).map((relatedProduct) => (
+              <Link
+                key={relatedProduct.id}
+                to={`/product/${relatedProduct.id}`}
+                className="flex-shrink-0 w-40"
+              >
+                <div 
+                  className="rounded-xl aspect-square mb-2 overflow-hidden"
+                  style={{ backgroundColor: '#E5E7EB' }}
+                >
+                  <ImageWithFallback
+                    src={relatedProduct.image}
+                    alt={relatedProduct.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p 
+                  className="text-sm font-medium line-clamp-2 mb-1"
+                  style={{ color: '#1A1A1A' }}
+                >
+                  {relatedProduct.title}
+                </p>
+                <p 
+                  className="text-sm font-bold"
+                  style={{ color: '#FF8C42' }}
+                >
+                  {relatedProduct.price}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
       </main>
 
       <Footer />
     </div>
   );
 }
+
+export default ProductDetailPage;
