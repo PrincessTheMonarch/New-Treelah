@@ -14,9 +14,10 @@ interface FeaturedProductsProps {
   title: string;
   subtitle?: string;
   products: Product[];
+  showRecipientBadge?: boolean;
 }
 
-export function FeaturedProducts({ title, subtitle, products }: FeaturedProductsProps) {
+export function FeaturedProducts({ title, subtitle, products, showRecipientBadge = false }: FeaturedProductsProps) {
   return (
     <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-accent/30">
       <div className="container mx-auto px-4">
@@ -40,6 +41,7 @@ export function FeaturedProducts({ title, subtitle, products }: FeaturedProducts
                   originalPrice={originalPrice}
                   badge={badge}
                   tag={tag}
+                  showRecipientBadge={showRecipientBadge}
                 />
               </div>
             );

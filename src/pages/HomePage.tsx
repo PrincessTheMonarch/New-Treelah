@@ -243,6 +243,7 @@ export function HomePage() {
         title="Trending Now"
         subtitle="The most loved gifts this week, handpicked just for you!"
         products={featuredProducts}
+        showRecipientBadge={true}
       />
 
       <CategorySection
