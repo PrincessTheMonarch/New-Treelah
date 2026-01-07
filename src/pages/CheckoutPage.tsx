@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, CSSProperties } from "react";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { Button } from "../components/ui/button";
@@ -7,85 +7,440 @@ import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { Switch } from "../components/ui/switch";
 import { Separator } from "../components/ui/separator";
-import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
-import { Calendar } from "../components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popover";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { PaystackPayment } from "../components/PaystackPayment";
+import { usePaystackPayment } from "../hooks/usePaystackPayment";
 import {
   ArrowLeft,
-  CreditCard,
-  Wallet,
   Truck,
-  Gift,
   Calendar as CalendarIcon,
   Check,
+  Search,
+  ShoppingCart,
+  Heart,
+  Headset,
+  User,
+  ChevronDown,
+  Sparkles,
+  Pencil,
+  Upload,
+  CreditCard,
 } from "lucide-react";
-import { cn } from "../components/ui/utils";
 import { toast } from "sonner";
 
-
-// Helper function to format date
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  });
+// Header styles from BulkOrderPage
+const headerStyle: CSSProperties = {
+  position: 'sticky',
+  top: 0,
+  zIndex: 50,
+  backgroundColor: 'white',
+  borderBottom: '1px solid #E5E7EB',
+  width: '100%',
+  padding: '12px 16px',
 };
 
-const formatShortDate = (date: Date) => {
-  return date.toLocaleDateString('en-US', { 
-    month: 'short', 
-    day: 'numeric' 
-  });
+const headerContainerStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '20px',
+  maxWidth: '1400px',
+  margin: '0 auto',
 };
+
+const headerLeftStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '10px',
+};
+
+const logoCircleStyle: CSSProperties = {
+  width: '40px',
+  height: '40px',
+  borderRadius: '50%',
+  backgroundColor: '#F3F4F6',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+const brandStackStyle: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '2px',
+};
+
+const brandNameStyle: CSSProperties = {
+  fontSize: '18px',
+  fontWeight: 700,
+  color: '#1A1A1A',
+  lineHeight: '1.2',
+};
+
+const brandTaglineStyle: CSSProperties = {
+  fontSize: '11px',
+  color: '#6B7280',
+  lineHeight: '1.2',
+};
+
+const navLinksStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '20px',
+};
+
+const navLinkStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '4px',
+  fontSize: '14px',
+  fontWeight: 500,
+  color: '#1A1A1A',
+  cursor: 'pointer',
+  padding: '8px 0',
+};
+
+const shoppingAssistantButtonStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '6px',
+  padding: '8px 14px',
+  borderRadius: '20px',
+  backgroundColor: '#FF8C42',
+  color: 'white',
+  border: 'none',
+  fontSize: '12px',
+  fontWeight: 500,
+  cursor: 'pointer',
+};
+
+const headerCenterStyle: CSSProperties = {
+  flex: 1,
+  maxWidth: '400px',
+  marginLeft: '20px',
+  marginRight: '20px',
+};
+
+const searchBarContainerStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  position: 'relative',
+};
+
+const searchInputStyle: CSSProperties = {
+  width: '100%',
+  padding: '8px 36px 8px 14px',
+  borderRadius: '20px',
+  border: '1px solid #E5E7EB',
+  backgroundColor: '#F6F6F6',
+  fontSize: '13px',
+  outline: 'none',
+};
+
+const searchIconStyle: CSSProperties = {
+  position: 'absolute',
+  right: '12px',
+  color: '#6B7280',
+  cursor: 'pointer',
+};
+
+const headerRightStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '16px',
+};
+
+const iconButtonStyle: CSSProperties = {
+  cursor: 'pointer',
+  color: '#1A1A1A',
+};
+
+// Stepper styles
+const stepperContainerStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0',
+  padding: '24px 0',
+};
+
+const stepContainerStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const stepCircleStyle: CSSProperties = {
+  width: '32px',
+  height: '32px',
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '14px',
+  fontWeight: 600,
+};
+
+const stepLabelStyle: CSSProperties = {
+  marginLeft: '8px',
+  fontSize: '14px',
+  fontWeight: 500,
+};
+
+const stepConnectorStyle: CSSProperties = {
+  width: '60px',
+  height: '2px',
+  backgroundColor: '#1A1A1A',
+  margin: '0 8px',
+};
+
+// Form container styles
+const formContainerStyle: CSSProperties = {
+  width: '100%',
+  maxWidth: '680px',
+  backgroundColor: '#F6F6F6',
+  borderRadius: '24px',
+  padding: '24px',
+};
+
+// Section heading style
+const sectionHeadingStyle: CSSProperties = {
+  fontFamily: 'Poppins',
+  fontWeight: 400,
+  fontSize: '18px',
+  lineHeight: '160%',
+  color: '#1A1A1A',
+  marginBottom: '24px',
+};
+
+// Label styles for form fields
+const formLabelStyle: CSSProperties = {
+  fontFamily: 'Poppins',
+  fontWeight: 400,
+  fontSize: '14px',
+  lineHeight: '160%',
+  color: '#1A1A1A',
+  marginBottom: '8px',
+  display: 'block',
+};
+
+// Input styles
+const inputStyle: CSSProperties = {
+  width: '100%',
+  padding: '12px 16px',
+  borderRadius: '8px',
+  border: '1px solid #E5E7EB',
+  backgroundColor: '#FBFBFB',
+  fontSize: '14px',
+  outline: 'none',
+  fontFamily: 'Poppins',
+  fontWeight: 400,
+};
+
+// Textarea for address
+const textareaStyle: CSSProperties = {
+  width: '100%',
+  height: '72px',
+  padding: '12px',
+  borderRadius: '8px',
+  border: '0.2px solid #E5E7EB',
+  backgroundColor: '#FBFBFB',
+  fontSize: '14px',
+  outline: 'none',
+  fontFamily: 'Poppins',
+  fontWeight: 400,
+  resize: 'none',
+};
+
+// Two column layout for city/state
+const twoColumnLayoutStyle: CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: '24px',
+};
+
+// Toggle section container
+const toggleSectionStyle: CSSProperties = {
+  border: '1px solid #E5E7EB',
+  borderRadius: '8px',
+  padding: '16px',
+  backgroundColor: '#F6F6F6',
+};
+
+// Toggle header
+const toggleHeaderStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+};
+
+// Toggle label
+const toggleLabelStyle: CSSProperties = {
+  fontFamily: 'Poppins',
+  fontWeight: 400,
+  fontSize: '14px',
+  color: '#717182',
+  cursor: 'pointer',
+};
+
+// Toggle subtext
+const toggleSubtextStyle: CSSProperties = {
+  fontFamily: 'Poppins',
+  fontWeight: 400,
+  fontSize: '12px',
+  color: '#6B7280',
+  marginTop: '2px',
+};
+
+// Conditional fields container
+const conditionalFieldsStyle: CSSProperties = {
+  marginTop: '16px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
+};
+
+const continueButtonStyle: CSSProperties = {
+  width: '100%',
+  padding: '14px 24px',
+  borderRadius: '8px',
+  backgroundColor: '#FF8C42',
+  color: 'white',
+  border: 'none',
+  fontSize: '16px',
+  fontWeight: 600,
+  cursor: 'pointer',
+  marginTop: '24px',
+  fontFamily: 'Poppins',
+};
+
+// Order summary styles
+const orderSummaryStyle: CSSProperties = {
+  backgroundColor: 'white',
+  padding: '24px',
+  position: 'sticky',
+  top: '100px',
+};
+
+const productCardStyle: CSSProperties = {
+  display: 'flex',
+  gap: '12px',
+  padding: '12px',
+  borderRadius: '8px',
+  border: '1px solid #E5E7EB',
+  backgroundColor: '#F6F6F6',
+};
+
+const productImageStyle: CSSProperties = {
+  width: '60px',
+  height: '60px',
+  borderRadius: '8px',
+  backgroundColor: '#F3F4F6',
+  overflow: 'hidden',
+};
+
+const priceRowStyle: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  padding: '8px 0',
+  fontSize: '14px',
+};
+
+// Place Order Button Component
+interface PlaceOrderButtonProps {
+  amount: number;
+  onSuccess: (payment: any) => void;
+}
+
+function PlaceOrderButton({ amount, onSuccess }: PlaceOrderButtonProps) {
+  const { user } = useAuth();
+  const { isProcessing, error, initiatePayment, clearError } = usePaystackPayment({
+    email: user?.email || '',
+    amount,
+    currency: 'NGN',
+    metadata: {
+      order_type: 'checkout',
+      page_url: window.location.href,
+    },
+    onSuccess,
+    onError: (err) => console.error('Payment error:', err),
+  });
+
+  const handlePaymentClick = () => {
+    clearError();
+    initiatePayment();
+  };
+
+  const isDisabled = isProcessing || !user;
+
+  return (
+    <div style={{ marginTop: '24px' }}>
+      <button
+        onClick={handlePaymentClick}
+        disabled={isDisabled}
+        style={{
+          width: '100%',
+          padding: '14px 24px',
+          borderRadius: '8px',
+          backgroundColor: isDisabled ? '#E5E7EB' : '#FF8C42',
+          color: 'white',
+          border: 'none',
+          fontSize: '16px',
+          fontWeight: 600,
+          cursor: isDisabled ? 'not-allowed' : 'pointer',
+          fontFamily: 'Poppins',
+        }}
+      >
+        {isProcessing ? 'Processing...' : 'Place Order'}
+      </button>
+    </div>
+  );
+}
 
 export function CheckoutPage() {
-  const { items, getTotalPrice, clearCart } = useCart();
+  const { items, getTotalPrice, getTotalItems, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  
+  // Search state for header
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Delivery Info State
   const [deliveryInfo, setDeliveryInfo] = useState({
-    name: "",
-    email: "",
+    fullName: "",
     phone: "",
     address: "",
     city: "",
     state: "",
-    zipCode: "",
+    state2: "",
   });
   const [sendToRecipient, setSendToRecipient] = useState(false);
   const [recipientInfo, setRecipientInfo] = useState({
     name: "",
     phone: "",
-    note: "",
+    address: "",
+    deliveryDate: "",
   });
 
-  // Gift Options State
-  const [giftOptions, setGiftOptions] = useState({
-    addMessageCard: false,
-    message: "",
-    giftWrap: false,
-    deliveryDate: undefined as Date | undefined,
-    deliverASAP: true,
-  });
+  // Packaging & Personalization State
+  const [packagingOption, setPackagingOption] = useState("");
+  const [isPackagingDropdownOpen, setIsPackagingDropdownOpen] = useState(false);
+  const [addCustomMessage, setAddCustomMessage] = useState(false);
+  const [customMessage, setCustomMessage] = useState("");
+  const [personalizeGift, setPersonalizeGift] = useState(false);
+  const [customText, setCustomText] = useState("");
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
 
-
-
+  // Calculate totals
   const subtotal = getTotalPrice();
-  const deliveryFee = subtotal >= 50 ? 0 : 5.99;
-  const giftWrapFee = giftOptions.giftWrap ? 4.99 : 0;
-  const total = subtotal + deliveryFee + giftWrapFee;
+  const deliveryFee = 1500; // Fixed delivery fee of ₦1,500
+  const total = subtotal + deliveryFee;
 
   const handleNextStep = () => {
     if (currentStep === 1) {
       // Validate delivery info
-      if (!deliveryInfo.name || !deliveryInfo.email || !deliveryInfo.address) {
+      if (!deliveryInfo.fullName || !deliveryInfo.phone || !deliveryInfo.address || !deliveryInfo.city) {
         toast.error("Please fill in all required fields");
         return;
       }
@@ -109,10 +464,9 @@ export function CheckoutPage() {
   };
 
   const handlePaymentSuccess = (payment: any) => {
-    // Payment has been verified by the server
-    toast.success("Order placed successfully! 🎉");
     clearCart();
-    navigate("/");
+    toast.success("Order placed successfully!");
+    navigate("/products");
   };
 
   // Redirect to cart if no items
@@ -122,11 +476,10 @@ export function CheckoutPage() {
     }
   }, [items.length, navigate]);
 
-  const steps = [
-    { number: 1, label: "Delivery Info" },
-    { number: 2, label: "Gift Options" },
-    { number: 3, label: "Payment" },
-  ];
+  // Format price to Naira
+  const formatPrice = (price: number) => {
+    return `₦${price.toLocaleString('en-NG')}`;
+  };
 
   // Don't render checkout if cart is empty
   if (items.length === 0) {
@@ -135,543 +488,797 @@ export function CheckoutPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Progress Indicator */}
-      <div className="border-b bg-muted/30">
-        <div className="container mx-auto px-4 py-3 sm:py-4">
-          <div className="flex items-center justify-center gap-1 sm:gap-2 max-w-xs sm:max-w-2xl mx-auto">
-            {steps.map((step, index) => (
-              <div key={step.number} className="flex items-center">
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <div
-                    className={cn(
-                      "h-6 w-6 sm:h-8 sm:w-8 rounded-full flex items-center justify-center transition-colors text-xs sm:text-sm",
-                      currentStep >= step.number
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
-                    )}
-                  >
-                    {currentStep > step.number ? (
-                      <Check className="h-3 w-3 sm:h-4 sm:w-4" />
-                    ) : (
-                      step.number
-                    )}
-                  </div>
-                  <span
-                    className={cn(
-                      "transition-colors hidden xs:inline text-xs sm:text-sm",
-                      currentStep >= step.number
-                        ? "font-medium"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {step.label}
-                  </span>
+      {/* Header from BulkOrderPage */}
+      <header style={headerStyle}>
+        <div style={headerContainerStyle}>
+          {/* Left: Logo + Brand Name + Tagline */}
+          <div style={headerLeftStyle}>
+            <div style={logoCircleStyle}>
+              <span style={{ fontSize: '11px', fontWeight: 600, color: '#6B7280' }}>Logo</span>
+            </div>
+            <div style={brandStackStyle}>
+              <span style={brandNameStyle}>Treelah</span>
+              <span style={brandTaglineStyle}>Tag line</span>
+            </div>
+          </div>
+
+          {/* Center: Navigation Links */}
+          <div style={navLinksStyle}>
+            <div style={navLinkStyle}>
+              Categories
+              <ChevronDown size={14} />
+            </div>
+            <div 
+              style={navLinkStyle} 
+              onClick={() => navigate("/bulk-orders")}
+            >
+              Souvenirs & Bulk Orders
+            </div>
+            <button style={shoppingAssistantButtonStyle}>
+              <Sparkles size={14} />
+              Shopping Assistant
+            </button>
+          </div>
+
+          {/* Right: Search Bar + Utility Icons */}
+          <div style={headerRightStyle}>
+            <div style={headerCenterStyle}>
+              <div style={searchBarContainerStyle}>
+                <input
+                  type="text"
+                  placeholder="Search gifts..."
+                  style={searchInputStyle}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div style={searchIconStyle}>
+                  <Search size={16} />
                 </div>
-                {index < steps.length - 1 && (
-                  <div
-                    className={cn(
-                      "h-0.5 w-6 sm:w-12 mx-1 sm:mx-2 transition-colors",
-                      currentStep > step.number
-                        ? "bg-primary"
-                        : "bg-muted-foreground/30"
-                    )}
-                  />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div 
+                style={{ position: 'relative', ...iconButtonStyle }} 
+                onClick={() => navigate("/cart")}
+              >
+                <ShoppingCart size={20} />
+                {getTotalItems() > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '-8px',
+                    right: '-8px',
+                    backgroundColor: '#FF8C42',
+                    color: 'white',
+                    borderRadius: '50%',
+                    width: '18px',
+                    height: '18px',
+                    fontSize: '11px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 600,
+                  }}>
+                    {getTotalItems()}
+                  </span>
                 )}
               </div>
-            ))}
+              <div style={iconButtonStyle}>
+                <Heart size={20} />
+              </div>
+              <div style={iconButtonStyle}>
+                <Headset size={20} />
+              </div>
+              <div style={iconButtonStyle}>
+                <User size={20} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Checkout Progress Stepper */}
+      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #E5E7EB' }}>
+        <div style={stepperContainerStyle}>
+          {/* Step 1 */}
+          <div style={stepContainerStyle}>
+            <div style={{ 
+              ...stepCircleStyle, 
+              backgroundColor: currentStep >= 1 ? '#FF8C42' : '#E5E7EB',
+              color: currentStep >= 1 ? 'white' : '#6B7280'
+            }}>
+              1
+            </div>
+            <span style={{ 
+              ...stepLabelStyle, 
+              color: currentStep >= 1 ? '#1A1A1A' : '#6B7280',
+              fontWeight: currentStep === 1 ? 600 : 500
+            }}>
+              Delivery info
+            </span>
+          </div>
+          
+          {/* Connector 1-2 */}
+          <div style={{ 
+            ...stepConnectorStyle, 
+            backgroundColor: '#1A1A1A'
+          }} />
+          
+          {/* Step 2 */}
+          <div style={stepContainerStyle}>
+            <div style={{ 
+              ...stepCircleStyle, 
+              backgroundColor: currentStep >= 2 ? '#FF8C42' : '#E5E7EB',
+              color: currentStep >= 2 ? 'white' : '#6B7280'
+            }}>
+              2
+            </div>
+            <span style={{ 
+              ...stepLabelStyle, 
+              color: currentStep >= 2 ? '#1A1A1A' : '#6B7280',
+              fontWeight: currentStep === 2 ? 600 : 500
+            }}>
+              Packaging Options
+            </span>
+          </div>
+          
+          {/* Connector 2-3 */}
+          <div style={{ 
+            ...stepConnectorStyle, 
+            backgroundColor: '#1A1A1A'
+          }} />
+          
+          {/* Step 3 */}
+          <div style={stepContainerStyle}>
+            <div style={{ 
+              ...stepCircleStyle, 
+              backgroundColor: currentStep >= 3 ? '#FF8C42' : '#E5E7EB',
+              color: currentStep >= 3 ? 'white' : '#6B7280'
+            }}>
+              3
+            </div>
+            <span style={{ 
+              ...stepLabelStyle, 
+              color: currentStep >= 3 ? '#1A1A1A' : '#6B7280',
+              fontWeight: currentStep === 3 ? 600 : 500
+            }}>
+              Payment
+            </span>
           </div>
         </div>
       </div>
 
-      <main className="flex-1 container mx-auto px-4 py-4 sm:py-6 lg:py-8">
-        {/* Back Button */}
-        <div className="mb-4 sm:mb-6">
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/cart")}
-            className="gap-2 hover:bg-primary/10 h-10 text-sm"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="hidden xs:inline">Back to Cart</span>
-            <span className="xs:hidden">Back</span>
-          </Button>
-        </div>
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '32px' }}>
+          {/* Left Column - Delivery Information Form */}
+          <div>
+            {/* Breadcrumb */}
+            <div 
+              style={{ marginBottom: '24px', cursor: 'pointer' }}
+              onClick={() => navigate("/cart")}
+            >
+              <span style={{ color: '#1A1A1A', fontSize: '14px' }}>← Back to cart</span>
+            </div>
 
-        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
-          {/* Main Form */}
-          <div className="lg:col-span-2 order-2 lg:order-1">
             {/* Step 1: Delivery Information */}
             {currentStep === 1 && (
-              <div className="bg-card rounded-lg border p-4 sm:p-6">
-                <h2 className="text-xl sm:text-2xl mb-4 sm:mb-6">Delivery Information</h2>
+              <div style={formContainerStyle}>
+                <h2 style={sectionHeadingStyle}>
+                  Delivery Information
+                </h2>
 
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div>
-                      <Label htmlFor="name" className="text-sm">Full Name *</Label>
-                      <Input
-                        id="name"
-                        value={deliveryInfo.name}
-                        onChange={(e) =>
-                          setDeliveryInfo({ ...deliveryInfo, name: e.target.value })
-                        }
-                        placeholder="John Doe"
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email" className="text-sm">Email *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={deliveryInfo.email}
-                        onChange={(e) =>
-                          setDeliveryInfo({ ...deliveryInfo, email: e.target.value })
-                        }
-                        placeholder="john@example.com"
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                  {/* Full Name */}
                   <div>
-                    <Label htmlFor="phone" className="text-sm">Phone Number *</Label>
+                    <Label htmlFor="fullName" style={formLabelStyle}>Full Name</Label>
                     <Input
-                      id="phone"
-                      type="tel"
-                      value={deliveryInfo.phone}
+                      id="fullName"
+                      value={deliveryInfo.fullName}
                       onChange={(e) =>
-                        setDeliveryInfo({ ...deliveryInfo, phone: e.target.value })
+                        setDeliveryInfo({ ...deliveryInfo, fullName: e.target.value })
                       }
-                      placeholder="+1 (555) 123-4567"
-                      className="mt-1"
+                      placeholder="Enter recipient name"
+                      style={inputStyle}
                     />
                   </div>
 
+                  {/* Phone Number - Two side by side */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div>
+                      <Label htmlFor="phone1" style={formLabelStyle}>Phone Number</Label>
+                      <Input
+                        id="phone1"
+                        value={deliveryInfo.phone}
+                        onChange={(e) =>
+                          setDeliveryInfo({ ...deliveryInfo, phone: e.target.value })
+                        }
+                        placeholder="Enter phone number"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="phone2" style={formLabelStyle}>Phone Number</Label>
+                      <Input
+                        id="phone2"
+                        placeholder="Enter phone number"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Delivery Address */}
                   <div>
-                    <Label htmlFor="address" className="text-sm">Street Address *</Label>
-                    <Input
+                    <Label htmlFor="address" style={formLabelStyle}>Delivery Address</Label>
+                    <Textarea
                       id="address"
                       value={deliveryInfo.address}
                       onChange={(e) =>
                         setDeliveryInfo({ ...deliveryInfo, address: e.target.value })
                       }
-                      placeholder="123 Main St, Apt 4B"
-                      className="mt-1"
+                      placeholder="Enter address"
+                      style={textareaStyle}
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                  {/* City & State - Side by side */}
+                  <div style={twoColumnLayoutStyle}>
+                    {/* City */}
                     <div>
-                      <Label htmlFor="city" className="text-sm">City *</Label>
+                      <Label htmlFor="city" style={formLabelStyle}>City</Label>
                       <Input
                         id="city"
                         value={deliveryInfo.city}
                         onChange={(e) =>
                           setDeliveryInfo({ ...deliveryInfo, city: e.target.value })
                         }
-                        placeholder="New York"
-                        className="mt-1"
+                        placeholder="Enter city"
+                        style={inputStyle}
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="state" className="text-sm">State *</Label>
-                      <Input
-                        id="state"
-                        value={deliveryInfo.state}
-                        onChange={(e) =>
-                          setDeliveryInfo({ ...deliveryInfo, state: e.target.value })
-                        }
-                        placeholder="NY"
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="zipCode" className="text-sm">ZIP Code *</Label>
-                      <Input
-                        id="zipCode"
-                        value={deliveryInfo.zipCode}
-                        onChange={(e) =>
-                          setDeliveryInfo({ ...deliveryInfo, zipCode: e.target.value })
-                        }
-                        placeholder="10001"
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
 
-                  <Separator className="my-4 sm:my-6" />
-
-                  {/* Send to Recipient Option */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-muted/50 rounded-lg gap-3 sm:gap-0">
+                    {/* State - Two adjacent smaller inputs */}
                     <div>
-                      <Label htmlFor="recipient-toggle" className="cursor-pointer text-sm">
-                        Send directly to recipient
-                      </Label>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        We'll deliver the gift directly to your recipient
-                      </p>
-                    </div>
-                    <Switch
-                      id="recipient-toggle"
-                      checked={sendToRecipient}
-                      onCheckedChange={setSendToRecipient}
-                    />
-                  </div>
-
-                  {sendToRecipient && (
-                    <div className="space-y-3 sm:space-y-4 p-3 sm:p-4 border rounded-lg">
-                      <h3 className="font-medium text-sm sm:text-base">Recipient Information</h3>
-                      <div>
-                        <Label htmlFor="recipient-name" className="text-sm">Recipient Name *</Label>
+                      <Label style={formLabelStyle}>State</Label>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                         <Input
-                          id="recipient-name"
-                          value={recipientInfo.name}
+                          value={deliveryInfo.state}
                           onChange={(e) =>
-                            setRecipientInfo({ ...recipientInfo, name: e.target.value })
+                            setDeliveryInfo({ ...deliveryInfo, state: e.target.value })
                           }
-                          placeholder="Jane Smith"
-                          className="mt-1"
+                          placeholder="Enter state"
+                          style={inputStyle}
                         />
-                      </div>
-                      <div>
-                        <Label htmlFor="recipient-phone" className="text-sm">Recipient Phone</Label>
                         <Input
-                          id="recipient-phone"
-                          type="tel"
-                          value={recipientInfo.phone}
+                          value={deliveryInfo.state2}
                           onChange={(e) =>
-                            setRecipientInfo({ ...recipientInfo, phone: e.target.value })
+                            setDeliveryInfo({ ...deliveryInfo, state2: e.target.value })
                           }
-                          placeholder="+1 (555) 987-6543"
-                          className="mt-1"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="recipient-note" className="text-sm">Delivery Note</Label>
-                        <Textarea
-                          id="recipient-note"
-                          value={recipientInfo.note}
-                          onChange={(e) =>
-                            setRecipientInfo({ ...recipientInfo, note: e.target.value })
-                          }
-                          placeholder="Special delivery instructions..."
-                          rows={3}
-                          className="mt-1"
+                          placeholder="Enter state"
+                          style={inputStyle}
                         />
                       </div>
                     </div>
-                  )}
-                </div>
-
-                <div className="mt-4 sm:mt-6 flex justify-end">
-                  <Button size="lg" onClick={handleNextStep} className="w-full sm:w-auto h-12">
-                    Continue to Gift Options
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Gift Options */}
-            {currentStep === 2 && (
-              <div className="bg-card rounded-lg border p-4 sm:p-6">
-                <h2 className="text-xl sm:text-2xl mb-4 sm:mb-6">Gift Options</h2>
-
-                <div className="space-y-4 sm:space-y-6">
-                  {/* Message Card */}
-                  <div className="p-3 sm:p-4 border rounded-lg">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-0">
-                      <div className="flex items-center gap-3">
-                        <Gift className="h-5 w-5 text-primary flex-shrink-0" />
-                        <div>
-                          <Label htmlFor="message-card" className="cursor-pointer text-sm sm:text-base">
-                            Add a personalized message card
-                          </Label>
-                          <p className="text-xs sm:text-sm text-muted-foreground">FREE</p>
-                        </div>
-                      </div>
-                      <Switch
-                        id="message-card"
-                        checked={giftOptions.addMessageCard}
-                        onCheckedChange={(checked) =>
-                          setGiftOptions({ ...giftOptions, addMessageCard: checked })
-                        }
-                      />
-                    </div>
-
-                    {giftOptions.addMessageCard && (
-                      <div>
-                        <Label htmlFor="message" className="text-sm">Your Message</Label>
-                        <Textarea
-                          id="message"
-                          value={giftOptions.message}
-                          onChange={(e) =>
-                            setGiftOptions({ ...giftOptions, message: e.target.value })
-                          }
-                          placeholder="Write your heartfelt message here... (max 200 characters)"
-                          rows={4}
-                          maxLength={200}
-                          className="mt-1"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {giftOptions.message.length}/200 characters
-                        </p>
-                      </div>
-                    )}
                   </div>
 
-                  {/* Gift Wrap */}
-                  <div className="p-3 sm:p-4 border rounded-lg">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
-                      <div className="flex items-center gap-3">
-                        <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-md bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
-                          <Gift className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                  <Separator style={{ borderColor: '#E5E7EB' }} />
+
+                  {/* Send Directly to Receiver Toggle */}
+                  <div style={{ ...toggleSectionStyle, cursor: 'pointer' }}>
+                    <div style={toggleHeaderStyle}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ 
+                          width: '40px', 
+                          height: '40px', 
+                          borderRadius: '8px', 
+                          backgroundColor: '#FFF4E6',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <Truck size={20} style={{ color: '#FF8C42' }} />
                         </div>
                         <div>
-                          <Label htmlFor="gift-wrap" className="cursor-pointer text-sm sm:text-base">
-                            Premium Gift Wrapping
+                          <Label htmlFor="recipient-toggle" style={toggleLabelStyle}>
+                            Send Directly to Receiver
                           </Label>
-                          <p className="text-xs sm:text-sm text-muted-foreground">
-                            Beautiful wrap with ribbon - $4.99
+                          <p style={toggleSubtextStyle}>
+                            We'll ship it straight to their door
                           </p>
                         </div>
                       </div>
                       <Switch
-                        id="gift-wrap"
-                        checked={giftOptions.giftWrap}
-                        onCheckedChange={(checked) =>
-                          setGiftOptions({ ...giftOptions, giftWrap: checked })
-                        }
+                        id="recipient-toggle"
+                        checked={sendToRecipient}
+                        onCheckedChange={setSendToRecipient}
                       />
                     </div>
-                  </div>
 
-                  {/* Delivery Date */}
-                  <div className="p-3 sm:p-4 border rounded-lg">
-                    <h3 className="font-medium mb-3 sm:mb-4 text-sm sm:text-base">Delivery Schedule</h3>
-                    
-                    <RadioGroup
-                      value={giftOptions.deliverASAP ? "asap" : "scheduled"}
-                      onValueChange={(value) =>
-                        setGiftOptions({
-                          ...giftOptions,
-                          deliverASAP: value === "asap",
-                        })
-                      }
-                    >
-                      <div className="flex items-center space-x-2 mb-2 sm:mb-3">
-                        <RadioGroupItem value="asap" id="asap" />
-                        <Label htmlFor="asap" className="cursor-pointer text-sm">
-                          Deliver ASAP (3-5 business days)
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="scheduled" id="scheduled" />
-                        <Label htmlFor="scheduled" className="cursor-pointer text-sm">
-                          Schedule delivery date
-                        </Label>
-                      </div>
-                    </RadioGroup>
+                    {/* Conditional Fields */}
+                    {sendToRecipient && (
+                      <div style={conditionalFieldsStyle}>
+                        {/* Recipient Name */}
+                        <div>
+                          <Label htmlFor="recipientName" style={formLabelStyle}>Recipient Name</Label>
+                          <Input
+                            id="recipientName"
+                            value={recipientInfo.name}
+                            onChange={(e) =>
+                              setRecipientInfo({ ...recipientInfo, name: e.target.value })
+                            }
+                            placeholder="Enter recipient name"
+                            style={inputStyle}
+                          />
+                        </div>
 
-                    {!giftOptions.deliverASAP && (
-                      <div className="mt-3 sm:mt-4">
-                        <Label className="text-sm">Select Delivery Date</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full justify-start text-left mt-1 h-10 text-sm",
-                                !giftOptions.deliveryDate && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {giftOptions.deliveryDate ? (
-                                formatDate(giftOptions.deliveryDate)
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={giftOptions.deliveryDate}
-                              onSelect={(date) =>
-                                setGiftOptions({ ...giftOptions, deliveryDate: date })
+                        {/* Recipient Phone */}
+                        <div>
+                          <Label htmlFor="recipientPhone" style={formLabelStyle}>Phone Number</Label>
+                          <Input
+                            id="recipientPhone"
+                            value={recipientInfo.phone}
+                            onChange={(e) =>
+                              setRecipientInfo({ ...recipientInfo, phone: e.target.value })
+                            }
+                            placeholder="Enter phone number"
+                            style={inputStyle}
+                          />
+                        </div>
+
+                        {/* Recipient Address */}
+                        <div>
+                          <Label htmlFor="recipientAddress" style={formLabelStyle}>Delivery Address</Label>
+                          <Textarea
+                            id="recipientAddress"
+                            value={recipientInfo.address}
+                            onChange={(e) =>
+                              setRecipientInfo({ ...recipientInfo, address: e.target.value })
+                            }
+                            placeholder="Enter address"
+                            style={textareaStyle}
+                          />
+                        </div>
+
+                        {/* Schedule Delivery Date */}
+                        <div>
+                          <Label style={formLabelStyle}>Schedule Delivery Date (Optional)</Label>
+                          <div style={{ position: 'relative' }}>
+                            <Input
+                              type="date"
+                              value={recipientInfo.deliveryDate}
+                              onChange={(e) =>
+                                setRecipientInfo({ ...recipientInfo, deliveryDate: e.target.value })
                               }
-                              disabled={(date) =>
-                                date < new Date() ||
-                                date < new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-                              }
-                              initialFocus
+                              placeholder="Choose a delivery date"
+                              style={{ ...inputStyle, paddingRight: '40px' }}
                             />
-                          </PopoverContent>
-                        </Popover>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Minimum 3 days from today
-                        </p>
+                            <CalendarIcon 
+                              size={18} 
+                              style={{ 
+                                position: 'absolute', 
+                                right: '12px', 
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                color: '#FF8C42',
+                                pointerEvents: 'none'
+                              }} 
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
-                </div>
 
-                <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-between gap-3 sm:gap-0">
-                  <Button variant="outline" onClick={handlePreviousStep} className="order-2 sm:order-1 h-12">
-                    Back
-                  </Button>
-                  <Button size="lg" onClick={handleNextStep} className="order-1 sm:order-2 h-12">
-                    Continue to Payment
-                  </Button>
+                  {/* Continue Button */}
+                  <button style={continueButtonStyle} onClick={handleNextStep}>
+                    Continue
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Packaging Options */}
+            {currentStep === 2 && (
+              <div style={formContainerStyle}>
+                <h2 style={sectionHeadingStyle}>
+                  Packaging Options
+                </h2>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                  {/* Packaging Option Dropdown */}
+                  <div style={{ position: 'relative' }}>
+                    <Label style={formLabelStyle}>Packaging Option</Label>
+                    <div 
+                      onClick={() => setIsPackagingDropdownOpen(!isPackagingDropdownOpen)}
+                      style={{
+                        ...inputStyle,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        paddingRight: '12px'
+                      }}
+                    >
+                      <span style={{ color: packagingOption ? '#1A1A1A' : '#9CA3AF' }}>
+                        {packagingOption || "Select packaging"}
+                      </span>
+                      <ChevronDown 
+                        size={18} 
+                        style={{ 
+                          color: '#6B7280',
+                          transform: isPackagingDropdownOpen ? 'rotate(180deg)' : 'rotate(0)',
+                          transition: 'transform 0.2s'
+                        }} 
+                      />
+                    </div>
+                    
+                    {/* Dropdown Menu */}
+                    {isPackagingDropdownOpen && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        marginTop: '4px',
+                        backgroundColor: 'white',
+                        borderRadius: '8px',
+                        border: '1px solid #E5E7EB',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                        zIndex: 50,
+                        overflow: 'hidden'
+                      }}>
+                        <div 
+                          onClick={() => {
+                            setPackagingOption("Standard Pack (free)");
+                            setIsPackagingDropdownOpen(false);
+                          }}
+                          style={{
+                            padding: '12px 16px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontFamily: 'Poppins',
+                            fontWeight: 400,
+                            color: '#1A1A1A',
+                            transition: 'background-color 0.15s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FDF6F3'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                        >
+                          Standard Pack (free)
+                        </div>
+                        <div 
+                          onClick={() => {
+                            setPackagingOption("Premium Gift Box (+ ₦5000)");
+                            setIsPackagingDropdownOpen(false);
+                          }}
+                          style={{
+                            padding: '12px 16px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontFamily: 'Poppins',
+                            fontWeight: 400,
+                            color: '#1A1A1A',
+                            transition: 'background-color 0.15s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FDF6F3'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                        >
+                          Premium Gift Box (+ ₦5000)
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <Separator style={{ borderColor: '#E5E7EB' }} />
+
+                  {/* Add a Custom Message Toggle */}
+                  <div style={{ ...toggleSectionStyle, cursor: 'pointer' }}>
+                    <div style={toggleHeaderStyle}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ 
+                          width: '40px', 
+                          height: '40px', 
+                          borderRadius: '8px', 
+                          backgroundColor: '#FFF4E6',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <Pencil size={20} style={{ color: '#FF8C42' }} />
+                        </div>
+                        <div>
+                          <Label htmlFor="custom-message-toggle" style={toggleLabelStyle}>
+                            Add a custom message
+                          </Label>
+                          <p style={toggleSubtextStyle}>
+                            Include a heartfelt message with your gift
+                          </p>
+                        </div>
+                      </div>
+                      <Switch
+                        id="custom-message-toggle"
+                        checked={addCustomMessage}
+                        onCheckedChange={setAddCustomMessage}
+                      />
+                    </div>
+
+                    {/* Conditional Message Field */}
+                    {addCustomMessage && (
+                      <div style={conditionalFieldsStyle}>
+                        <Textarea
+                          value={customMessage}
+                          onChange={(e) => setCustomMessage(e.target.value)}
+                          placeholder="Write your message here"
+                          style={{
+                            ...textareaStyle,
+                            height: '100px',
+                            backgroundColor: '#FBFBFB',
+                            border: '1px solid #E5E7EB'
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Personalize Gift Toggle */}
+                  <div style={{ ...toggleSectionStyle, cursor: 'pointer' }}>
+                    <div style={toggleHeaderStyle}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ 
+                          width: '40px', 
+                          height: '40px', 
+                          borderRadius: '8px', 
+                          backgroundColor: '#FFF4E6',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <Upload size={20} style={{ color: '#FF8C42' }} />
+                        </div>
+                        <div>
+                          <Label htmlFor="personalize-gift-toggle" style={toggleLabelStyle}>
+                            Personalize Gift
+                          </Label>
+                          <p style={toggleSubtextStyle}>
+                            Add custom text or upload an image
+                          </p>
+                        </div>
+                      </div>
+                      <Switch
+                        id="personalize-gift-toggle"
+                        checked={personalizeGift}
+                        onCheckedChange={setPersonalizeGift}
+                      />
+                    </div>
+
+                    {/* Conditional Personalization Fields */}
+                    {personalizeGift && (
+                      <div style={conditionalFieldsStyle}>
+                        {/* Custom Text Field */}
+                        <div>
+                          <Label htmlFor="customText" style={formLabelStyle}>Custom Text</Label>
+                          <Input
+                            id="customText"
+                            value={customText}
+                            onChange={(e) => setCustomText(e.target.value)}
+                            placeholder="Enter name, initials, or message"
+                            style={inputStyle}
+                          />
+                        </div>
+
+                        {/* Upload Area */}
+                        <div>
+                          <Label style={formLabelStyle}>Upload Image</Label>
+                          <div 
+                            onClick={() => document.getElementById('image-upload')?.click()}
+                            style={{
+                              width: '100%',
+                              padding: '32px',
+                              borderRadius: '8px',
+                              border: '2px dashed #E5E7EB',
+                              backgroundColor: '#FAFAFA',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: '12px',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.borderColor = '#FF8C42';
+                              e.currentTarget.style.backgroundColor = '#FFF4E6';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor = '#E5E7EB';
+                              e.currentTarget.style.backgroundColor = '#FAFAFA';
+                            }}
+                          >
+                            <Upload size={32} style={{ color: '#FF8C42' }} />
+                            <span style={{ 
+                              fontSize: '14px', 
+                              fontFamily: 'Poppins',
+                              fontWeight: 400,
+                              color: '#1A1A1A'
+                            }}>
+                              Click to upload image
+                            </span>
+                            <input
+                              type="file"
+                              id="image-upload"
+                              accept="image/*"
+                              style={{ display: 'none' }}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) setUploadedImage(file);
+                              }}
+                            />
+                          </div>
+                          {uploadedImage && (
+                            <p style={{ 
+                              marginTop: '8px', 
+                              fontSize: '13px', 
+                              color: '#059669',
+                              fontFamily: 'Poppins',
+                              fontWeight: 400
+                            }}>
+                              ✓ {uploadedImage.name}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Continue Button */}
+                  <button style={continueButtonStyle} onClick={handleNextStep}>
+                    Continue
+                  </button>
                 </div>
               </div>
             )}
 
             {/* Step 3: Payment */}
             {currentStep === 3 && (
-              <div className="bg-card rounded-lg border p-4 sm:p-6">
-                <h2 className="text-xl sm:text-2xl mb-4 sm:mb-6">Payment Method</h2>
-
-                {/* Authentication Check */}
-                {!user ? (
-                  <div className="text-center py-6 sm:py-8">
-                    <p className="text-muted-foreground mb-4 text-sm sm:text-base">You must be logged in to complete your purchase</p>
-                    <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                      <Button onClick={() => navigate('/login')} className="h-10">
-                        Log In
-                      </Button>
-                      <Button variant="outline" onClick={() => navigate('/signup')} className="h-10">
-                        Sign Up
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4 sm:space-y-6">
-                    {/* Order Information */}
-                    <div className="p-3 sm:p-4 bg-muted rounded-lg">
-                      <h3 className="font-medium mb-2 text-sm sm:text-base">Order Details</h3>
-                      <div className="text-xs sm:text-sm space-y-1">
-                        <div className="flex justify-between">
-                          <span>Items:</span>
-                          <span>{items.length} {items.length === 1 ? 'item' : 'items'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Delivery to:</span>
-                          <span>{deliveryInfo.address}, {deliveryInfo.city}</span>
-                        </div>
-                        {sendToRecipient && (
-                          <div className="flex justify-between">
-                            <span>Recipient:</span>
-                            <span>{recipientInfo.name}</span>
-                          </div>
-                        )}
+              <div>
+                {/* Payment Method Container */}
+                <div style={{
+                  width: '100%',
+                  maxWidth: '760px',
+                  backgroundColor: '#F6F6F6',
+                  borderRadius: '24px',
+                  padding: '24px',
+                  marginBottom: '24px'
+                }}>
+                  <h2 style={sectionHeadingStyle}>
+                    Payment Method
+                  </h2>
+                  
+                  {/* Payment Options */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* Option 1: Credit Card */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '16px',
+                      borderRadius: '12px',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer'
+                    }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '8px',
+                        backgroundColor: '#FFF4E6',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <CreditCard size={20} style={{ color: '#FF8C42' }} />
                       </div>
+                      <span style={{
+                        fontFamily: 'Poppins',
+                        fontWeight: 500,
+                        fontSize: '16px',
+                        color: '#1A1A1A'
+                      }}>
+                        Add a custom message
+                      </span>
                     </div>
 
-                    {/* Paystack Payment Component */}
-                    <PaystackPayment
-                      amount={total}
-                      currency="NGN"
-                      onPaymentSuccess={handlePaymentSuccess}
-                    />
-
-                    {/* Back Button */}
-                    <div className="flex justify-start">
-                      <Button variant="outline" onClick={handlePreviousStep} className="h-10">
-                        Back
-                      </Button>
+                    {/* Option 2: Delivery Truck */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '16px',
+                      borderRadius: '12px',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer'
+                    }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '8px',
+                        backgroundColor: '#FFF4E6',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <Truck size={20} style={{ color: '#FF8C42' }} />
+                      </div>
+                      <span style={{
+                        fontFamily: 'Poppins',
+                        fontWeight: 500,
+                        fontSize: '16px',
+                        color: '#1A1A1A'
+                      }}>
+                        Add a custom message
+                      </span>
                     </div>
                   </div>
-                )}
+
+                  {/* Place Order Button */}
+                  <PlaceOrderButton 
+                    amount={total}
+                    onSuccess={handlePaymentSuccess}
+                  />
+                </div>
               </div>
             )}
           </div>
 
-          {/* Order Summary Sidebar */}
-          <div className="lg:col-span-1 order-1 lg:order-2">
-            <div className="bg-card rounded-lg border p-4 sm:p-6 sticky top-20 lg:top-24">
-              <h3 className="font-semibold mb-3 sm:mb-4 text-base sm:text-lg">Order Summary</h3>
+          {/* Right Column - Order Summary */}
+          <div>
+            <div style={orderSummaryStyle}>
+              <h3 style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 600, marginBottom: '20px' }}>
+                Order Summary
+              </h3>
 
-              {/* Cart Items */}
-              <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
+              {/* Product Review Cards */}
+              <div style={{ marginBottom: '20px' }}>
                 {items.map((item) => (
-                  <div key={item.id} className="flex gap-2 sm:gap-3">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden bg-muted flex-shrink-0">
+                  <div key={item.id} style={productCardStyle}>
+                    <div style={productImageStyle}>
                       <ImageWithFallback
                         src={item.image}
                         alt={item.title}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs sm:text-sm line-clamp-2">{item.title}</p>
-                      <p className="text-xs sm:text-sm text-muted-foreground">
-                        Qty: {item.quantity}
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontSize: '14px', fontWeight: 600, color: '#1A1A1A', marginBottom: '4px' }}>
+                        {item.title}
                       </p>
-                      <p className="text-xs sm:text-sm font-medium">
-                        ${(item.price * item.quantity).toFixed(2)}
+                      <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '4px' }}>
+                        {item.category}
+                      </p>
+                      <p style={{ fontSize: '14px', fontWeight: 600, color: '#717182', textAlign: 'right' }}>
+                        {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <Separator className="my-3 sm:my-4" />
+              <Separator style={{ borderColor: '#E5E7EB', margin: '16px 0' }} />
 
-              {/* Price Breakdown */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+              {/* Financial Breakdown */}
+              <div>
+                <div style={priceRowStyle}>
+                  <span style={{ color: '#6B7280', fontFamily: 'Poppins', fontWeight: 400 }}>Subtotal</span>
+                  <span style={{ fontWeight: 600, color: '#1A1A1A' }}>{formatPrice(subtotal)}</span>
                 </div>
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-muted-foreground">Delivery Fee</span>
-                  <span>{deliveryFee === 0 ? "FREE" : `${deliveryFee.toFixed(2)}`}</span>
+                <div style={priceRowStyle}>
+                  <span style={{ color: '#6B7280', fontFamily: 'Poppins', fontWeight: 400 }}>Delivery Fee</span>
+                  <span style={{ fontWeight: 600, color: '#1A1A1A' }}>{formatPrice(deliveryFee)}</span>
                 </div>
-                {giftOptions.giftWrap && (
-                  <div className="flex justify-between text-xs sm:text-sm">
-                    <span className="text-muted-foreground">Gift Wrapping</span>
-                    <span>${giftWrapFee.toFixed(2)}</span>
-                  </div>
-                )}
-
-                <Separator className="my-2" />
-
-                <div className="flex justify-between font-semibold text-sm sm:text-base">
-                  <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                <Separator style={{ borderColor: '#E5E7EB', margin: '12px 0' }} />
+                <div style={{ ...priceRowStyle, fontSize: '16px' }}>
+                  <span style={{ fontWeight: 700, color: '#1A1A1A' }}>Total</span>
+                  <span style={{ fontWeight: 700, color: '#FF8C42' }}>{formatPrice(total)}</span>
                 </div>
               </div>
-
-              {/* Selected Options */}
-              {currentStep >= 2 && (
-                <>
-                  <Separator className="my-3 sm:my-4" />
-                  <div className="text-xs sm:text-sm space-y-2">
-                    <p className="font-medium mb-2 text-xs sm:text-sm">Selected Options:</p>
-                    {giftOptions.addMessageCard && (
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Check className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-                        <span>Message Card</span>
-                      </div>
-                    )}
-                    {giftOptions.giftWrap && (
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Check className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-                        <span>Gift Wrapping</span>
-                      </div>
-                    )}
-                    {!giftOptions.deliverASAP && giftOptions.deliveryDate && (
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Check className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-                        <span>
-                          Scheduled: {formatShortDate(giftOptions.deliveryDate)}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
             </div>
           </div>
         </div>
@@ -682,4 +1289,4 @@ export function CheckoutPage() {
   );
 }
 
-
+export default CheckoutPage;
