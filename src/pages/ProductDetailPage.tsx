@@ -866,9 +866,12 @@ export function ProductDetailPage() {
                 minWidth: '140px',
                 gap: '8px',
                 fontSize: '14px',
-                fontWeight: '500'
+                fontWeight: '500',
+                paddingLeft: '20px',
+                paddingRight: '20px',
               }}
             >
+              <ShoppingCart className="h-4 w-4" style={{ color: 'white' }} />
               Proceed to Checkout
               <ArrowRight className="h-4 w-4" />
             </button>
@@ -983,120 +986,125 @@ export function ProductDetailPage() {
           </div>
         </div>
 
-        {/* 10. Comments List - #F6F6F6 background */}
+        {/* 10. Comments List - #F6F6F6 background with rounded corners */}
         <div className="w-full px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 
-              className="font-semibold"
-              style={{ color: '#1A1A1A' }}
-            >
-              Comments
-            </h3>
-            <button
-              className="flex items-center gap-1 rounded-full px-4 h-8 text-sm transition-colors"
-              style={{ 
-                border: '1px solid #E5E7EB',
-                backgroundColor: 'white',
-                color: '#1A1A1A'
-              }}
-            >
-              Popularity
-              <ChevronDown className="h-4 w-4" />
-            </button>
-          </div>
+          <div 
+            className="rounded-2xl w-full overflow-hidden"
+            style={{ backgroundColor: '#F6F6F6' }}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4">
+              <h3 
+                className="font-semibold"
+                style={{ color: '#1A1A1A' }}
+              >
+                Comments
+              </h3>
+              <button
+                className="flex items-center gap-1 rounded-full px-4 h-8 text-sm transition-colors"
+                style={{ 
+                  border: '1px solid #E5E7EB',
+                  backgroundColor: 'white',
+                  color: '#1A1A1A'
+                }}
+              >
+                Popularity
+                <ChevronDown className="h-4 w-4" />
+              </button>
+            </div>
 
-          {/* Comment Items */}
-          <div className="-space-y-0">
-            {mockComments.map((comment) => {
-              const likeState = commentLikes[comment.id] || { likes: 40, liked: false, dislikes: 40, disliked: false };
-              return (
-                <div
-                  className="rounded-xl p-4 w-full"
-                  style={{ backgroundColor: '#F6F6F6' }}
-                >
-                  <div className="flex items-start gap-3 mb-2">
-                    <div 
-                      className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: '#E5E7EB' }}
-                    >
-                      <span 
-                        className="font-medium"
-                        style={{ color: '#6B7280' }}
+            {/* Comment Items */}
+            <div className="-space-y-0">
+              {mockComments.map((comment) => {
+                const likeState = commentLikes[comment.id] || { likes: 40, liked: false, dislikes: 40, disliked: false };
+                return (
+                  <div
+                    key={comment.id}
+                    className="p-4 w-full"
+                    style={{ backgroundColor: '#F6F6F6' }}
+                  >
+                    <div className="flex items-start gap-3 mb-2">
+                      <div 
+                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: '#E5E7EB' }}
                       >
-                        {comment.name.charAt(0)}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
                         <span 
                           className="font-medium"
-                          style={{ color: '#1A1A1A' }}
+                          style={{ color: '#6B7280' }}
                         >
-                          {comment.name}
-                        </span>
-                        <span 
-                          className="text-xs"
-                          style={{ color: '#717182' }}
-                        >
-                          {comment.date}
+                          {comment.name.charAt(0)}
                         </span>
                       </div>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className="h-3 w-3"
-                            style={{ 
-                              color: '#FF8C42',
-                              fill: i < comment.rating ? '#FF8C42' : 'none'
-                            }}
-                          />
-                        ))}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span 
+                            className="font-medium"
+                            style={{ color: '#1A1A1A' }}
+                          >
+                            {comment.name}
+                          </span>
+                          <span 
+                            className="text-xs"
+                            style={{ color: '#717182' }}
+                          >
+                            {comment.date}
+                          </span>
+                        </div>
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className="h-3 w-3"
+                              style={{ 
+                                color: '#FF8C42',
+                                fill: i < comment.rating ? '#FF8C42' : 'none'
+                              }}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <p 
-                    className="text-sm mb-3"
-                    style={{ color: '#717182' }}
-                  >
-                    {comment.text}
-                  </p>
-                  {/* Thumbs up/down - Bottom Right */}
-                  <div className="flex items-center gap-4 justify-end">
-                    <button 
-                      className="flex items-center gap-1"
-                      style={{ 
-                        color: likeState.liked ? '#FF8C42' : '#6B7280',
-                        fill: likeState.liked ? '#FF8C42' : 'none'
-                      }}
-                      onClick={() => handleLikeToggle(comment.id)}
+                    <p 
+                      className="text-sm mb-3"
+                      style={{ color: '#717182' }}
                     >
-                      <ThumbsUp 
-                      className="h-4 w-4"
-                      color={likeState.liked ? '#FF8C42' : '#FF8C42'}
-                      fill={likeState.liked ? '#FF8C42' : 'none'}
-                    />
-                      <span className="text-sm">{likeState.likes}</span>
-                    </button>
-                    <button 
-                      className="flex items-center gap-1"
-                      style={{ 
-                        color: likeState.disliked ? '#FF8C42' : '#6B7280',
-                        fill: likeState.disliked ? '#FF8C42' : 'none'
-                      }}
-                      onClick={() => handleDislikeToggle(comment.id)}
-                    >
-                      <ThumbsDown 
-                      className="h-4 w-4"
-                      color={likeState.disliked ? '#FF8C42' : '#FF8C42'}
-                      fill={likeState.disliked ? '#FF8C42' : 'none'}
-                    />
-                      <span className="text-sm">{likeState.dislikes}</span>
-                    </button>
+                      {comment.text}
+                    </p>
+                    {/* Thumbs up/down */}
+                    <div className="flex items-center gap-4 justify-end">
+                      <button 
+                        className="flex items-center gap-1"
+                        style={{ 
+                          color: '#FF8C42',
+                        }}
+                        onClick={() => handleLikeToggle(comment.id)}
+                      >
+                        <ThumbsUp 
+                          className="h-4 w-4"
+                          strokeWidth={1.5}
+                          fill={likeState.liked ? '#FF8C42' : 'none'}
+                        />
+                        <span className="text-sm">{likeState.likes}</span>
+                      </button>
+                      <button 
+                        className="flex items-center gap-1"
+                        style={{ 
+                          color: '#FF8C42',
+                        }}
+                        onClick={() => handleDislikeToggle(comment.id)}
+                      >
+                        <ThumbsDown 
+                          className="h-4 w-4"
+                          strokeWidth={1.5}
+                          fill={likeState.disliked ? '#FF8C42' : 'none'}
+                        />
+                        <span className="text-sm">{likeState.dislikes}</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
 
