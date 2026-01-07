@@ -1,9 +1,19 @@
+import { useState, FormEvent } from "react";
 import { Button } from "./ui/button";
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Sparkles } from "lucide-react";
+import { ArrowRight, Search, Sparkles } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Hero() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
     <section 
       className="relative w-full max-w-full overflow-hidden"
@@ -69,6 +79,49 @@ export function Hero() {
           >
             From birthdays to weddings, surprise moments to 'just because', we've got something special for everyone.
           </p>
+          
+          {/* Search Bar */}
+          <form 
+            onSubmit={handleSearch}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              position: 'relative',
+              width: '100%',
+              maxWidth: '400px',
+              marginBottom: '20px',
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Search for the perfect gift..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '12px 44px 12px 20px',
+                borderRadius: '24px',
+                border: 'none',
+                fontSize: '14px',
+                outline: 'none',
+                fontFamily: 'Poppins, sans-serif',
+              }}
+            />
+            <button 
+              type="submit"
+              style={{
+                position: 'absolute',
+                right: '16px',
+                cursor: 'pointer',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                display: 'flex',
+              }}
+            >
+              <Search size={20} style={{ color: '#6B7280' }} />
+            </button>
+          </form>
           
           {/* Shop Gifts Button */}
           <Button 

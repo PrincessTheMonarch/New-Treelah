@@ -1,4 +1,3 @@
-import { Slider } from "./ui/slider";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
 import { Separator } from "./ui/separator";
@@ -55,44 +54,64 @@ export function FilterSidebar({
   const availabilityOptions = ["In Stock", "Pre-Order", "Limited Stock"];
   const deliveryTimeOptions = ["Same Day", "Next Day", "2-3 Days", "1 Week"];
 
+  // Common filter item style
+  const filterItemStyle = {
+    fontFamily: 'Poppins',
+    fontWeight: 400,
+    fontStyle: 'normal',
+    fontSize: '14px',
+    lineHeight: '160%',
+    letterSpacing: '0%',
+    verticalAlign: 'middle',
+    color: '#0A0A0A',
+  };
+
+  // Header label style
+  const headerLabelStyle = {
+    color: '#717182',
+  };
+
   return (
-    <div className="space-y-4 sm:space-y-6 pr-4 sm:pr-6">
+    <div style={{ paddingRight: '24px' }}>
       <div>
-        <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Filters</h3>
+        <h3 style={{
+          fontSize: '18px',
+          fontWeight: 600,
+          marginBottom: '16px',
+          color: '#1A1A1A'
+        }}>Filters</h3>
       </div>
 
-      {/* Price Range */}
-      <div>
-        <Label className="mb-2 sm:mb-3 block text-sm sm:text-base">Price Range</Label>
-        <Slider
-          value={priceRange}
-          onValueChange={onPriceChange}
-          max={500}
-          step={10}
-          className="mb-2 sm:mb-3"
-        />
-        <div className="flex justify-between text-xs sm:text-sm text-muted-foreground">
-          <span>${priceRange[0]}</span>
-          <span>${priceRange[1]}</span>
-        </div>
-      </div>
-
-      <Separator />
-
-      {/* Categories */}
-      <div>
-        <Label className="mb-2 sm:mb-3 block text-sm sm:text-base">Category</Label>
-        <div className="space-y-1 sm:space-y-2">
+      {/* Item Type (formerly Category) */}
+      <div style={{ marginBottom: '24px' }}>
+        <Label style={{
+          display: 'block',
+          marginBottom: '12px',
+          fontSize: '14px',
+          fontWeight: 500,
+          ...headerLabelStyle
+        }}>Item Type</Label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {categories.map((category) => (
-            <div key={category} className="flex items-center space-x-2">
+            <div key={category} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Checkbox
                 id={`category-${category}`}
                 checked={selectedCategories.includes(category)}
                 onCheckedChange={() => onCategoryChange(category)}
+                style={{
+                  backgroundColor: 'white',
+                  border: '1px solid #E5E7EB',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '4px',
+                }}
               />
               <label
                 htmlFor={`category-${category}`}
-                className="text-xs sm:text-sm cursor-pointer leading-tight"
+                style={{
+                  cursor: 'pointer',
+                  ...filterItemStyle
+                }}
               >
                 {category}
               </label>
@@ -101,22 +120,38 @@ export function FilterSidebar({
         </div>
       </div>
 
-      <Separator />
+      <Separator style={{ marginBottom: '24px' }} />
 
-      {/* Occasions */}
-      <div>
-        <Label className="mb-2 sm:mb-3 block text-sm sm:text-base">Occasion</Label>
-        <div className="space-y-1 sm:space-y-2">
+      {/* Occasion */}
+      <div style={{ marginBottom: '24px' }}>
+        <Label style={{
+          display: 'block',
+          marginBottom: '12px',
+          fontSize: '14px',
+          fontWeight: 500,
+          ...headerLabelStyle
+        }}>Occasion</Label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {occasions.map((occasion) => (
-            <div key={occasion} className="flex items-center space-x-2">
+            <div key={occasion} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Checkbox
                 id={`occasion-${occasion}`}
                 checked={selectedOccasions.includes(occasion)}
                 onCheckedChange={() => onOccasionChange(occasion)}
+                style={{
+                  backgroundColor: 'white',
+                  border: '1px solid #E5E7EB',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '4px',
+                }}
               />
               <label
                 htmlFor={`occasion-${occasion}`}
-                className="text-xs sm:text-sm cursor-pointer leading-tight"
+                style={{
+                  cursor: 'pointer',
+                  ...filterItemStyle
+                }}
               >
                 {occasion}
               </label>
@@ -125,49 +160,84 @@ export function FilterSidebar({
         </div>
       </div>
 
-      <Separator />
+      <Separator style={{ marginBottom: '24px' }} />
 
       {/* Rating */}
-      <div>
-        <Label className="mb-2 sm:mb-3 block text-sm sm:text-base">Rating</Label>
-        <div className="space-y-1 sm:space-y-2">
+      <div style={{ marginBottom: '24px' }}>
+        <Label style={{
+          display: 'block',
+          marginBottom: '12px',
+          fontSize: '14px',
+          fontWeight: 500,
+          ...headerLabelStyle
+        }}>Rating</Label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {[5, 4, 3, 2, 1].map((rating) => (
-            <div key={rating} className="flex items-center space-x-2">
+            <div key={rating} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Checkbox
                 id={`rating-${rating}`}
                 checked={selectedRatings.includes(rating)}
                 onCheckedChange={() => onRatingChange(rating)}
+                style={{
+                  backgroundColor: 'white',
+                  border: '1px solid #E5E7EB',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '4px',
+                }}
               />
               <label
                 htmlFor={`rating-${rating}`}
-                className="text-xs sm:text-sm cursor-pointer flex items-center gap-1 leading-tight"
+                style={{
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  ...filterItemStyle
+                }}
               >
-                {Array.from({ length: rating }).map((_, i) => (
-                  <Star key={i} className="h-2 w-2 sm:h-3 sm:w-3 fill-primary text-primary" />
+                {[...Array(rating)].map((_, i) => (
+                  <Star key={i} size={14} fill="#FF8C42" color="#FF8C42" />
                 ))}
-                <span className="ml-1">& Up</span>
+                <span style={{ marginLeft: '4px' }}>& Up</span>
               </label>
             </div>
           ))}
         </div>
       </div>
 
-      <Separator />
+      <Separator style={{ marginBottom: '24px' }} />
 
       {/* Availability */}
-      <div>
-        <Label className="mb-2 sm:mb-3 block text-sm sm:text-base">Availability</Label>
-        <div className="space-y-1 sm:space-y-2">
+      <div style={{ marginBottom: '24px' }}>
+        <Label style={{
+          display: 'block',
+          marginBottom: '12px',
+          fontSize: '14px',
+          fontWeight: 500,
+          ...headerLabelStyle
+        }}>Availability</Label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {availabilityOptions.map((availability) => (
-            <div key={availability} className="flex items-center space-x-2">
+            <div key={availability} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Checkbox
                 id={`availability-${availability}`}
                 checked={selectedAvailability.includes(availability)}
                 onCheckedChange={() => onAvailabilityChange(availability)}
+                style={{
+                  backgroundColor: 'white',
+                  border: '1px solid #E5E7EB',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '4px',
+                }}
               />
               <label
                 htmlFor={`availability-${availability}`}
-                className="text-xs sm:text-sm cursor-pointer leading-tight"
+                style={{
+                  cursor: 'pointer',
+                  ...filterItemStyle
+                }}
               >
                 {availability}
               </label>
@@ -176,22 +246,38 @@ export function FilterSidebar({
         </div>
       </div>
 
-      <Separator />
+      <Separator style={{ marginBottom: '24px' }} />
 
       {/* Delivery Time */}
       <div>
-        <Label className="mb-2 sm:mb-3 block text-sm sm:text-base">Delivery Time</Label>
-        <div className="space-y-1 sm:space-y-2">
+        <Label style={{
+          display: 'block',
+          marginBottom: '12px',
+          fontSize: '14px',
+          fontWeight: 500,
+          ...headerLabelStyle
+        }}>Delivery Time</Label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {deliveryTimeOptions.map((time) => (
-            <div key={time} className="flex items-center space-x-2">
+            <div key={time} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Checkbox
                 id={`delivery-${time}`}
                 checked={selectedDeliveryTime.includes(time)}
                 onCheckedChange={() => onDeliveryTimeChange(time)}
+                style={{
+                  backgroundColor: 'white',
+                  border: '1px solid #E5E7EB',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '4px',
+                }}
               />
               <label
                 htmlFor={`delivery-${time}`}
-                className="text-xs sm:text-sm cursor-pointer leading-tight"
+                style={{
+                  cursor: 'pointer',
+                  ...filterItemStyle
+                }}
               >
                 {time}
               </label>
@@ -202,3 +288,5 @@ export function FilterSidebar({
     </div>
   );
 }
+
+export default FilterSidebar;

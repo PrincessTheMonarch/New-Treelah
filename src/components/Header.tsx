@@ -27,6 +27,8 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [giftFinderOpen, setGiftFinderOpen] = useState(false);
+  const [mobileSearchQuery, setMobileSearchQuery] = useState("");
+  const [desktopSearchQuery, setDesktopSearchQuery] = useState("");
   const [formData, setFormData] = useState({
     recipient: "",
     relationship: "",
@@ -93,6 +95,24 @@ export function Header() {
     setGiftFinderOpen(false);
     setMobileMenuOpen(false);
     navigate(`/products?${params.toString()}`);
+  };
+
+  // Handle mobile search
+  const handleMobileSearch = (e: FormEvent) => {
+    e.preventDefault();
+    if (mobileSearchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(mobileSearchQuery)}`);
+      setMobileSearchQuery("");
+    }
+  };
+
+  // Handle desktop search
+  const handleDesktopSearch = (e: FormEvent) => {
+    e.preventDefault();
+    if (desktopSearchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(desktopSearchQuery)}`);
+      setDesktopSearchQuery("");
+    }
   };
 
   // Category data structure
@@ -516,7 +536,8 @@ export function Header() {
 
         {/* Mobile Search Bar - Below Logo and Hamburger Menu */}
         <div className="w-full lg:hidden px-4">
-          <div
+          <form
+            onSubmit={handleMobileSearch}
             className="relative w-full flex items-center justify-between max-w-sm mx-auto"
             style={{
               height: '40px',
@@ -532,9 +553,13 @@ export function Header() {
               placeholder="Search for the perfect gift..."
               className="border-0 bg-transparent text-gray-600 placeholder:text-[#717182] flex-1 px-0 text-sm"
               style={{ color: '#717182' }}
+              value={mobileSearchQuery}
+              onChange={(e) => setMobileSearchQuery(e.target.value)}
             />
-            <Search className="h-4 w-4 text-[#717182]" />
-          </div>
+            <button type="submit" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+              <Search className="h-4 w-4 text-[#717182]" />
+            </button>
+          </form>
         </div>
 
         {/* Main Navigation - Hidden on mobile */}
@@ -671,7 +696,7 @@ export function Header() {
           </Link>
 
           {/* Center-Right: Search Bar */}
-          <div className="relative flex-shrink-0">
+          <form onSubmit={handleDesktopSearch} className="relative flex-shrink-0">
             <div 
               className="flex items-center justify-between"
               style={{
@@ -690,10 +715,14 @@ export function Header() {
                 placeholder="Search..."
                 className="border-0 bg-transparent text-gray-600 placeholder:text-[#717182] flex-1 px-0 text-xs"
                 style={{ color: '#717182' }}
+                value={desktopSearchQuery}
+                onChange={(e) => setDesktopSearchQuery(e.target.value)}
               />
-              <Search className="h-3 w-3 text-[#717182]" />
+              <button type="submit" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+                <Search className="h-3 w-3 text-[#717182]" />
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </header>
