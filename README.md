@@ -1,4 +1,4 @@
-# Treelah – E-commerce Platform
+# Treelah E-commerce Platform
 
 A modern gift-focused e-commerce platform built with React, TypeScript, and Tailwind CSS.
 
