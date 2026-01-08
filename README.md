@@ -27,9 +27,9 @@ VITE_PAYSTACK_PUBLIC_KEY=your-paystack-public-key
 
 ### UI
 - ~90% of the UI for core pages is completed
-- Responsive layout across desktop and mobile
+- Responsive layout across most pages
 - Product listing and product detail pages
-- Cart, checkout, bulk orders, and auth pages
+- Implemented the ui for Cart, all 3 steps in the checkout page, bulk orders, and auth pages
 
 ### Authentication
 - Email/password signup and login
@@ -85,4 +85,4 @@ supabase/
 
 - The current version is significantly newer than the previous build.
 - Core flows (auth, cart, checkout, payments) are already in place.
-- The existing structure allows the admin side to be added without major refactoring.
+- The existing structure allows the admin side to be added without any major refactoring.
