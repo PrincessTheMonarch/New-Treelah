@@ -1,5 +1,5 @@
-import { useState, useEffect, CSSProperties } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, CSSProperties, FormEvent } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -27,6 +27,22 @@ import {
   Upload,
   CreditCard,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 import { toast } from "sonner";
 
 // Header styles from BulkOrderPage
@@ -154,6 +170,48 @@ const headerRightStyle: CSSProperties = {
 const iconButtonStyle: CSSProperties = {
   cursor: 'pointer',
   color: '#1A1A1A',
+};
+
+// Mega Menu styles
+const megaMenuContainerStyle: CSSProperties = {
+  position: 'absolute',
+  top: '100%',
+  left: '70%',
+  transform: 'translateX(-30%)',
+  width: '480px',
+  backgroundColor: '#FBFBFB',
+  borderRadius: '12px',
+  padding: '16px',
+  boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+  marginTop: '8px',
+  zIndex: 100,
+  display: 'none',
+  gap: '12px',
+};
+
+const megaMenuColumnStyle: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: '6px 12px',
+  alignItems: 'flex-start',
+};
+
+const megaMenuHeaderStyle: CSSProperties = {
+  width: '100%',
+  fontSize: '12px',
+  fontWeight: 500,
+  color: '#717182',
+  marginBottom: '4px',
+};
+
+const megaMenuLinkStyle: CSSProperties = {
+  fontSize: '13px',
+  fontWeight: 400,
+  color: '#1A1A1A',
+  cursor: 'pointer',
+  textDecoration: 'none',
+  transition: 'all 0.2s',
 };
 
 // Stepper styles
@@ -397,14 +455,69 @@ function PlaceOrderButton({ amount, onSuccess }: PlaceOrderButtonProps) {
   );
 }
 
+const megaMenuColumns = [
+  {
+    header: "By Occasion",
+    links: ["Birthdays", "Weddings", "Anniversaries", "Baby Showers", "Graduations"],
+  },
+  {
+    header: "By Recipient",
+    links: ["For Him", "For Her", "For Kids", "For Teens", "For Colleagues", "For Couples"],
+  },
+  {
+    header: "By Age",
+    links: ["Babies", "Toddlers", "Children", "Teens", "Adults", "Seniors"],
+  },
+  {
+    header: "By Type",
+    links: ["Toys & Games", "Home & Living", "Beauty & Wellness", "Fashion & Accessories", "Tech & Gadgets", "Food & Beverages"],
+  },
+];
+
 export function CheckoutPage() {
   const { items, getTotalPrice, getTotalItems, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+
   // Search state for header
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Handle search submit - navigate to products page
+  const handleSearchSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  // Gift Finder form state
+  const [giftFinderForm, setGiftFinderForm] = useState({
+    recipient: "",
+    relationship: "",
+    occasion: "",
+    ageGroup: "",
+  });
+  const [giftFinderOpen, setGiftFinderOpen] = useState(false);
+
+  // Handle Gift Finder form submission
+  const handleGiftFinderSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (giftFinderForm.recipient === "male") params.append("tag", "For Him");
+    else if (giftFinderForm.recipient === "female") params.append("tag", "For Her");
+    if (giftFinderForm.occasion) {
+      const occasionFormatted = giftFinderForm.occasion.charAt(0).toUpperCase() + giftFinderForm.occasion.slice(1);
+      params.append("occasion", occasionFormatted);
+    }
+    params.append("fromGiftFinder", "true");
+    if (giftFinderForm.relationship) params.append("relationship", giftFinderForm.relationship);
+    if (giftFinderForm.ageGroup) params.append("ageGroup", giftFinderForm.ageGroup);
+    setGiftFinderOpen(false);
+    navigate(`/products?${params.toString()}`);
+  };
 
   // Delivery Info State
   const [deliveryInfo, setDeliveryInfo] = useState({
@@ -504,37 +617,190 @@ export function CheckoutPage() {
 
           {/* Center: Navigation Links */}
           <div style={navLinksStyle}>
-            <div style={navLinkStyle}>
-              Categories
-              <ChevronDown size={14} />
+            {/* Categories with Mega Menu */}
+            <div style={{ position: 'relative' }}>
+              <div
+                style={navLinkStyle}
+                onClick={() => setCategoriesOpen(!categoriesOpen)}
+              >
+                Categories
+                <ChevronDown size={14} style={{
+                  transform: categoriesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.2s'
+                }} />
+              </div>
+              {/* Mega Menu Dropdown */}
+              <div style={{...megaMenuContainerStyle, display: categoriesOpen ? 'flex' : 'none'}}>
+                {megaMenuColumns.map((column, colIndex) => (
+                  <div key={colIndex} style={megaMenuColumnStyle}>
+                    <span style={megaMenuHeaderStyle}>{column.header}</span>
+                    {column.links.map((link, linkIndex) => (
+                      <span
+                        key={linkIndex}
+                        style={megaMenuLinkStyle}
+                        onClick={() => {
+                          const params = new URLSearchParams();
+                          params.set("search", link);
+                          navigate(`/products?${params.toString()}`);
+                          setCategoriesOpen(false);
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.textDecoration = 'underline';
+                          e.currentTarget.style.color = '#FF8C42';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.textDecoration = 'none';
+                          e.currentTarget.style.color = '#1A1A1A';
+                        }}
+                      >
+                        {link}
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
-            <div 
-              style={navLinkStyle} 
-              onClick={() => navigate("/bulk-orders")}
-            >
+
+            <Link to="/bulk-orders" style={{ ...navLinkStyle, textDecoration: 'none' }}>
               Souvenirs & Bulk Orders
-            </div>
-            <button style={shoppingAssistantButtonStyle}>
-              <Sparkles size={14} />
-              Shopping Assistant
-            </button>
+            </Link>
+
+            {/* Shopping Assistant Button */}
+            <Dialog open={giftFinderOpen} onOpenChange={setGiftFinderOpen}>
+              <DialogTrigger asChild>
+                <button style={shoppingAssistantButtonStyle}>
+                  <Sparkles size={14} />
+                  Shopping Assistant
+                </button>
+              </DialogTrigger>
+              <DialogContent style={{ maxWidth: '500px', maxHeight: '80vh', overflow: 'auto' }}>
+                <DialogHeader>
+                  <DialogTitle style={{ fontSize: '18px' }}>Find Your Perfect Gift</DialogTitle>
+                  <DialogDescription style={{ fontSize: '14px' }}>
+                    Answer a few quick questions and we'll suggest the best gifts!
+                  </DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={handleGiftFinderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '8px' }}>
+                  <div>
+                    <Label style={{ fontSize: '14px', fontWeight: 500 }}>Who's the gift for?</Label>
+                    <RadioGroup
+                      value={giftFinderForm.recipient}
+                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, recipient: value })}
+                      style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer' }}>
+                        <RadioGroupItem value="male" id="gf-male" />
+                        <Label htmlFor="gf-male" style={{ cursor: 'pointer', flex: 1, fontSize: '14px' }}>For Him</Label>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer' }}>
+                        <RadioGroupItem value="female" id="gf-female" />
+                        <Label htmlFor="gf-female" style={{ cursor: 'pointer', flex: 1, fontSize: '14px' }}>For Her</Label>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer' }}>
+                        <RadioGroupItem value="other" id="gf-other" />
+                        <Label htmlFor="gf-other" style={{ cursor: 'pointer', flex: 1, fontSize: '14px' }}>Anyone</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="gf-relationship" style={{ fontSize: '14px', fontWeight: 500 }}>Relationship</Label>
+                    <Select
+                      value={giftFinderForm.relationship}
+                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, relationship: value })}
+                    >
+                      <SelectTrigger id="gf-relationship" style={{ marginTop: '8px', height: '40px' }}>
+                        <SelectValue placeholder="Select relationship" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="friend">Friend</SelectItem>
+                        <SelectItem value="partner">Partner</SelectItem>
+                        <SelectItem value="parent">Parent</SelectItem>
+                        <SelectItem value="sibling">Sibling</SelectItem>
+                        <SelectItem value="colleague">Colleague</SelectItem>
+                        <SelectItem value="boss">Boss</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="gf-occasion" style={{ fontSize: '14px', fontWeight: 500 }}>Occasion</Label>
+                    <Select
+                      value={giftFinderForm.occasion}
+                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, occasion: value })}
+                    >
+                      <SelectTrigger id="gf-occasion" style={{ marginTop: '8px', height: '40px' }}>
+                        <SelectValue placeholder="Select occasion" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="birthday">Birthday</SelectItem>
+                        <SelectItem value="wedding">Wedding</SelectItem>
+                        <SelectItem value="anniversary">Anniversary</SelectItem>
+                        <SelectItem value="graduation">Graduation</SelectItem>
+                        <SelectItem value="promotion">Promotion</SelectItem>
+                        <SelectItem value="justbecause">Just Because</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="gf-age" style={{ fontSize: '14px', fontWeight: 500 }}>Age Group</Label>
+                    <Select
+                      value={giftFinderForm.ageGroup}
+                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, ageGroup: value })}
+                    >
+                      <SelectTrigger id="gf-age" style={{ marginTop: '8px', height: '40px' }}>
+                        <SelectValue placeholder="Select age group" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="child">Child (0-12)</SelectItem>
+                        <SelectItem value="teen">Teen (13-19)</SelectItem>
+                        <SelectItem value="adult">Adult (20-59)</SelectItem>
+                        <SelectItem value="senior">Senior (60+)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <button
+                    type="submit"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      borderRadius: '24px',
+                      backgroundColor: '#FF8C42',
+                      color: 'white',
+                      border: 'none',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      marginTop: '8px',
+                    }}
+                  >
+                    Find My Perfect Gift
+                  </button>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Right: Search Bar + Utility Icons */}
           <div style={headerRightStyle}>
             <div style={headerCenterStyle}>
-              <div style={searchBarContainerStyle}>
-                <input
-                  type="text"
-                  placeholder="Search gifts..."
-                  style={searchInputStyle}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <div style={searchIconStyle}>
-                  <Search size={16} />
+              <form onSubmit={handleSearchSubmit}>
+                <div style={searchBarContainerStyle}>
+                  <input
+                    type="text"
+                    placeholder="Search gifts..."
+                    style={searchInputStyle}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <button type="submit" style={searchIconStyle}>
+                    <Search size={16} />
+                  </button>
                 </div>
-              </div>
+              </form>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>

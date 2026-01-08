@@ -1,4 +1,4 @@
-import { Gift, Heart, ShoppingCart, Search, Sparkles, UserCircle, Menu, LogOut, User, Bell, ChevronDown, Headphones, X, ChevronRight } from "lucide-react";
+import { Gift, Heart, ShoppingCart, Search, Sparkles, UserCircle, Menu, LogOut, User, Bell, ChevronDown, Headphones, X, ChevronRight, ChevronDown as ChevronDownIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import {
@@ -10,20 +10,22 @@ import {
   NavigationMenuTrigger,
 } from "./ui/navigation-menu";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "./ui/dialog";
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Separator } from "./ui/separator";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useState, useEffect, useRef, FormEvent } from "react";
 import { toast } from "sonner";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
 export function Header() {
   const { getTotalItems } = useCart();
   const { user, signOut, loading } = useAuth();
+  const [searchParams] = useSearchParams();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [giftFinderOpen, setGiftFinderOpen] = useState(false);
@@ -37,6 +39,14 @@ export function Header() {
   });
   const navigate = useNavigate();
   const categoriesRef = useRef<HTMLDivElement>(null);
+
+  // Check for openGiftFinder query parameter and open modal
+  useEffect(() => {
+    const openGiftFinder = searchParams.get('openGiftFinder');
+    if (openGiftFinder === 'true') {
+      setGiftFinderOpen(true);
+    }
+  }, [searchParams]);
 
   // Close categories dropdown when clicking outside
   useEffect(() => {
@@ -68,16 +78,18 @@ export function Header() {
     const params = new URLSearchParams();
 
     // Add tag based on recipient
-    if (formData.recipient === "male") {
+    if (formData.recipient === "him") {
       params.append("tag", "For Him");
-    } else if (formData.recipient === "female") {
+    } else if (formData.recipient === "her") {
       params.append("tag", "For Her");
     }
 
     // Add occasion
     if (formData.occasion) {
-      // Capitalize first letter
-      const occasionFormatted = formData.occasion.charAt(0).toUpperCase() + formData.occasion.slice(1);
+      // Capitalize first letter and handle special cases
+      const occasionFormatted = formData.occasion.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ');
       params.append("occasion", occasionFormatted);
     }
 
@@ -270,7 +282,7 @@ export function Header() {
                 )}
               </div>
 
-              {/* Shopping Assistant */}
+              {/* Shopping Assistant Modal - High Fidelity */}
               <Dialog open={giftFinderOpen} onOpenChange={setGiftFinderOpen}>
                 <DialogTrigger asChild>
                   <Button
@@ -291,100 +303,227 @@ export function Header() {
                   </Button>
                 </DialogTrigger>
 
-                <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[35vh] overflow-y-auto">
-                  <DialogHeader className="pb-2">
-                    <DialogTitle className="text-lg sm:text-xl">Find Your Perfect Gift</DialogTitle>
-                    <DialogDescription className="text-xs sm:text-sm">
-                      Answer a few quick questions and we'll suggest the best gifts!
-                    </DialogDescription>
-                  </DialogHeader>
-
-                  <form onSubmit={handleGiftFinderSubmit} className="space-y-2 sm:space-y-3 mt-2">
-                    {/* Recipient Gender */}
-                    <div className="space-y-2">
-                      <Label className="text-sm sm:text-base">Who's the gift for?</Label>
-                      <RadioGroup
-                        value={formData.recipient}
-                        onValueChange={(value) => setFormData({ ...formData, recipient: value })}
+                <DialogContent 
+                  className="p-0"
+                  style={{
+                    width: 'min(720px, 95vw)',
+                    maxHeight: 'min(786px, 90vh)',
+                    borderRadius: '24px',
+                    padding: 0,
+                  }}
+                >
+                  {/* Modal Header */}
+                  <div style={{ padding: '40px 40px 0 40px' }}>
+                    <DialogHeader className="pb-0">
+                      <DialogTitle 
+                        style={{
+                          fontSize: '32px',
+                          fontWeight: '700',
+                          color: '#1A1A1A',
+                          lineHeight: '1.2'
+                        }}
                       >
-                        <div className="flex items-center space-x-2 p-2 sm:p-3 rounded-lg border hover:bg-accent cursor-pointer">
-                          <RadioGroupItem value="male" id="male" />
-                          <Label htmlFor="male" className="cursor-pointer flex-1 text-sm sm:text-base">For Him</Label>
-                        </div>
-                        <div className="flex items-center space-x-2 p-2 sm:p-3 rounded-lg border hover:bg-accent cursor-pointer">
-                          <RadioGroupItem value="female" id="female" />
-                          <Label htmlFor="female" className="cursor-pointer flex-1 text-sm sm:text-base">For Her</Label>
-                        </div>
-                        <div className="flex items-center space-x-2 p-2 sm:p-3 rounded-lg border hover:bg-accent cursor-pointer">
-                          <RadioGroupItem value="other" id="other" />
-                          <Label htmlFor="other" className="cursor-pointer flex-1 text-sm sm:text-base">Anyone</Label>
-                        </div>
-                      </RadioGroup>
+                        Find Your Perfect Gift
+                      </DialogTitle>
+                      <DialogDescription 
+                        style={{
+                          fontSize: '16px',
+                          color: '#6B7280',
+                          marginTop: '8px'
+                        }}
+                      >
+                        Answer a few quick questions and we'll suggest the best gifts for your special someone!
+                      </DialogDescription>
+                    </DialogHeader>
+                  </div>
+
+                  {/* Form */}
+                  <form 
+                    onSubmit={handleGiftFinderSubmit} 
+                    className="space-y-0"
+                    style={{ 
+                      padding: '40px',
+                      gap: '32px',
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}
+                  >
+                    {/* Section 1: Who is the gift for */}
+                    <div className="space-y-3">
+                      <Label 
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          color: '#1A1A1A'
+                        }}
+                      >
+                        Who is the gift for
+                      </Label>
+                      <div className="flex gap-3">
+                        {[
+                          { value: 'him', label: 'For Him' },
+                          { value: 'her', label: 'For Her' },
+                          { value: 'anyone', label: 'Anyone' }
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, recipient: option.value })}
+                            style={{
+                              flex: 1,
+                              height: '48px',
+                              borderRadius: '9999px',
+                              border: formData.recipient === option.value ? '2px solid #FF8C42' : '1px solid #E5E7EB',
+                              backgroundColor: formData.recipient === option.value ? '#FFF5F0' : '#FFFFFF',
+                              color: formData.recipient === option.value ? '#FF8C42' : '#374151',
+                              fontSize: '14px',
+                              fontWeight: '500',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s ease'
+                            }}
+                            className="hover:border-[#FF8C42] hover:bg-[#FFF5F0] transition-colors"
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
-                    {/* Relationship */}
-                    <div className="space-y-2">
-                      <Label htmlFor="relationship" className="text-sm sm:text-base">Relationship</Label>
+                    {/* Section 2: Relationship */}
+                    <div className="space-y-3">
+                      <Label 
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          color: '#1A1A1A'
+                        }}
+                      >
+                        Relationship
+                      </Label>
                       <Select
                         value={formData.relationship}
                         onValueChange={(value) => setFormData({ ...formData, relationship: value })}
                       >
-                        <SelectTrigger id="relationship" className="h-10">
-                          <SelectValue placeholder="Select relationship" />
+                        <SelectTrigger 
+                          id="relationship"
+                          style={{
+                            height: '48px',
+                            borderRadius: '12px',
+                            border: '1px solid #E5E7EB',
+                            backgroundColor: '#FFFFFF'
+                          }}
+                          className="text-left"
+                        >
+                          <SelectValue placeholder="Select Relationship" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="friend">Friend</SelectItem>
                           <SelectItem value="partner">Partner</SelectItem>
+                          <SelectItem value="spouse">Spouse</SelectItem>
                           <SelectItem value="parent">Parent</SelectItem>
                           <SelectItem value="sibling">Sibling</SelectItem>
+                          <SelectItem value="child">Child</SelectItem>
                           <SelectItem value="colleague">Colleague</SelectItem>
                           <SelectItem value="boss">Boss</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {/* Occasion */}
-                    <div className="space-y-2">
-                      <Label htmlFor="occasion" className="text-sm sm:text-base">Occasion</Label>
+                    {/* Section 3: Occasion */}
+                    <div className="space-y-3">
+                      <Label 
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          color: '#1A1A1A'
+                        }}
+                      >
+                        Occasion
+                      </Label>
                       <Select
                         value={formData.occasion}
                         onValueChange={(value) => setFormData({ ...formData, occasion: value })}
                       >
-                        <SelectTrigger id="occasion" className="h-10">
-                          <SelectValue placeholder="Select occasion" />
+                        <SelectTrigger 
+                          id="occasion"
+                          style={{
+                            height: '48px',
+                            borderRadius: '12px',
+                            border: '1px solid #E5E7EB',
+                            backgroundColor: '#FFFFFF'
+                          }}
+                          className="text-left"
+                        >
+                          <SelectValue placeholder="Select Occasion" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="birthday">Birthday</SelectItem>
                           <SelectItem value="wedding">Wedding</SelectItem>
                           <SelectItem value="anniversary">Anniversary</SelectItem>
                           <SelectItem value="graduation">Graduation</SelectItem>
+                          <SelectItem value="baby-shower">Baby Shower</SelectItem>
                           <SelectItem value="promotion">Promotion</SelectItem>
-                          <SelectItem value="justbecause">Just Because</SelectItem>
+                          <SelectItem value="just-because">Just Because</SelectItem>
+                          <SelectItem value="thank-you">Thank You</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {/* Age Group */}
-                    <div className="space-y-2">
-                      <Label htmlFor="age" className="text-sm sm:text-base">Age Group</Label>
+                    {/* Section 4: Age Group */}
+                    <div className="space-y-3">
+                      <Label 
+                        style={{
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          color: '#1A1A1A'
+                        }}
+                      >
+                        Age Group
+                      </Label>
                       <Select
                         value={formData.ageGroup}
                         onValueChange={(value) => setFormData({ ...formData, ageGroup: value })}
                       >
-                        <SelectTrigger id="age" className="h-10">
-                          <SelectValue placeholder="Select age group" />
+                        <SelectTrigger 
+                          id="age"
+                          style={{
+                            height: '48px',
+                            borderRadius: '12px',
+                            border: '1px solid #E5E7EB',
+                            backgroundColor: '#FFFFFF'
+                          }}
+                          className="text-left"
+                        >
+                          <SelectValue placeholder="Select Age Group" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="child">Child (0-12)</SelectItem>
-                          <SelectItem value="teen">Teen (13-19)</SelectItem>
-                          <SelectItem value="adult">Adult (20-59)</SelectItem>
-                          <SelectItem value="senior">Senior (60+)</SelectItem>
+                          <SelectItem value="0-12">Child (0-12)</SelectItem>
+                          <SelectItem value="13-19">Teen (13-19)</SelectItem>
+                          <SelectItem value="20-39">Young Adult (20-39)</SelectItem>
+                          <SelectItem value="40-59">Adult (40-59)</SelectItem>
+                          <SelectItem value="60+">Senior (60+)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    <Button type="submit" className="w-full rounded-full h-10 text-sm" size="lg">
-                      Find My Perfect Gift
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      style={{
+                        width: '100%',
+                        height: '56px',
+                        borderRadius: '9999px',
+                        backgroundColor: '#FF8C42',
+                        color: '#FFFFFF',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        border: 'none',
+                        marginTop: '8px'
+                      }}
+                      className="hover:opacity-90 transition-opacity"
+                    >
+                      Find Gift
+                      <Sparkles className="h-5 w-5 ml-2" />
                     </Button>
                   </form>
                 </DialogContent>
@@ -728,11 +867,4 @@ export function Header() {
     </header>
   );
 }
-
-
-
-
-
-
-
 

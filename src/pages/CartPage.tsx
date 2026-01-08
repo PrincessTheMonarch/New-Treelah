@@ -1,4 +1,4 @@
-import { useState, CSSProperties } from "react";
+import { useState, CSSProperties, FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -18,6 +18,8 @@ import {
   User,
   ArrowRight,
   Truck,
+  ChevronDown,
+  Sparkles,
 } from "lucide-react";
 
 export function CartPage() {
@@ -28,6 +30,10 @@ export function CartPage() {
     code: string;
     discount: number;
   } | null>(null);
+
+  // Search state for header
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
 
   const subtotal = getTotalPrice();
   const discount = appliedPromo ? appliedPromo.discount : 0;
@@ -177,6 +183,85 @@ export function CartPage() {
   const iconButtonStyle: CSSProperties = {
     cursor: 'pointer',
     color: '#1A1A1A',
+  };
+
+  // Mega Menu styles from BulkOrderPage
+  const megaMenuContainerStyle: CSSProperties = {
+    position: 'absolute',
+    top: '100%',
+    left: '70%',
+    transform: 'translateX(-30%)',
+    width: '480px',
+    backgroundColor: '#FBFBFB',
+    borderRadius: '12px',
+    padding: '16px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+    marginTop: '8px',
+    zIndex: 100,
+    display: categoriesOpen ? 'flex' : 'none',
+    gap: '12px',
+  };
+
+  const megaMenuColumnStyle: CSSProperties = {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: '6px 12px',
+    alignItems: 'flex-start',
+  };
+
+  const megaMenuHeaderStyle: CSSProperties = {
+    width: '100%',
+    fontSize: '12px',
+    fontWeight: 500,
+    color: '#717182',
+    marginBottom: '4px',
+  };
+
+  const megaMenuLinkStyle: CSSProperties = {
+    fontSize: '13px',
+    fontWeight: 400,
+    color: '#1A1A1A',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    transition: 'all 0.2s',
+  };
+
+  const megaMenuColumns = [
+    {
+      header: "By Occasion",
+      links: ["Birthdays", "Weddings", "Anniversaries", "Baby Showers", "Graduations"],
+    },
+    {
+      header: "By Recipient",
+      links: ["For Him", "For Her", "For Kids", "For Teens", "For Colleagues", "For Couples"],
+    },
+    {
+      header: "By Age",
+      links: ["Babies", "Toddlers", "Children", "Teens", "Adults", "Seniors"],
+    },
+    {
+      header: "By Type",
+      links: ["Toys & Games", "Home & Living", "Beauty & Wellness", "Fashion & Accessories", "Tech & Gadgets", "Food & Beverages"],
+    },
+  ];
+
+  // Handle search submission - navigate to /products page
+  const handleSearchSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      const params = new URLSearchParams();
+      params.set("search", searchQuery.trim());
+      navigate(`/products?${params.toString()}`);
+    }
+  };
+
+  // Handle mega menu link click
+  const handleMegaMenuClick = (link: string) => {
+    const params = new URLSearchParams();
+    params.set("search", link);
+    navigate(`/products?${params.toString()}`);
+    setCategoriesOpen(false);
   };
 
   // Empty cart section styles
@@ -607,14 +692,50 @@ export function CartPage() {
 
             {/* Center: Navigation Links */}
             <div style={navLinksStyle}>
-              <Link to="/products" style={{ ...navLinkStyle, textDecoration: 'none' }}>
-                Categories
-              </Link>
+              {/* Categories with Mega Menu */}
+              <div style={{ position: 'relative' }}>
+                <div
+                  style={navLinkStyle}
+                  onClick={() => setCategoriesOpen(!categoriesOpen)}
+                >
+                  Categories
+                  <ChevronDown size={14} style={{
+                    transform: categoriesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s'
+                  }} />
+                </div>
+                {/* Mega Menu Dropdown */}
+                <div style={megaMenuContainerStyle}>
+                  {megaMenuColumns.map((column, colIndex) => (
+                    <div key={colIndex} style={megaMenuColumnStyle}>
+                      <span style={megaMenuHeaderStyle}>{column.header}</span>
+                      {column.links.map((link, linkIndex) => (
+                        <span
+                          key={linkIndex}
+                          style={megaMenuLinkStyle}
+                          onClick={() => handleMegaMenuClick(link)}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.textDecoration = 'underline';
+                            e.currentTarget.style.color = '#FF8C42';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.textDecoration = 'none';
+                            e.currentTarget.style.color = '#1A1A1A';
+                          }}
+                        >
+                          {link}
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <Link to="/bulk-orders" style={{ ...navLinkStyle, textDecoration: 'none' }}>
                 Souvenirs & Bulk Orders
               </Link>
               <button style={shoppingAssistantButtonStyle}>
-                <Gift size={14} />
+                <Sparkles size={14} />
                 Shopping Assistant
               </button>
             </div>
@@ -622,16 +743,20 @@ export function CartPage() {
             {/* Right: Search Bar + Utility Icons */}
             <div style={headerRightStyle}>
               <div style={headerCenterStyle}>
-                <div style={searchBarContainerStyle}>
-                  <input
-                    type="text"
-                    placeholder="Search gifts..."
-                    style={searchInputStyle}
-                  />
-                  <div style={searchIconStyle}>
-                    <Search size={16} />
+                <form onSubmit={handleSearchSubmit}>
+                  <div style={searchBarContainerStyle}>
+                    <input
+                      type="text"
+                      placeholder="Search gifts..."
+                      style={searchInputStyle}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <div style={searchIconStyle}>
+                      <Search size={16} />
+                    </div>
                   </div>
-                </div>
+                </form>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -746,14 +871,50 @@ export function CartPage() {
 
           {/* Center: Navigation Links */}
           <div style={navLinksStyle}>
-            <Link to="/products" style={{ ...navLinkStyle, textDecoration: 'none' }}>
-              Categories
-            </Link>
+            {/* Categories with Mega Menu */}
+            <div style={{ position: 'relative' }}>
+              <div
+                style={navLinkStyle}
+                onClick={() => setCategoriesOpen(!categoriesOpen)}
+              >
+                Categories
+                <ChevronDown size={14} style={{
+                  transform: categoriesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.2s'
+                }} />
+              </div>
+              {/* Mega Menu Dropdown */}
+              <div style={megaMenuContainerStyle}>
+                {megaMenuColumns.map((column, colIndex) => (
+                  <div key={colIndex} style={megaMenuColumnStyle}>
+                    <span style={megaMenuHeaderStyle}>{column.header}</span>
+                    {column.links.map((link, linkIndex) => (
+                      <span
+                        key={linkIndex}
+                        style={megaMenuLinkStyle}
+                        onClick={() => handleMegaMenuClick(link)}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.textDecoration = 'underline';
+                          e.currentTarget.style.color = '#FF8C42';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.textDecoration = 'none';
+                          e.currentTarget.style.color = '#1A1A1A';
+                        }}
+                      >
+                        {link}
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <Link to="/bulk-orders" style={{ ...navLinkStyle, textDecoration: 'none' }}>
               Souvenirs & Bulk Orders
             </Link>
             <button style={shoppingAssistantButtonStyle}>
-              <Gift size={14} />
+              <Sparkles size={14} />
               Shopping Assistant
             </button>
           </div>
@@ -761,16 +922,20 @@ export function CartPage() {
           {/* Right: Search Bar + Utility Icons */}
           <div style={headerRightStyle}>
             <div style={headerCenterStyle}>
-              <div style={searchBarContainerStyle}>
-                <input
-                  type="text"
-                  placeholder="Search gifts..."
-                  style={searchInputStyle}
-                />
-                <div style={searchIconStyle}>
-                  <Search size={16} />
+              <form onSubmit={handleSearchSubmit}>
+                <div style={searchBarContainerStyle}>
+                  <input
+                    type="text"
+                    placeholder="Search gifts..."
+                    style={searchInputStyle}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <div style={searchIconStyle}>
+                    <Search size={16} />
+                  </div>
                 </div>
-              </div>
+              </form>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
