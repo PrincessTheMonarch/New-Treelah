@@ -28,3 +28,7 @@ build
 thumbs.db
 *.bak
 *.tmp
+*.old
+*.orig
+PAYMENT_FIX_EXPLANATION.md 
+PAYMENT_IMPROVEMENTS.md
