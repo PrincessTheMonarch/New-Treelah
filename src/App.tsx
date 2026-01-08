@@ -6,6 +6,7 @@ import { ProductDetailPage } from "./pages/ProductDetailPage";
 import { CartPage } from "./pages/CartPage";
 import { CheckoutPage } from "./pages/CheckoutPage";
 import { BulkOrderPage } from "./pages/BulkOrderPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { SignupPage } from "./pages/auth/SignupPage";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -107,6 +108,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <BulkOrderPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         }
       />

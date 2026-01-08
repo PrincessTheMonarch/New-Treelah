@@ -769,9 +769,9 @@ export function CartPage() {
                 <div style={iconButtonStyle}>
                   <Headset size={20} />
                 </div>
-                <div style={iconButtonStyle}>
+                <Link to="/profile" style={iconButtonStyle}>
                   <User size={20} />
-                </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -967,9 +967,9 @@ export function CartPage() {
               <div style={iconButtonStyle}>
                 <Headset size={20} />
               </div>
-              <div style={iconButtonStyle}>
-                <User size={20} />
-              </div>
+              <Link to="/profile" style={iconButtonStyle}>
+                  <User size={20} />
+                </Link>
             </div>
           </div>
         </div>

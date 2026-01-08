@@ -267,7 +267,7 @@ export function Header() {
                   <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
                 ) : user ? (
                   <div className="relative group">
-                    <Link to="/auth/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
                       <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Account">
                         <UserCircle className="h-5 w-5" />
                       </Button>
