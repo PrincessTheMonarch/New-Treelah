@@ -655,23 +655,37 @@ export function BulkOrderPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Banner with Gradient */}
       {currentStep === "selection" && (
-        <div className="relative bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <ImageWithFallback
-              src="https://images.unsplash.com/photo-1745970649913-2edb9dca4f74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3Jwb3JhdGUlMjBnaWZ0cyUyMHRlYW18ZW58MXx8fHwxNzYxNjY0MzAwfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-              alt="Bulk gifts"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-16 relative">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-3 sm:mb-4">
-                Need gifts for your team, clients, or event? We've got you covered.
+        <div style={{
+          background: 'linear-gradient(to right, #FEEFE6 0%, #EAF9FF 50%, #FEEFE6 100%)',
+          backdropFilter: 'blur(80px)',
+          WebkitBackdropFilter: 'blur(80px)',
+          paddingTop: '24px',
+          paddingBottom: '24px',
+        }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <h1 style={{
+                fontFamily: 'Poppins',
+                fontWeight: 500,
+                fontSize: '36px',
+                lineHeight: '120%',
+                letterSpacing: '0%',
+                textAlign: 'center',
+                verticalAlign: 'middle',
+                marginBottom: '8px',
+                color: '#1A1A1A',
+              }}>
+                Bulk Orders
               </h1>
-              <p className="text-sm sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8">
-                Bulk discounts, personalized packaging, and fast delivery, all in one place.
+              <p style={{
+                fontSize: '14px',
+                color: '#6B7280',
+                maxWidth: '600px',
+                margin: '0 auto',
+              }}>
+                Need gifts for your team, clients, or event? We've got you covered. Bulk discounts, personalized packaging, and fast delivery, all in one place.
               </p>
 
               {/* Bulk Discount Info */}
@@ -1388,3 +1402,4 @@ export function BulkOrderPage() {
 }
 
 export default BulkOrderPage;
+

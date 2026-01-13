@@ -11,7 +11,7 @@ export function Hero() {
   };
 
   return (
-    <section 
+    <section
       className="relative w-full max-w-full overflow-hidden"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/Landing Page Images/PerfectGift.png')`,
@@ -26,11 +26,11 @@ export function Hero() {
       <div className="container mx-auto px-4 py-16 sm:py-20 md:py-24 min-h-screen flex items-center justify-center max-w-full">
         <div className="flex flex-col items-center justify-center text-white text-center w-full max-w-xl">
           {/* Thoughtful Gifts Section */}
-          <div 
+          <div
             className="flex items-center justify-center gap-3 mb-4"
           >
             <Sparkles className="h-4 w-4 text-white flex-shrink-0" />
-            <span 
+            <span
               className="text-white"
               style={{
                 fontFamily: 'Poppins, sans-serif',
@@ -46,7 +46,7 @@ export function Hero() {
             </span>
           </div>
 
-          <h1 
+          <h1
             className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-4"
             style={{
               fontFamily: 'Poppins, sans-serif',
@@ -61,7 +61,7 @@ export function Hero() {
             Find the Perfect Gift for Every Occasion
           </h1>
            
-          <p 
+          <p
             className="text-white text-sm sm:text-base mb-6 max-w-xl mx-auto opacity-90 px-4"
             style={{
               fontFamily: 'Poppins, sans-serif',
@@ -77,8 +77,8 @@ export function Hero() {
           </p>
            
           {/* Shop Gifts Button */}
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             asChild
             className="hover:opacity-90 transition-opacity"
             style={{
@@ -103,3 +103,4 @@ export function Hero() {
     </section>
   );
 }
+

@@ -26,6 +26,8 @@ import {
   Pencil,
   Upload,
   CreditCard,
+  Menu,
+  X,
 } from "lucide-react";
 import {
   Dialog,
@@ -412,6 +414,7 @@ interface PlaceOrderButtonProps {
 
 function PlaceOrderButton({ amount, onSuccess }: PlaceOrderButtonProps) {
   const { user } = useAuth();
+  const { items, syncCart } = useCart();
   const { isProcessing, error, initiatePayment, clearError } = usePaystackPayment({
     email: user?.email || '',
     amount,
@@ -424,8 +427,20 @@ function PlaceOrderButton({ amount, onSuccess }: PlaceOrderButtonProps) {
     onError: (err) => console.error('Payment error:', err),
   });
 
-  const handlePaymentClick = () => {
+  const handlePaymentClick = async () => {
     clearError();
+    
+    // Sync cart to Supabase before payment
+    if (items.length > 0) {
+      try {
+        await syncCart();
+        console.log('[Checkout] Cart synced to Supabase');
+      } catch (error) {
+        console.error('[Checkout] Failed to sync cart:', error);
+        // Continue anyway - the local cart will be used
+      }
+    }
+    
     initiatePayment();
   };
 
@@ -481,7 +496,8 @@ export function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(1);
   
   const [categoriesOpen, setCategoriesOpen] = useState(false);
-
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+ 
   // Search state for header
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -526,7 +542,6 @@ export function CheckoutPage() {
     address: "",
     city: "",
     state: "",
-    state2: "",
   });
   const [sendToRecipient, setSendToRecipient] = useState(false);
   const [recipientInfo, setRecipientInfo] = useState({
@@ -578,8 +593,14 @@ export function CheckoutPage() {
 
   const handlePaymentSuccess = (payment: any) => {
     clearCart();
-    toast.success("Order placed successfully!");
-    navigate("/products");
+    
+    if (payment.order?.order_number) {
+      toast.success(`Order ${payment.order.order_number} placed successfully!`);
+      navigate(`/profile?order=${payment.order.order_number}`);
+    } else {
+      toast.success('Order placed successfully!');
+      navigate('/profile');
+    }
   };
 
   // Redirect to cart if no items
@@ -601,6 +622,130 @@ export function CheckoutPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Responsive CSS for Checkout Page */}
+      <style>
+        {`
+          @media (max-width: 768px) {
+            /* Mobile responsiveness */
+            .mobile-menu-button {
+              display: block !important;
+              position: absolute !important;
+              top: 16px !important;
+              right: 16px !important;
+              z-index: 1001 !important;
+            }
+            .desktop-nav {
+              display: none !important;
+            }
+            .header-container {
+              flex-direction: row !important;
+              gap: 12px !important;
+              position: relative !important;
+            }
+            .header-right {
+              margin-left: auto !important;
+            }
+            .search-bar-container {
+              width: 100% !important;
+              max-width: none !important;
+            }
+            /* Prevent horizontal scrolling */
+            body, html {
+              overflow-x: hidden !important;
+            }
+            .flex-col {
+              overflow-x: hidden !important;
+            }
+            main {
+              overflow-x: hidden !important;
+            }
+            /* Grid layout changes */
+            .checkout-grid {
+              grid-template-columns: 1fr !important;
+              gap: 24px !important;
+            }
+            /* Form container full width */
+            .form-container {
+              width: 100% !important;
+              max-width: none !important;
+            }
+            /* Two column layout becomes single column */
+            .two-column-layout {
+              grid-template-columns: 1fr !important;
+              gap: 16px !important;
+            }
+            /* Order summary full width */
+            .order-summary {
+              position: static !important;
+              width: 100% !important;
+            }
+            /* Stepper layout adjustments */
+            .stepper-container {
+              flex-direction: row !important;
+              gap: 8px !important;
+              align-items: center !important;
+              justify-content: center !important;
+              flex-wrap: nowrap !important;
+              overflow-x: auto !important;
+              padding: 16px 8px !important;
+            }
+            .step-container {
+              flex: 1 !important;
+              min-width: 0 !important;
+            }
+            .step-connector {
+              width: 20px !important;
+              flex-shrink: 0 !important;
+            }
+            .step-circle {
+              width: 24px !important;
+              height: 24px !important;
+              font-size: 12px !important;
+            }
+            .step-label {
+              font-size: 12px !important;
+              margin-left: 4px !important;
+            }
+            /* Product card layout */
+            .product-card {
+              flex-direction: column !important;
+              gap: 12px !important;
+            }
+            .product-image {
+              width: 100% !important;
+              height: 120px !important;
+            }
+            /* Input field adjustments */
+            .form-input {
+              padding: 12px 14px !important;
+              font-size: 14px !important;
+            }
+            /* Button size adjustments */
+            .continue-button {
+              padding: 14px 20px !important;
+              font-size: 15px !important;
+            }
+          }
+          
+          /* Tablet responsiveness */
+          @media (max-width: 1024px) and (min-width: 769px) {
+            .checkout-grid {
+              grid-template-columns: 1fr 350px !important;
+            }
+            .form-container {
+              max-width: 600px !important;
+            }
+          }
+          
+          /* Large screen adjustments */
+          @media (min-width: 1400px) {
+            .checkout-grid {
+              max-width: 1400px !important;
+              margin: 0 auto !important;
+            }
+          }
+        `}
+      </style>
       {/* Header from BulkOrderPage */}
       <header style={headerStyle}>
         <div style={headerContainerStyle}>
@@ -616,7 +761,7 @@ export function CheckoutPage() {
           </div>
 
           {/* Center: Navigation Links */}
-          <div style={navLinksStyle}>
+          <div style={navLinksStyle} className="desktop-nav">
             {/* Categories with Mega Menu */}
             <div style={{ position: 'relative' }}>
               <div
@@ -785,7 +930,22 @@ export function CheckoutPage() {
           </div>
 
           {/* Right: Search Bar + Utility Icons */}
-          <div style={headerRightStyle}>
+          <div style={headerRightStyle} className="header-right">
+            {/* Mobile menu button - only visible on small screens */}
+            <button
+              className="mobile-menu-button"
+              style={{
+                display: 'none',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px',
+                marginRight: '8px'
+              }}
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <Menu size={20} />
+            </button>
             <div style={headerCenterStyle}>
               <form onSubmit={handleSearchSubmit}>
                 <div style={searchBarContainerStyle}>
@@ -843,32 +1003,106 @@ export function CheckoutPage() {
         </div>
       </header>
 
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 999,
+            opacity: mobileMenuOpen ? 1 : 0,
+            visibility: mobileMenuOpen ? 'visible' : 'hidden',
+            transition: 'opacity 0.3s ease-in-out',
+          }}
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Menu */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100vh',
+        backgroundColor: 'white',
+        zIndex: 1000,
+        transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(-100%)',
+        transition: 'transform 0.3s ease-in-out',
+        overflowY: 'auto',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '16px',
+          borderBottom: '1px solid #E5E7EB',
+        }}>
+          <span style={{ fontSize: '18px', fontWeight: 600 }}>Menu</span>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '8px',
+            }}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Home</Link>
+        </div>
+
+        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/products" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Products</Link>
+        </div>
+
+        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/bulk-orders" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Bulk Orders</Link>
+        </div>
+
+        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/cart" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Cart</Link>
+        </div>
+
+        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/profile" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Profile</Link>
+        </div>
+      </div>
+
       {/* Checkout Progress Stepper */}
       <div style={{ backgroundColor: 'white', borderBottom: '1px solid #E5E7EB' }}>
-        <div style={stepperContainerStyle}>
+        <div style={stepperContainerStyle} className="stepper-container">
           {/* Step 1 */}
-          <div style={stepContainerStyle}>
-            <div style={{ 
-              ...stepCircleStyle, 
+          <div style={stepContainerStyle} className="step-container">
+            <div style={{
+              ...stepCircleStyle,
               backgroundColor: currentStep >= 1 ? '#FF8C42' : '#E5E7EB',
               color: currentStep >= 1 ? 'white' : '#6B7280'
-            }}>
+            }} className="step-circle">
               1
             </div>
-            <span style={{ 
-              ...stepLabelStyle, 
+            <span style={{
+              ...stepLabelStyle,
               color: currentStep >= 1 ? '#1A1A1A' : '#6B7280',
               fontWeight: currentStep === 1 ? 600 : 500
-            }}>
+            }} className="step-label">
               Delivery info
             </span>
           </div>
           
           {/* Connector 1-2 */}
-          <div style={{ 
-            ...stepConnectorStyle, 
+          <div style={{
+            ...stepConnectorStyle,
             backgroundColor: '#1A1A1A'
-          }} />
+          }} className="step-connector" />
           
           {/* Step 2 */}
           <div style={stepContainerStyle}>
@@ -915,7 +1149,7 @@ export function CheckoutPage() {
       </div>
 
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '32px' }} className="checkout-grid">
           {/* Left Column - Delivery Information Form */}
           <div>
             {/* Breadcrumb */}
@@ -928,7 +1162,7 @@ export function CheckoutPage() {
 
             {/* Step 1: Delivery Information */}
             {currentStep === 1 && (
-              <div style={formContainerStyle}>
+              <div style={formContainerStyle} className="form-container">
                 <h2 style={sectionHeadingStyle}>
                   Delivery Information
                 </h2>
@@ -936,7 +1170,7 @@ export function CheckoutPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                   {/* Full Name */}
                   <div>
-                    <Label htmlFor="fullName" style={formLabelStyle}>Full Name</Label>
+                    <Label htmlFor="fullName" style={formLabelStyle}>Full Name *</Label>
                     <Input
                       id="fullName"
                       value={deliveryInfo.fullName}
@@ -945,13 +1179,14 @@ export function CheckoutPage() {
                       }
                       placeholder="Enter recipient name"
                       style={inputStyle}
+                      className="form-input"
                     />
                   </div>
 
                   {/* Phone Number - Two side by side */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     <div>
-                      <Label htmlFor="phone1" style={formLabelStyle}>Phone Number</Label>
+                      <Label htmlFor="phone1" style={formLabelStyle}>Phone Number *</Label>
                       <Input
                         id="phone1"
                         value={deliveryInfo.phone}
@@ -963,10 +1198,10 @@ export function CheckoutPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="phone2" style={formLabelStyle}>Phone Number</Label>
+                      <Label htmlFor="phone2" style={formLabelStyle}>Alternative Phone Number</Label>
                       <Input
                         id="phone2"
-                        placeholder="Enter phone number"
+                        placeholder="Enter alternative phone number"
                         style={inputStyle}
                       />
                     </div>
@@ -974,7 +1209,7 @@ export function CheckoutPage() {
 
                   {/* Delivery Address */}
                   <div>
-                    <Label htmlFor="address" style={formLabelStyle}>Delivery Address</Label>
+                    <Label htmlFor="address" style={formLabelStyle}>Delivery Address *</Label>
                     <Textarea
                       id="address"
                       value={deliveryInfo.address}
@@ -987,10 +1222,10 @@ export function CheckoutPage() {
                   </div>
 
                   {/* City & State - Side by side */}
-                  <div style={twoColumnLayoutStyle}>
+                  <div style={twoColumnLayoutStyle} className="two-column-layout">
                     {/* City */}
                     <div>
-                      <Label htmlFor="city" style={formLabelStyle}>City</Label>
+                      <Label htmlFor="city" style={formLabelStyle}>City *</Label>
                       <Input
                         id="city"
                         value={deliveryInfo.city}
@@ -1002,27 +1237,17 @@ export function CheckoutPage() {
                       />
                     </div>
 
-                    {/* State - Two adjacent smaller inputs */}
+                    {/* State */}
                     <div>
                       <Label style={formLabelStyle}>State</Label>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                        <Input
-                          value={deliveryInfo.state}
-                          onChange={(e) =>
-                            setDeliveryInfo({ ...deliveryInfo, state: e.target.value })
-                          }
-                          placeholder="Enter state"
-                          style={inputStyle}
-                        />
-                        <Input
-                          value={deliveryInfo.state2}
-                          onChange={(e) =>
-                            setDeliveryInfo({ ...deliveryInfo, state2: e.target.value })
-                          }
-                          placeholder="Enter state"
-                          style={inputStyle}
-                        />
-                      </div>
+                      <Input
+                        value={deliveryInfo.state}
+                        onChange={(e) =>
+                          setDeliveryInfo({ ...deliveryInfo, state: e.target.value })
+                        }
+                        placeholder="Enter state"
+                        style={inputStyle}
+                      />
                     </div>
                   </div>
 
@@ -1135,7 +1360,7 @@ export function CheckoutPage() {
                   </div>
 
                   {/* Continue Button */}
-                  <button style={continueButtonStyle} onClick={handleNextStep}>
+                  <button style={continueButtonStyle} onClick={handleNextStep} className="continue-button">
                     Continue
                   </button>
                 </div>
@@ -1496,7 +1721,7 @@ export function CheckoutPage() {
 
           {/* Right Column - Order Summary */}
           <div>
-            <div style={orderSummaryStyle}>
+            <div style={orderSummaryStyle} className="order-summary">
               <h3 style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 600, marginBottom: '20px' }}>
                 Order Summary
               </h3>
@@ -1504,8 +1729,8 @@ export function CheckoutPage() {
               {/* Product Review Cards */}
               <div style={{ marginBottom: '20px' }}>
                 {items.map((item) => (
-                  <div key={item.id} style={productCardStyle}>
-                    <div style={productImageStyle}>
+                  <div key={item.id} style={productCardStyle} className="product-card">
+                    <div style={productImageStyle} className="product-image">
                       <ImageWithFallback
                         src={item.image}
                         alt={item.title}

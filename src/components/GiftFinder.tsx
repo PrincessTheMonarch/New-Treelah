@@ -67,7 +67,7 @@ export function GiftFinder() {
     <section
       className="text-white relative overflow-hidden"
       style={{
-        backgroundColor: '#3B82F6',
+        backgroundColor: '#6FC2E4',
         width: '100%',
         minHeight: '148px',
         paddingTop: '24px',
@@ -116,107 +116,287 @@ export function GiftFinder() {
             </DialogTrigger>
           </div>
           
-          <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[35vh] overflow-y-auto">
-            <DialogHeader className="pb-2">
-              <DialogTitle className="text-lg sm:text-xl">Find Your Perfect Gift</DialogTitle>
-              <DialogDescription className="text-xs sm:text-sm">
-                Answer a few quick questions and we'll suggest the best gifts!
-              </DialogDescription>
-            </DialogHeader>
-            
-            <form onSubmit={handleSubmit} className="space-y-2 sm:space-y-3 mt-2">
-              {/* Recipient Gender */}
-              <div className="space-y-2">
-                <Label className="text-xs sm:text-sm">Who's the gift for?</Label>
-                <RadioGroup
-                  value={formData.recipient}
-                  onValueChange={(value) => setFormData({ ...formData, recipient: value })}
+          <DialogContent
+            style={{
+              width: '750px',
+              height: '500px',
+              gap: '30px',
+              borderRadius: '24px',
+              padding: '30px',
+              backgroundColor: 'white',
+              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+              overflow: 'auto'
+            }}
+          >
+            {/* Modal Header */}
+            <div style={{ marginBottom: '24px' }}>
+              <h2 
+                style={{
+                  fontSize: '28px',
+                  fontWeight: '700',
+                  fontFamily: 'Inter, Public Sans, sans-serif',
+                  color: '#111827',
+                  margin: '0 0 8px 0',
+                  letterSpacing: '-0.02em'
+                }}
+              >
+                Find Your Perfect Gift
+              </h2>
+              <p 
+                style={{
+                  fontSize: '14px',
+                  color: '#6B7280',
+                  margin: '0',
+                  lineHeight: '1.5'
+                }}
+              >
+                Answer a few quick questions and we'll suggest the best gifts for your special someone!
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              {/* Section 1: Who is the gift for */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label 
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    color: '#111827',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}
                 >
-                  <div className="flex items-center space-x-2 p-2 sm:p-3 rounded-lg border hover:bg-accent cursor-pointer">
-                    <RadioGroupItem value="male" id="male" />
-                    <Label htmlFor="male" className="cursor-pointer flex-1 text-sm sm:text-base">For Him</Label>
+                  Who is the gift for
+                </label>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, recipient: "male" })}
+                    style={{
+                      flex: 1,
+                      padding: '12px 16px',
+                      borderRadius: '9999px',
+                      border: '1px solid #E5E7EB',
+                      backgroundColor: formData.recipient === "male" ? '#FF8C42' : 'white',
+                      color: formData.recipient === "male" ? 'white' : '#374151',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: formData.recipient === "male" ? '0 4px 6px rgba(255, 140, 66, 0.3)' : 'none'
+                    }}
+                  >
+                    For Him
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, recipient: "female" })}
+                    style={{
+                      flex: 1,
+                      padding: '12px 16px',
+                      borderRadius: '9999px',
+                      border: '1px solid #E5E7EB',
+                      backgroundColor: formData.recipient === "female" ? '#FF8C42' : 'white',
+                      color: formData.recipient === "female" ? 'white' : '#374151',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: formData.recipient === "female" ? '0 4px 6px rgba(255, 140, 66, 0.3)' : 'none'
+                    }}
+                  >
+                    For Her
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, recipient: "other" })}
+                    style={{
+                      flex: 1,
+                      padding: '12px 16px',
+                      borderRadius: '9999px',
+                      border: '1px solid #E5E7EB',
+                      backgroundColor: formData.recipient === "other" ? '#FF8C42' : 'white',
+                      color: formData.recipient === "other" ? 'white' : '#374151',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: formData.recipient === "other" ? '0 4px 6px rgba(255, 140, 66, 0.3)' : 'none'
+                    }}
+                  >
+                    Anyone
+                  </button>
+                </div>
+              </div>
+
+              {/* Section 2: Relationship */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label 
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    color: '#111827',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}
+                >
+                  Relationship
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <select
+                    value={formData.relationship}
+                    onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 40px 12px 16px',
+                      borderRadius: '12px',
+                      border: '1px solid #E5E7EB',
+                      fontSize: '14px',
+                      color: '#374151',
+                      backgroundColor: 'white',
+                      appearance: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value="" disabled selected>Select Relationship</option>
+                    <option value="friend">Friend</option>
+                    <option value="partner">Partner</option>
+                    <option value="parent">Parent</option>
+                    <option value="sibling">Sibling</option>
+                    <option value="colleague">Colleague</option>
+                    <option value="boss">Boss</option>
+                  </select>
+                  <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)' }}>
+                    <ChevronDown size={20} color="#9CA3AF" />
                   </div>
-                  <div className="flex items-center space-x-2 p-2 sm:p-3 rounded-lg border hover:bg-accent cursor-pointer">
-                    <RadioGroupItem value="female" id="female" />
-                    <Label htmlFor="female" className="cursor-pointer flex-1 text-sm sm:text-base">For Her</Label>
+                </div>
+              </div>
+
+              {/* Section 3: Occasion */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label 
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    color: '#111827',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}
+                >
+                  Occasion
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <select
+                    value={formData.occasion}
+                    onChange={(e) => setFormData({ ...formData, occasion: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 40px 12px 16px',
+                      borderRadius: '12px',
+                      border: '1px solid #E5E7EB',
+                      fontSize: '14px',
+                      color: '#374151',
+                      backgroundColor: 'white',
+                      appearance: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value="" disabled selected>Select Occasion</option>
+                    <option value="birthday">Birthday</option>
+                    <option value="wedding">Wedding</option>
+                    <option value="anniversary">Anniversary</option>
+                    <option value="graduation">Graduation</option>
+                    <option value="promotion">Promotion</option>
+                    <option value="justbecause">Just Because</option>
+                  </select>
+                  <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)' }}>
+                    <ChevronDown size={20} color="#9CA3AF" />
                   </div>
-                  <div className="flex items-center space-x-2 p-2 sm:p-3 rounded-lg border hover:bg-accent cursor-pointer">
-                    <RadioGroupItem value="other" id="other" />
-                    <Label htmlFor="other" className="cursor-pointer flex-1 text-sm sm:text-base">Anyone</Label>
+                </div>
+              </div>
+
+              {/* Section 4: Age Group */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label 
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    color: '#111827',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em'
+                  }}
+                >
+                  Age Group
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <select
+                    value={formData.ageGroup}
+                    onChange={(e) => setFormData({ ...formData, ageGroup: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px 40px 12px 16px',
+                      borderRadius: '12px',
+                      border: '1px solid #E5E7EB',
+                      fontSize: '14px',
+                      color: '#374151',
+                      backgroundColor: 'white',
+                      appearance: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value="" disabled selected>Select Age Group</option>
+                    <option value="child">Child (0-12)</option>
+                    <option value="teen">Teen (13-19)</option>
+                    <option value="adult">Adult (20-59)</option>
+                    <option value="senior">Senior (60+)</option>
+                  </select>
+                  <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)' }}>
+                    <ChevronDown size={20} color="#9CA3AF" />
                   </div>
-                </RadioGroup>
+                </div>
               </div>
 
-              {/* Relationship */}
-              <div className="space-y-2">
-                <Label htmlFor="relationship" className="text-xs sm:text-sm">Relationship</Label>
-                <Select
-                  value={formData.relationship}
-                  onValueChange={(value) => setFormData({ ...formData, relationship: value })}
-                >
-                  <SelectTrigger id="relationship" className="h-10">
-                    <SelectValue placeholder="Select relationship" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="friend">Friend</SelectItem>
-                    <SelectItem value="partner">Partner</SelectItem>
-                    <SelectItem value="parent">Parent</SelectItem>
-                    <SelectItem value="sibling">Sibling</SelectItem>
-                    <SelectItem value="colleague">Colleague</SelectItem>
-                    <SelectItem value="boss">Boss</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Occasion */}
-              <div className="space-y-2">
-                <Label htmlFor="occasion" className="text-xs sm:text-sm">Occasion</Label>
-                <Select
-                  value={formData.occasion}
-                  onValueChange={(value) => setFormData({ ...formData, occasion: value })}
-                >
-                  <SelectTrigger id="occasion" className="h-10">
-                    <SelectValue placeholder="Select occasion" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="birthday">Birthday</SelectItem>
-                    <SelectItem value="wedding">Wedding</SelectItem>
-                    <SelectItem value="anniversary">Anniversary</SelectItem>
-                    <SelectItem value="graduation">Graduation</SelectItem>
-                    <SelectItem value="promotion">Promotion</SelectItem>
-                    <SelectItem value="justbecause">Just Because</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Age Group */}
-              <div className="space-y-2">
-                <Label htmlFor="age" className="text-xs sm:text-sm">Age Group</Label>
-                <Select
-                  value={formData.ageGroup}
-                  onValueChange={(value) => setFormData({ ...formData, ageGroup: value })}
-                >
-                  <SelectTrigger id="age" className="h-10">
-                    <SelectValue placeholder="Select age group" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="child">Child (0-12)</SelectItem>
-                    <SelectItem value="teen">Teen (13-19)</SelectItem>
-                    <SelectItem value="adult">Adult (20-59)</SelectItem>
-                    <SelectItem value="senior">Senior (60+)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Button type="submit" className="w-full rounded-full h-10 text-sm" size="lg">
-                Find My Perfect Gift
-              </Button>
+              {/* Primary Action Button */}
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  height: '56px',
+                  borderRadius: '9999px',
+                  backgroundColor: '#FF8C42',
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 24px',
+                  transition: 'background-color 0.2s ease',
+                  boxShadow: '0 4px 6px rgba(255, 140, 66, 0.3)'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FF7020'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FF8C42'}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  Find Gift
+                  <Sparkles className="h-4 w-4" style={{ color: 'white' }} />
+                </span>
+              </button>
             </form>
+
+            <style>
+              {`
+                @keyframes sparkle {
+                  0%, 100% { opacity: 0; transform: scale(0); }
+                  50% { opacity: 1; transform: scale(1); }
+                }
+              `}
+            </style>
           </DialogContent>
         </Dialog>
       </div>
     </section>
   );
 }
-
-

@@ -14,15 +14,8 @@ This documentation explains your **secure, production-ready Paystack payment sys
 4. **Row Level Security**: Users can only access their own payment records
 5. **Payment Deduplication**: Unique references prevent duplicate processing
 
-### Why This Matters
 
-**Traditional (Insecure) Approach:**
-```
-Frontend → Paystack → Frontend Success Callback → Trust and Proceed
-❌ Problems: Easy to spoof, no real verification, not production-ready
-```
-
-**Your Secure Approach:**
+**Secure Approach:**
 ```
 Frontend → Paystack → Paystack API Verification → Database → UI Update
 ✅ Benefits: Server-verified, database-backed, production-secure

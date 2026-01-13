@@ -41,14 +41,14 @@ export function CategorySection({ title, subtitle, categories, type = "occasion"
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 justify-items-center max-w-sm sm:max-w-md md:max-w-4xl mx-auto">
+        <div className={`grid gap-3 sm:gap-4 md:gap-6 justify-items-center mx-auto ${type === "occasion" ? "grid-cols-2 lg:grid-cols-4 max-w-sm sm:max-w-md lg:max-w-6xl" : "grid-cols-2 lg:grid-cols-4 max-w-sm sm:max-w-md lg:max-w-4xl"}`}>
           {categories.map((category, index) => {
             const Icon = category.icon;
             return (
               <Link
                 key={index}
                 to={getCategoryLink(category.name)}
-                className="group relative overflow-hidden bg-accent hover:bg-accent/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 block cursor-pointer w-full aspect-square max-w-[160px] sm:max-w-[180px] md:max-w-[200px]"
+                className={`group relative overflow-hidden bg-accent hover:bg-accent/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 block cursor-pointer w-full ${type === "occasion" ? "aspect-square max-w-[160px] sm:max-w-[180px] lg:max-w-[240px]" : "aspect-square max-w-[160px] sm:max-w-[180px] lg:max-w-[200px]"}`}
                 style={{
                   borderRadius: '16px'
                 }}
@@ -59,14 +59,14 @@ export function CategorySection({ title, subtitle, categories, type = "occasion"
                     alt={category.name}
                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  
+                  <div className={`absolute inset-0 ${type === "recipient" ? "bg-gradient-to-t from-black/80 to-transparent" : "bg-gradient-to-t from-black/70 via-black/20 to-transparent"}`} />
+
                   {/* Content */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-white">
-                    <Icon className={`h-8 w-8 mb-2 group-hover:scale-110 transition-transform ${type === "occasion" ? "h-6 w-6" : "h-8 w-8"}`} />
-                    <h3 className={`text-center mb-1 ${type === "occasion" ? "text-xs" : "text-sm"}`}>{category.name}</h3>
-                    {category.description && (
-                      <p className={`text-white/80 text-center leading-tight ${type === "occasion" ? "text-xs" : "text-xs"}`}>{category.description}</p>
+                    <Icon className={`mb-2 group-hover:scale-110 transition-transform ${type === "occasion" ? "h-6 w-6 lg:h-8 lg:w-8" : "h-8 w-8"}`} />
+                    <h3 className={`text-center mb-1 ${type === "occasion" ? "text-xs lg:text-sm" : "text-sm"}`}>{category.name}</h3>
+                    {type === "occasion" && category.description && (
+                      <p className="text-white/80 text-center leading-tight text-xs">{category.description}</p>
                     )}
                   </div>
                 </div>
@@ -80,4 +80,5 @@ export function CategorySection({ title, subtitle, categories, type = "occasion"
     </section>
   );
 }
+
 

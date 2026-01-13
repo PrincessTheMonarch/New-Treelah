@@ -303,12 +303,23 @@ export function ProductListPage() {
     tagParam,
   ]);
 
+  const getFilterTitle = () => {
+    if (selectedCategories.length > 0) return selectedCategories.join(", ");
+    if (selectedOccasions.length > 0) return selectedOccasions.join(", ");
+    if (selectedRatings.length > 0) return selectedRatings.map(r => `${r} Star & Up`).join(", ");
+    if (selectedAvailability.length > 0) return selectedAvailability.join(", ");
+    if (selectedDeliveryTime.length > 0) return selectedDeliveryTime.join(", ");
+    return null;
+  };
+
   const pageTitle = category
     ? category
         .split("-")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ")
-    : tagParam || occasionParam || "All Products";
+    : fromGiftFinder
+    ? "Perfect Gifts for Your Loved Ones"
+    : getFilterTitle() || tagParam || occasionParam || "All Products";
 
   const activeFiltersCount =
     selectedCategories.length +
@@ -810,8 +821,10 @@ export function ProductListPage() {
       </header>
 
       {/* Hero Banner with Gradient */}
-      <div style={{ 
-        background: 'linear-gradient(to right, rgba(255, 140, 66, 0.08), rgba(255, 140, 66, 0.04), rgba(255, 140, 66, 0.08))',
+      <div style={{
+        background: 'linear-gradient(to right, #FEEFE6 0%, #EAF9FF 50%, #FEEFE6 100%)',
+        backdropFilter: 'blur(80px)',
+        WebkitBackdropFilter: 'blur(80px)',
         paddingTop: '24px',
         paddingBottom: '24px',
       }}>
@@ -859,9 +872,14 @@ export function ProductListPage() {
             {/* Show "Showing Results for" when search is active */}
             {searchQuery ? (
               <>
-                <h1 style={{ 
-                  fontSize: '28px', 
-                  fontWeight: 700, 
+                <h1 style={{
+                  fontFamily: 'Poppins',
+                  fontWeight: 500,
+                  fontSize: '36px',
+                  lineHeight: '120%',
+                  letterSpacing: '0%',
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
                   marginBottom: '4px',
                   color: '#1A1A1A',
                 }}>
@@ -877,23 +895,28 @@ export function ProductListPage() {
                 </h2>
               </>
             ) : (
-              <h1 style={{ 
-                fontSize: '28px', 
-                fontWeight: 700, 
+              <h1 style={{
+                fontFamily: 'Poppins',
+                fontWeight: 500,
+                fontSize: '36px',
+                lineHeight: '120%',
+                letterSpacing: '0%',
+                textAlign: 'center',
+                verticalAlign: 'middle',
                 marginBottom: '8px',
                 color: '#1A1A1A',
               }}>
                 {fromGiftFinder ? "Perfect Gifts For You" : `${pageTitle}`}
               </h1>
             )}
-            <p style={{ 
-              fontSize: '14px', 
+            <p style={{
+              fontSize: '14px',
               color: '#6B7280',
               maxWidth: '600px',
               margin: '0 auto',
             }}>
-              {fromGiftFinder 
-                ? `Based on your preferences, here are gifts ${relationshipParam ? `for your ${relationshipParam}` : ""} ${ageGroupParam ? `(${ageGroupParam})` : ""}`
+              {fromGiftFinder
+                ? "Based on your answers, here are some gift recommendations"
                 : "Explore our best-selling gifts, find something perfect for every occasion!"
               }
             </p>

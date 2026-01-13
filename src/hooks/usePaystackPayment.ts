@@ -13,10 +13,10 @@ import {
 
 interface UsePaystackPaymentOptions {
   email: string;
-  amount: number; // Amount in dollars
+  amount: number; // Amount in naira (already in naira, not converted)
   currency?: string;
   metadata?: Record<string, any>;
-  onSuccess?: (payment: PaymentVerificationResponse['payment']) => void;
+  onSuccess?: (payment: PaymentVerificationResponse['payment'] & { order?: any }) => void;
   onError?: (error: string) => void;
 }
 
@@ -46,19 +46,26 @@ export function usePaystackPayment(options: UsePaystackPaymentOptions): UsePayst
     setError(null);
 
     try {
-      // Convert amount to kobo for verification
-      const expectedAmount = dollarsToKobo(amount);
+      // Convert amount to kobo for verification (amount is already in naira)
+      const amountInKobo = Math.round(amount * 100);
+      const expectedAmount = amountInKobo;
 
       // Verify payment with backend
+      console.log('[usePaystackPayment] Verifying payment with reference:', reference);
       const verificationResponse = await verifyPayment(reference, expectedAmount, currency);
+
+      console.log('[usePaystackPayment] Verification response:', verificationResponse);
 
       if (verificationResponse.success && verificationResponse.payment) {
         setStatus('success');
-        toast.success('Payment successful! 🎉');
+        toast.success('Payment successful!');
         
-        // Call success callback if provided
+        // Call success callback with both payment and order data
         if (onSuccess) {
-          onSuccess(verificationResponse.payment);
+          onSuccess({
+            ...verificationResponse.payment,
+            order: verificationResponse.order,
+          });
         }
       } else {
         const errorMessage = verificationResponse.error || 'Payment verification failed';
@@ -119,7 +126,7 @@ export function usePaystackPayment(options: UsePaystackPaymentOptions): UsePayst
     setError(null);
 
     try {
-      console.log('[usePaystackPayment] Initializing payment for amount:', amount, 'dollars');
+      console.log('[usePaystackPayment] Initializing payment for amount:', amount, 'NGN');
 
       // Prepare metadata
       const paymentMetadata = {
@@ -128,20 +135,17 @@ export function usePaystackPayment(options: UsePaystackPaymentOptions): UsePayst
         ...metadata,
       };
 
-      // Convert amount to kobo (Nigerian kobo)
-      const amountInKobo = dollarsToKobo(amount);
+      // Amount is already in naira, convert to kobo
+      const amountInKobo = Math.round(amount * 100);
       console.log('[usePaystackPayment] Amount in kobo:', amountInKobo);
 
       // Initialize Paystack payment
-      // Note: We don't generate a custom reference
-      // Paystack will generate its own reference and return it in the callback
       initializePaystackPayment(
         {
           email,
           amount: amountInKobo,
           currency,
           metadata: paymentMetadata,
-          // No reference - let Paystack generate it
         },
         handlePaymentSuccess,
         handlePaymentError,

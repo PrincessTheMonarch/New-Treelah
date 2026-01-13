@@ -18,7 +18,7 @@ import { Separator } from "./ui/separator";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { useState, useEffect, useRef, FormEvent } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
@@ -38,7 +38,7 @@ export function Header() {
     ageGroup: "",
   });
   const navigate = useNavigate();
-  const categoriesRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef(null);
 
   // Check for openGiftFinder query parameter and open modal
   useEffect(() => {
@@ -71,7 +71,7 @@ export function Header() {
     navigate("/");
   };
 
-  const handleGiftFinderSubmit = (e: FormEvent) => {
+  const handleGiftFinderSubmit = (e: any) => {
     e.preventDefault();
 
     // Build URL parameters based on form data
@@ -87,7 +87,7 @@ export function Header() {
     // Add occasion
     if (formData.occasion) {
       // Capitalize first letter and handle special cases
-      const occasionFormatted = formData.occasion.split('-').map(word => 
+      const occasionFormatted = formData.occasion.split('-').map(word =>
         word.charAt(0).toUpperCase() + word.slice(1)
       ).join(' ');
       params.append("occasion", occasionFormatted);
@@ -110,7 +110,7 @@ export function Header() {
   };
 
   // Handle mobile search
-  const handleMobileSearch = (e: FormEvent) => {
+  const handleMobileSearch = (e: any) => {
     e.preventDefault();
     if (mobileSearchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(mobileSearchQuery)}`);
@@ -119,7 +119,7 @@ export function Header() {
   };
 
   // Handle desktop search
-  const handleDesktopSearch = (e: FormEvent) => {
+  const handleDesktopSearch = (e: any) => {
     e.preventDefault();
     if (desktopSearchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(desktopSearchQuery)}`);
@@ -214,9 +214,9 @@ export function Header() {
             {/* Mobile Menu Button - Top Right */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden rounded-full h-10 w-10">
+                <button variant="ghost" size="icon" className="lg:hidden rounded-full h-10 w-10">
                   <Menu className="h-5 w-5" />
-                </Button>
+                </button>
               </SheetTrigger>
             <SheetContent side="right" className="w-full sm:w-80 p-0 flex flex-col max-h-[80vh] overflow-y-auto">
             <SheetHeader className="p-4 sm:p-6 pb-4">
@@ -238,8 +238,8 @@ export function Header() {
                       border: getTotalItems() > 0 ? 'none' : '1px solid rgba(255, 255, 255, 0.2)'
                     }}
                   >
-                    <ShoppingCart 
-                      className="h-5 w-5" 
+                    <ShoppingCart
+                      className="h-5 w-5"
                       style={{
                         color: getTotalItems() > 0 ? '#FFFFFF' : '#FFFFFF'
                       }}
@@ -253,14 +253,14 @@ export function Header() {
                 </Link>
                 
                 {/* Heart Icon */}
-                <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Wishlist">
+                <button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Wishlist">
                   <Heart className="h-5 w-5" />
-                </Button>
+                </button>
                 
                 {/* Headphone Icon */}
-                <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Support">
+                <button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Support">
                   <Headphones className="h-5 w-5" />
-                </Button>
+                </button>
                 
                 {/* User Profile Icon */}
                 {loading ? (
@@ -268,16 +268,16 @@ export function Header() {
                 ) : user ? (
                   <div className="relative group">
                     <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Account">
+                      <button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Account">
                         <UserCircle className="h-5 w-5" />
-                      </Button>
+                      </button>
                     </Link>
                   </div>
                 ) : (
                   <Link to="/auth/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Sign In">
+                    <button variant="ghost" size="icon" className="rounded-full text-white hover:text-white/80 hover:bg-white/10 transition-all duration-200 cursor-pointer" title="Sign In">
                       <UserCircle className="h-5 w-5" />
-                    </Button>
+                    </button>
                   </Link>
                 )}
               </div>
@@ -285,7 +285,7 @@ export function Header() {
               {/* Shopping Assistant Modal - High Fidelity */}
               <Dialog open={giftFinderOpen} onOpenChange={setGiftFinderOpen}>
                 <DialogTrigger asChild>
-                  <Button
+                  <button
                     size="lg"
                     style={{
                       backgroundColor: '#FF8C42',
@@ -294,28 +294,31 @@ export function Header() {
                       fontWeight: '600',
                       border: 'none',
                       width: '100%',
-                      height: '40px'
+                      height: '40px',
+                      padding: '0 16px',
+                      fontSize: '0.875rem'
                     }}
-                    className="gap-2 mb-4 hover:opacity-90 transition-opacity"
+                    className="gap-2 mb-4 hover:opacity-90 transition-opacity flex items-center justify-center"
                   >
-                    <Sparkles className="h-5 w-5" />
+                    <Sparkles className="h-4 w-4" />
                     Shopping Assistant
-                  </Button>
+                  </button>
                 </DialogTrigger>
 
-                <DialogContent 
+                <DialogContent
                   className="p-0"
                   style={{
                     width: 'min(720px, 95vw)',
                     maxHeight: 'min(786px, 90vh)',
                     borderRadius: '24px',
                     padding: 0,
+                    overflowY: 'auto'
                   }}
                 >
                   {/* Modal Header */}
                   <div style={{ padding: '40px 40px 0 40px' }}>
                     <DialogHeader className="pb-0">
-                      <DialogTitle 
+                      <DialogTitle
                         style={{
                           fontSize: '32px',
                           fontWeight: '700',
@@ -325,7 +328,7 @@ export function Header() {
                       >
                         Find Your Perfect Gift
                       </DialogTitle>
-                      <DialogDescription 
+                      <DialogDescription
                         style={{
                           fontSize: '16px',
                           color: '#6B7280',
@@ -338,10 +341,10 @@ export function Header() {
                   </div>
 
                   {/* Form */}
-                  <form 
-                    onSubmit={handleGiftFinderSubmit} 
+                  <form
+                    onSubmit={handleGiftFinderSubmit}
                     className="space-y-0"
-                    style={{ 
+                    style={{
                       padding: '40px',
                       gap: '32px',
                       display: 'flex',
@@ -350,7 +353,7 @@ export function Header() {
                   >
                     {/* Section 1: Who is the gift for */}
                     <div className="space-y-3">
-                      <Label 
+                      <Label
                         style={{
                           fontSize: '14px',
                           fontWeight: '600',
@@ -391,7 +394,7 @@ export function Header() {
 
                     {/* Section 2: Relationship */}
                     <div className="space-y-3">
-                      <Label 
+                      <Label
                         style={{
                           fontSize: '14px',
                           fontWeight: '600',
@@ -404,7 +407,7 @@ export function Header() {
                         value={formData.relationship}
                         onValueChange={(value) => setFormData({ ...formData, relationship: value })}
                       >
-                        <SelectTrigger 
+                        <SelectTrigger
                           id="relationship"
                           style={{
                             height: '48px',
@@ -431,7 +434,7 @@ export function Header() {
 
                     {/* Section 3: Occasion */}
                     <div className="space-y-3">
-                      <Label 
+                      <Label
                         style={{
                           fontSize: '14px',
                           fontWeight: '600',
@@ -444,7 +447,7 @@ export function Header() {
                         value={formData.occasion}
                         onValueChange={(value) => setFormData({ ...formData, occasion: value })}
                       >
-                        <SelectTrigger 
+                        <SelectTrigger
                           id="occasion"
                           style={{
                             height: '48px',
@@ -471,7 +474,7 @@ export function Header() {
 
                     {/* Section 4: Age Group */}
                     <div className="space-y-3">
-                      <Label 
+                      <Label
                         style={{
                           fontSize: '14px',
                           fontWeight: '600',
@@ -484,7 +487,7 @@ export function Header() {
                         value={formData.ageGroup}
                         onValueChange={(value) => setFormData({ ...formData, ageGroup: value })}
                       >
-                        <SelectTrigger 
+                        <SelectTrigger
                           id="age"
                           style={{
                             height: '48px',
@@ -507,7 +510,7 @@ export function Header() {
                     </div>
 
                     {/* Submit Button */}
-                    <Button
+                    <button
                       type="submit"
                       style={{
                         width: '100%',
@@ -515,16 +518,17 @@ export function Header() {
                         borderRadius: '9999px',
                         backgroundColor: '#FF8C42',
                         color: '#FFFFFF',
-                        fontSize: '16px',
+                        fontSize: '0.875rem',
                         fontWeight: '600',
                         border: 'none',
-                        marginTop: '8px'
+                        marginTop: '8px',
+                        padding: '0 16px'
                       }}
-                      className="hover:opacity-90 transition-opacity"
+                      className="hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                     >
                       Find Gift
-                      <Sparkles className="h-5 w-5 ml-2" />
-                    </Button>
+                      <Sparkles className="h-4 w-4" />
+                    </button>
                   </form>
                 </DialogContent>
               </Dialog>
@@ -545,7 +549,7 @@ export function Header() {
                           <p className="text-xs text-muted-foreground">Signed in</p>
                         </div>
                       </div>
-                      <Button
+                      <button
                         variant="outline"
                         className="w-full gap-2 h-10"
                         onClick={() => {
@@ -555,19 +559,19 @@ export function Header() {
                       >
                         <LogOut className="h-4 w-4" />
                         Sign Out
-                      </Button>
+                      </button>
                     </div>
                   ) : (
                     <div className="space-y-3">
                       <Link to="/auth/login" onClick={() => setMobileMenuOpen(false)}>
-                        <Button variant="outline" className="w-full h-10">
+                        <button variant="outline" className="w-full h-10">
                           Sign In
-                        </Button>
+                        </button>
                       </Link>
                       <Link to="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
-                        <Button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 h-10">
+                        <button className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 h-10">
                           Create Account
-                        </Button>
+                        </button>
                       </Link>
                     </div>
                   )}
@@ -585,8 +589,8 @@ export function Header() {
                     className="flex items-center gap-2 text-[#1A1A1A]"
                   >
                     <span className="text-2xl font-bold">Categories</span>
-                    <ChevronDown 
-                      className={`h-5 w-5 transition-transform duration-200 ${categoriesOpen ? 'rotate-180' : ''}`} 
+                    <ChevronDown
+                      className={`h-5 w-5 transition-transform duration-200 ${categoriesOpen ? 'rotate-180' : ''}`}
                     />
                   </button>
 
@@ -718,7 +722,7 @@ export function Header() {
               
               {/* Mega Menu Dropdown */}
               {categoriesOpen && (
-                <div 
+                <div
                   className="absolute top-full left-0 mt-2 rounded-2xl shadow-2xl border border-gray-200 bg-white"
                   style={{
                     width: '600px',
@@ -793,9 +797,9 @@ export function Header() {
             
             {/* Other Navigation Items */}
             <div className="flex items-center gap-2 xl:gap-3">
-              <Link 
-                to="/bulk-orders" 
-                className="px-2 py-2 text-white cursor-pointer whitespace-nowrap text-sm" 
+              <Link
+                to="/bulk-orders"
+                className="px-2 py-2 text-white cursor-pointer whitespace-nowrap text-sm"
                 style={{ opacity: 0.7 }}
               >
                 Souvenirier & Bulk Orders
@@ -805,7 +809,7 @@ export function Header() {
 
           {/* Center: Shopping Assistant Button */}
           <Link to="/?openGiftFinder=true">
-            <div 
+            <div
               className="flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity"
               style={{
                 width: '160px',
@@ -821,7 +825,7 @@ export function Header() {
               }}
             >
               <Sparkles className="h-3 w-3 text-white flex-shrink-0" />
-              <span 
+              <span
                 className="text-white whitespace-nowrap"
                 style={{
                   fontSize: '0.75rem',
@@ -836,7 +840,7 @@ export function Header() {
 
           {/* Center-Right: Search Bar */}
           <form onSubmit={handleDesktopSearch} className="relative flex-shrink-0">
-            <div 
+            <div
               className="flex items-center justify-between"
               style={{
                 width: '180px',
@@ -867,4 +871,6 @@ export function Header() {
     </header>
   );
 }
+
+export default Header;
 

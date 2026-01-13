@@ -1,4 +1,4 @@
-import { Header } from "../components/Header";
+import Header from "../components/Header";
 import { Hero } from "../components/Hero";
 import { GiftFinder } from "../components/GiftFinder";
 import { CategorySection } from "../components/CategorySection";
@@ -20,25 +20,25 @@ export function HomePage() {
   const celebrationCategories = [
     {
       name: "Birthdays",
-      image: "https://images.unsplash.com/photo-1619252872371-c82ac4d9e86f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiaXJ0aGRheSUyMHBhcnR5JTIwYmFsbG9vbnN8ZW58MXx8fHwxNzYxNTU1NTg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      image: "/Landing Page Images/Gift1.png",
       icon: Cake,
       description: "Make their day extra special",
     },
     {
       name: "Weddings",
-      image: "https://images.unsplash.com/photo-1581720848209-9721f8fa30ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWRkaW5nJTIwZmxvd2VycyUyMGVsZWdhbnR8ZW58MXx8fHwxNzYxNTQ0OTU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      image: "/Landing Page Images/Gift2.png",
       icon: Heart,
       description: "Celebrate their forever",
     },
     {
       name: "Baby Showers",
-      image: "https://images.unsplash.com/photo-1696527014341-a874bd839540?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxraWRzJTIwdG95cyUyMGNvbG9yZnVsfGVufDF8fHx8MTc2MTY0MDc4OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      image: "/Landing Page Images/Gift3.png",
       icon: Baby,
       description: "Welcome the little one",
     },
     {
       name: "Life Milestones & Achievements",
-      image: "https://images.unsplash.com/photo-1758607235130-f199d2a17b69?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxncmFkdWF0aW9uJTIwY2VsZWJyYXRpb24lMjBhY2hpZXZlbWVudHxlbnwxfHx8fDE3NjE2NDkwMTR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      image: "/Landing Page Images/Gift4.png",
       icon: Trophy,
       description: "Celebrate their success",
     },
@@ -266,10 +266,10 @@ export function HomePage() {
       />
 
       {/* CTA Section */}
-      <section 
+      <section
         className="text-white relative overflow-hidden"
         style={{
-          backgroundColor: '#3B82F6',
+          backgroundColor: '#6FC2E4',
           width: '100%',
           minHeight: '320px',
           paddingTop: '40px',
@@ -317,6 +317,4 @@ export function HomePage() {
     </div>
   );
 }
-
-
 

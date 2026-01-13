@@ -72,6 +72,14 @@ interface VerifyPaymentResponse {
     status: string;
     paid_at: string;
   };
+  order?: {
+    id: string;
+    order_number: string;
+    subtotal: number;
+    delivery_fee: number;
+    total: number;
+  };
+  order_error?: string | null;
 }
 
 // Helper function to create consistent error responses
@@ -167,6 +175,8 @@ serve(async (req: Request) => {
       return createErrorResponse('Authentication service error', 500);
     }
 
+    console.log(`[verify-payment] Processing payment for user: ${user.id}, reference: ${reference}`);
+
     // Check if payment reference has already been verified
     let existingPayment;
     try {
@@ -189,6 +199,7 @@ serve(async (req: Request) => {
     }
 
     if (existingPayment) {
+      console.log(`[verify-payment] Payment already exists: ${existingPayment.id}`);
       // Payment reference already exists, return the existing record
       const response: VerifyPaymentResponse = {
         success: existingPayment.status === 'success',
@@ -210,6 +221,7 @@ serve(async (req: Request) => {
     
     let paystackResponse;
     try {
+      console.log(`[verify-payment] Calling Paystack API...`);
       paystackResponse = await fetch(paystackUrl, {
         method: 'GET',
         headers: {
@@ -218,16 +230,13 @@ serve(async (req: Request) => {
         },
       });
     } catch (error) {
-      console.error('[verify-payment] Network error calling Paystack');
+      console.error('[verify-payment] Network error calling Paystack:', error);
       return createErrorResponse('Payment verification service unavailable', 503);
     }
 
     if (!paystackResponse.ok) {
       const errorText = await paystackResponse.text().catch(() => 'Unknown error');
       console.error(`[verify-payment] Paystack API error (${paystackResponse.status}): ${errorText}`);
-      
-      // Don't return 502 - that's a bad gateway error which suggests our server is misconfigured
-      // Instead, return a proper error indicating the payment verification failed
       return createErrorResponse('Payment verification failed - please check your payment status', 400);
     }
 
@@ -248,6 +257,7 @@ serve(async (req: Request) => {
 
     // Validate payment details
     if (paymentData.status !== 'success') {
+      console.error(`[verify-payment] Payment status is: ${paymentData.status}`);
       return createErrorResponse(`Payment ${paymentData.status}`, 400);
     }
 
@@ -262,6 +272,7 @@ serve(async (req: Request) => {
     // Save payment record to database
     let paymentRecord;
     try {
+      console.log('[verify-payment] Saving payment record to database...');
       const { data, error: insertError } = await supabase
         .from('payments')
         .insert({
@@ -310,12 +321,45 @@ serve(async (req: Request) => {
       }
       
       paymentRecord = data;
+      console.log(`[verify-payment] Payment record created: ${paymentRecord.id}`);
     } catch (error) {
       console.error('[verify-payment] Database insert error:', error);
       return createErrorResponse('Database service error', 500);
     }
 
-    // Return successful verification
+    // Create order from payment (moves cart items to order items and clears cart)
+    let orderResult = null;
+    let orderErrorMsg = null;
+    
+    try {
+      console.log('[verify-payment] Creating order from payment...');
+      console.log('[verify-payment] Calling RPC with user_id:', user.id, 'payment_id:', paymentRecord.id);
+      
+      const { data: orderData, error: orderError } = await supabase
+        .rpc('create_order_from_payment', {
+          p_user_id: user.id,
+          p_payment_id: paymentRecord.id,
+          p_delivery_fee: 1500,
+        });
+
+      console.log('[verify-payment] RPC response - data:', orderData, 'error:', orderError);
+
+      if (orderError) {
+        console.error('[verify-payment] Order creation RPC error:', orderError);
+        orderErrorMsg = orderError.message;
+      } else if (orderData) {
+        console.log('[verify-payment] Order created successfully:', JSON.stringify(orderData));
+        orderResult = orderData;
+      } else {
+        console.log('[verify-payment] Order creation returned null - possible empty cart or function error');
+        orderErrorMsg = 'Order creation returned null';
+      }
+    } catch (error) {
+      console.error('[verify-payment] Order creation exception:', error);
+      orderErrorMsg = error instanceof Error ? error.message : 'Unknown order creation error';
+    }
+
+    // Return successful verification with order details
     const response: VerifyPaymentResponse = {
       success: true,
       payment: {
@@ -326,9 +370,18 @@ serve(async (req: Request) => {
         currency: paymentRecord.currency,
         status: paymentRecord.status,
         paid_at: paymentRecord.paid_at,
-      }
+      },
+      order: orderResult ? {
+        id: orderResult.order_id,
+        order_number: orderResult.order_number,
+        subtotal: orderResult.subtotal,
+        delivery_fee: orderResult.delivery_fee,
+        total: orderResult.total,
+      } : undefined,
+      order_error: orderErrorMsg,
     };
 
+    console.log('[verify-payment] Payment verification complete. Order error:', orderErrorMsg);
     return createSuccessResponse(response);
 
   } catch (error) {
@@ -336,5 +389,3 @@ serve(async (req: Request) => {
     return createErrorResponse('Internal server error', 500);
   }
 });
-
-

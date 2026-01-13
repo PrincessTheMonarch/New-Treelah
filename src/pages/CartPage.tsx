@@ -20,6 +20,8 @@ import {
   Truck,
   ChevronDown,
   Sparkles,
+  Menu,
+  X,
 } from "lucide-react";
 
 export function CartPage() {
@@ -34,6 +36,7 @@ export function CartPage() {
   // Search state for header
   const [searchQuery, setSearchQuery] = useState("");
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const subtotal = getTotalPrice();
   const discount = appliedPromo ? appliedPromo.discount : 0;
@@ -67,6 +70,54 @@ export function CartPage() {
     borderBottom: '1px solid #E5E7EB',
     width: '100%',
     padding: '12px 16px',
+  };
+
+  // Mobile menu styles
+  const mobileMenuStyle: CSSProperties = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100vh',
+    backgroundColor: 'white',
+    zIndex: 1000,
+    transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(-100%)',
+    transition: 'transform 0.3s ease-in-out',
+    overflowY: 'auto',
+  };
+
+  const mobileMenuOverlayStyle: CSSProperties = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100vh',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 999,
+    opacity: mobileMenuOpen ? 1 : 0,
+    visibility: mobileMenuOpen ? 'visible' : 'hidden',
+    transition: 'opacity 0.3s ease-in-out',
+  };
+
+  const mobileMenuHeaderStyle: CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '16px',
+    borderBottom: '1px solid #E5E7EB',
+  };
+
+  const mobileMenuItemStyle: CSSProperties = {
+    padding: '16px',
+    borderBottom: '1px solid #F3F4F6',
+    cursor: 'pointer',
+  };
+
+  const mobileMenuCloseButtonStyle: CSSProperties = {
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '8px',
   };
 
   const headerContainerStyle: CSSProperties = {
@@ -676,9 +727,266 @@ export function CartPage() {
   if (items.length === 0) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        {/* Responsive CSS */}
+        <style>
+          {`
+            @media (max-width: 768px) {
+              /* Show mobile menu button */
+              .mobile-menu-button {
+                display: block !important;
+                position: absolute !important;
+                top: 16px !important;
+                right: 16px !important;
+                z-index: 1001 !important;
+              }
+              /* Hide desktop navigation */
+              .desktop-nav {
+                display: none !important;
+              }
+              /* Adjust header layout for mobile */
+              .header-container {
+                flex-direction: row !important;
+                gap: 12px !important;
+                position: relative !important;
+              }
+              /* Adjust search bar for mobile */
+              .search-bar-container {
+                width: 100% !important;
+                max-width: none !important;
+              }
+              /* Prevent horizontal scrolling */
+              body, html {
+                overflow-x: hidden !important;
+              }
+              /* Adjust cart layout for mobile */
+              .cart-container {
+                flex-direction: column !important;
+              }
+              .cart-items-section, .order-summary-container {
+                width: 100% !important;
+              }
+              /* Adjust product card for mobile */
+              .product-card-new {
+                flex-direction: column !important;
+                width: 100% !important;
+                height: auto !important;
+                padding: 16px !important;
+                gap: 12px !important;
+              }
+              .product-image-placeholder {
+                width: 100% !important;
+                height: 200px !important;
+              }
+              /* Adjust quantity selector layout */
+              .quantity-selector {
+                flex-direction: row !important;
+                gap: 8px !important;
+                align-items: center !important;
+              }
+              /* Adjust coupon input width */
+              .coupon-input {
+                width: 100% !important;
+              }
+              /* Adjust product info layout */
+              .product-info-section {
+                gap: 12px !important;
+                width: 100% !important;
+              }
+              /* Make cross-sell section scrollable */
+              .cross-sell-section {
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+              }
+              /* Fix cart main padding */
+              .cart-main {
+                padding: 16px !important;
+              }
+              /* Fix header right positioning */
+              .header-right {
+                margin-left: auto !important;
+              }
+              /* Adjust quantity buttons for mobile */
+              .quantity-button {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 14px !important;
+              }
+              /* Adjust font sizes for mobile */
+              .product-name-new {
+                font-size: 14px !important;
+              }
+              .product-price-new {
+                font-size: 16px !important;
+              }
+              /* Fix order summary layout */
+              .order-summary-container {
+                margin-top: 24px !important;
+                padding: 16px !important;
+              }
+              /* Adjust product info section for better mobile layout */
+              .product-info-section {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 12px !important;
+              }
+              /* Adjust quantity and remove button layout */
+              .quantity-selector {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                width: 100% !important;
+              }
+              /* Ensure remove button is properly positioned */
+              .remove-button {
+                margin-left: 0 !important;
+              }
+              /* Adjust order summary spacing */
+              .order-summary-container {
+                gap: 16px !important;
+              }
+              /* Make buttons full width on mobile */
+              .primary-button, .secondary-button {
+                width: 100% !important;
+              }
+              /* Adjust delivery estimate layout */
+              .delivery-estimate {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+              }
+              /* Ensure cart icon is visible on mobile */
+              .cart-icon-link {
+                position: relative !important;
+                z-index: 1002 !important;
+              }
+              /* Ensure cart badge is visible */
+              .cart-badge {
+                position: absolute !important;
+                top: -8px !important;
+                right: -8px !important;
+                z-index: 1003 !important;
+              }
+              /* Fix mobile menu positioning */
+              .mobile-menu-button {
+                z-index: 1001 !important;
+                position: relative !important;
+              }
+              /* Ensure header right is properly aligned */
+              .header-right {
+                display: flex !important;
+                align-items: center !important;
+                gap: 14px !important;
+                margin-left: auto !important;
+              }
+              /* Fix search bar width on mobile */
+              .search-bar-container {
+                width: 100% !important;
+                max-width: none !important;
+              }
+              /* Ensure product cards are properly spaced */
+              .product-card-new {
+                margin-bottom: 16px !important;
+              }
+              /* Fix quantity selector alignment */
+              .quantity-selector {
+                margin-top: auto !important;
+              }
+              /* Ensure cross-sell section is properly responsive */
+              .cross-sell-section {
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+                scrollbar-width: thin !important;
+                scrollbar-color: #E5E7EB transparent !important;
+              }
+              /* Fix cross-sell section padding */
+              .cross-sell-section {
+                padding-bottom: 20px !important;
+              }
+              /* Ensure product cards in cross-sell are properly sized */
+              .cross-sell-section a {
+                display: inline-block !important;
+                width: 160px !important;
+                margin-right: 12px !important;
+              }
+              /* Fix footer positioning */
+              footer {
+                margin-top: auto !important;
+              }
+              /* Ensure main content takes available space */
+              main {
+                flex: 1 !important;
+              }
+              /* Fix product image sizing */
+              .product-image-placeholder img {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+              }
+            }
+             
+            /* Tablet responsiveness */
+            @media (max-width: 1024px) and (min-width: 769px) {
+              .cart-items-section, .order-summary-container {
+                width: 100% !important;
+              }
+              .cart-container {
+                flex-direction: column !important;
+              }
+              .product-card-new {
+                width: 100% !important;
+              }
+              /* Adjust for tablet screens */
+              .product-card-new {
+                flex-direction: row !important;
+                padding: 16px !important;
+                gap: 16px !important;
+              }
+              .product-image-placeholder {
+                width: 120px !important;
+                height: 120px !important;
+              }
+              .product-info-section {
+                gap: 10px !important;
+              }
+              .quantity-selector {
+                gap: 10px !important;
+              }
+            }
+            
+            /* Small desktop screens */
+            @media (max-width: 1200px) and (min-width: 1025px) {
+              .cart-items-section, .order-summary-container {
+                width: 100% !important;
+              }
+              .cart-container {
+                flex-direction: column !important;
+              }
+              .product-card-new {
+                width: 100% !important;
+              }
+            }
+            
+            /* Large desktop screens */
+            @media (min-width: 1201px) {
+              /* Ensure proper spacing on large screens */
+              .cart-main {
+                max-width: 1400px !important;
+                margin: 0 auto !important;
+              }
+              .cart-container {
+                gap: 32px !important;
+              }
+              .product-card-new {
+                width: 100% !important;
+                max-width: 800px !important;
+              }
+            }
+          `}
+        </style>
         {/* Header from BulkOrderPage */}
         <header style={headerStyle}>
-          <div style={headerContainerStyle}>
+          <div style={headerContainerStyle} className="header-container">
             {/* Left: Logo + Brand Name + Tagline */}
             <div style={headerLeftStyle}>
               <div style={logoCircleStyle}>
@@ -691,7 +999,7 @@ export function CartPage() {
             </div>
 
             {/* Center: Navigation Links */}
-            <div style={navLinksStyle}>
+            <div style={navLinksStyle} className="desktop-nav">
               {/* Categories with Mega Menu */}
               <div style={{ position: 'relative' }}>
                 <div
@@ -741,7 +1049,7 @@ export function CartPage() {
             </div>
 
             {/* Right: Search Bar + Utility Icons */}
-            <div style={headerRightStyle}>
+            <div style={headerRightStyle} className="header-right">
               <div style={headerCenterStyle}>
                 <form onSubmit={handleSearchSubmit}>
                   <div style={searchBarContainerStyle}>
@@ -921,6 +1229,22 @@ export function CartPage() {
 
           {/* Right: Search Bar + Utility Icons */}
           <div style={headerRightStyle}>
+            {/* Mobile menu button - only visible on small screens */}
+            <button
+              className="mobile-menu-button"
+              style={{
+                display: 'none',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px',
+                marginRight: '8px'
+              }}
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <Menu size={20} />
+            </button>
+
             <div style={headerCenterStyle}>
               <form onSubmit={handleSearchSubmit}>
                 <div style={searchBarContainerStyle}>
@@ -939,7 +1263,7 @@ export function CartPage() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <Link to="/cart" style={{ position: 'relative', ...iconButtonStyle }}>
+              <Link to="/cart" style={{ position: 'relative', ...iconButtonStyle }} className="cart-icon-link">
                 <ShoppingCart size={20} />
                 {items.length > 0 && (
                   <span style={{
@@ -956,7 +1280,7 @@ export function CartPage() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontWeight: 600,
-                  }}>
+                  }} className="cart-badge">
                     {items.length}
                   </span>
                 )}
@@ -975,8 +1299,49 @@ export function CartPage() {
         </div>
       </header>
 
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div
+          style={mobileMenuOverlayStyle}
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Menu */}
+      <div style={mobileMenuStyle}>
+        <div style={mobileMenuHeaderStyle}>
+          <span style={{ fontSize: '18px', fontWeight: 600 }}>Menu</span>
+          <button
+            style={mobileMenuCloseButtonStyle}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Home</Link>
+        </div>
+
+        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/products" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Products</Link>
+        </div>
+
+        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/bulk-orders" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Bulk Orders</Link>
+        </div>
+
+        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/cart" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Cart</Link>
+        </div>
+
+        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/profile" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Profile</Link>
+        </div>
+      </div>
+
       {/* Main Cart Content */}
-      <main style={cartMainStyle}>
+      <main style={cartMainStyle} className="cart-main">
         {/* Breadcrumb/Navigation */}
         <Link to="/products" style={continueShoppingLinkStyle}>
           <ArrowLeft size={16} />
@@ -986,13 +1351,13 @@ export function CartPage() {
         {/* Page Header */}
         <h1 style={cartPageHeaderStyle}>Shopping Cart ({items.length} {items.length === 1 ? 'item' : 'items'})</h1>
 
-        <div style={cartContainerStyle}>
+        <div style={cartContainerStyle} className="cart-container">
           {/* Left Column: Cart Items */}
-          <div style={cartItemsSectionStyle}>
+          <div style={cartItemsSectionStyle} className="cart-items-section">
             {items.map((item) => (
-              <div key={item.id} style={productCardStyleNew}>
+              <div key={item.id} style={productCardStyleNew} className="product-card-new">
                 {/* Product Image */}
-                <div style={productImagePlaceholderStyle}>
+                <div style={productImagePlaceholderStyle} className="product-image-placeholder">
                   <ImageWithFallback
                     src={item.image}
                     alt={item.title}
@@ -1002,7 +1367,7 @@ export function CartPage() {
                 </div>
 
                 {/* Product Info */}
-                <div style={productInfoSectionStyle}>
+                <div style={productInfoSectionStyle} className="product-info-section">
                   {/* Product name and item type */}
                   <div>
                     <p style={productNameStyleNew}>{item.title}</p>
@@ -1017,7 +1382,7 @@ export function CartPage() {
                   {/* Quantity Selector and Remove Action */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     {/* Quantity Selector */}
-                    <div style={quantitySelectorStyle}>
+                    <div style={quantitySelectorStyle} className="quantity-selector">
                       <button
                         style={quantityButtonStyle}
                         onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
@@ -1051,7 +1416,7 @@ export function CartPage() {
           </div>
 
           {/* Right Column: Order Summary */}
-          <div style={orderSummaryContainerStyle}>
+          <div style={orderSummaryContainerStyle} className="order-summary-container">
             {/* Summary Header */}
             <h2 style={orderSummaryHeaderStyle}>Order Summary</h2>
 
@@ -1087,6 +1452,7 @@ export function CartPage() {
                   type="text"
                   placeholder="Enter coupon or voucher code"
                   style={couponInputStyle}
+                  className="coupon-input"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                 />
@@ -1122,7 +1488,7 @@ export function CartPage() {
         </div>
 
         {/* Cross-Sell Section */}
-        <div style={crossSellSectionStyle}>
+        <div style={crossSellSectionStyle} className="cross-sell-section">
           <h2 style={crossSellHeaderStyle}>Products you may also Love</h2>
           <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '16px' }}>
             {recommendedProducts.map((product) => (

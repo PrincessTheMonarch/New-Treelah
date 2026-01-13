@@ -98,13 +98,7 @@ export function FilterSidebar({
                 id={`category-${category}`}
                 checked={selectedCategories.includes(category)}
                 onCheckedChange={() => onCategoryChange(category)}
-                style={{
-                  backgroundColor: 'white',
-                  border: '1px solid #E5E7EB',
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '4px',
-                }}
+                className="border-[#E5E7EB] data-[state=checked]:bg-[#FF8C42] data-[state=checked]:border-[#FF8C42] data-[state=checked]:text-white cursor-pointer w-[18px] h-[18px]"
               />
               <label
                 htmlFor={`category-${category}`}
@@ -138,13 +132,7 @@ export function FilterSidebar({
                 id={`occasion-${occasion}`}
                 checked={selectedOccasions.includes(occasion)}
                 onCheckedChange={() => onOccasionChange(occasion)}
-                style={{
-                  backgroundColor: 'white',
-                  border: '1px solid #E5E7EB',
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '4px',
-                }}
+                className="border-[#E5E7EB] data-[state=checked]:bg-[#FF8C42] data-[state=checked]:border-[#FF8C42] data-[state=checked]:text-white cursor-pointer w-[18px] h-[18px]"
               />
               <label
                 htmlFor={`occasion-${occasion}`}
@@ -178,13 +166,7 @@ export function FilterSidebar({
                 id={`rating-${rating}`}
                 checked={selectedRatings.includes(rating)}
                 onCheckedChange={() => onRatingChange(rating)}
-                style={{
-                  backgroundColor: 'white',
-                  border: '1px solid #E5E7EB',
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '4px',
-                }}
+                className="border-[#E5E7EB] data-[state=checked]:bg-[#FF8C42] data-[state=checked]:border-[#FF8C42] data-[state=checked]:text-white cursor-pointer w-[18px] h-[18px]"
               />
               <label
                 htmlFor={`rating-${rating}`}
@@ -224,13 +206,7 @@ export function FilterSidebar({
                 id={`availability-${availability}`}
                 checked={selectedAvailability.includes(availability)}
                 onCheckedChange={() => onAvailabilityChange(availability)}
-                style={{
-                  backgroundColor: 'white',
-                  border: '1px solid #E5E7EB',
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '4px',
-                }}
+                className="border-[#E5E7EB] data-[state=checked]:bg-[#FF8C42] data-[state=checked]:border-[#FF8C42] data-[state=checked]:text-white cursor-pointer w-[18px] h-[18px]"
               />
               <label
                 htmlFor={`availability-${availability}`}
@@ -264,13 +240,7 @@ export function FilterSidebar({
                 id={`delivery-${time}`}
                 checked={selectedDeliveryTime.includes(time)}
                 onCheckedChange={() => onDeliveryTimeChange(time)}
-                style={{
-                  backgroundColor: 'white',
-                  border: '1px solid #E5E7EB',
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '4px',
-                }}
+                className="border-[#E5E7EB] data-[state=checked]:bg-[#FF8C42] data-[state=checked]:border-[#FF8C42] data-[state=checked]:text-white cursor-pointer w-[18px] h-[18px]"
               />
               <label
                 htmlFor={`delivery-${time}`}

@@ -28,24 +28,32 @@ export function FeaturedProducts({ title, subtitle, products, showRecipientBadge
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4 justify-items-center max-w-sm sm:max-w-2xl md:max-w-4xl lg:max-w-6xl mx-auto">
-          {products.map((product) => {
-            const { id, image, title, price, originalPrice, badge, tag } = product;
-            return (
-              <div key={id}>
-                <ProductCard 
-                  id={id}
-                  image={image}
-                  title={title}
-                  price={price}
-                  originalPrice={originalPrice}
-                  badge={badge}
-                  tag={tag}
-                  showRecipientBadge={showRecipientBadge}
-                />
-              </div>
-            );
-          })}
+        <div className={`grid gap-2 sm:gap-3 lg:gap-4 mx-auto justify-items-center max-w-[1200px] ${(title === "Trending Now" || title === "Staff Picks" || title === "Customizable Gifts") ? (title === "Staff Picks" ? "grid-cols-2 lg:grid-cols-4" : "grid-cols-2 lg:grid-cols-4") : "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}`} style={{ justifyContent: 'center' }}>
+          {title === "Staff Picks" ? (
+            // Show 8 placeholders
+            Array.from({ length: 8 }, (_, index) => (
+              <div key={index} className="w-full max-w-[240px] aspect-square bg-gray-200 rounded-lg"></div>
+            ))
+          ) : (
+            products.map((product) => {
+              const { id, image, title: productTitle, price, originalPrice, badge, tag } = product;
+              return (
+                <div key={id}>
+                  <ProductCard
+                    id={id}
+                    image={image}
+                    title={productTitle}
+                    price={price}
+                    originalPrice={originalPrice}
+                    badge={badge}
+                    tag={tag}
+                    showRecipientBadge={showRecipientBadge}
+                    variant="default"
+                  />
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     </section>

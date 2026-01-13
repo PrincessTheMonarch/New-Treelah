@@ -47,6 +47,13 @@ export interface PaymentVerificationResponse {
     status: string;
     paid_at: string;
   };
+  order?: {
+    id: string;
+    order_number: string;
+    subtotal: number;
+    delivery_fee: number;
+    total: number;
+  };
 }
 
 // Generate a unique reference for payment

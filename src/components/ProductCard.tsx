@@ -8,18 +8,19 @@ import { toast } from "sonner";
 import { useCart } from "../context/CartContext";
 
 interface ProductCardProps {
-  id: number;
-  image: string;
-  title: string;
-  price: string;
-  originalPrice?: string;
-  badge?: string;
-  tag?: string;
-  category?: string;
-  showRecipientBadge?: boolean;
-}
+   id: number;
+   image: string;
+   title: string;
+   price: string;
+   originalPrice?: string;
+   badge?: string;
+   tag?: string;
+   category?: string;
+   showRecipientBadge?: boolean;
+   variant?: "default" | "trending";
+ }
 
-export function ProductCard({ id, image, title, price, originalPrice, badge, tag, category, showRecipientBadge = false }: ProductCardProps) {
+export function ProductCard({ id, image, title, price, originalPrice, badge, tag, category, showRecipientBadge = false, variant = "default" }: ProductCardProps) {
   const { addToCart } = useCart();
   
   const recipientBadge = (tag === "For Him" || tag === "For Her") ? tag : null;
@@ -37,11 +38,75 @@ export function ProductCard({ id, image, title, price, originalPrice, badge, tag
     toast.success(`${title} added to cart!`);
   };
 
+  if (variant === "trending") {
+    return (
+      <Link to={`/product/${id}`}>
+        <div className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-full max-w-[240px]">
+          <div className="relative">
+            {/* Image - top 60% */}
+            <div className="h-32 lg:h-40 overflow-hidden">
+              <ImageWithFallback
+                src={image}
+                alt={title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Badges */}
+            <div className="absolute top-2 left-2 z-10">
+              {badge && (
+                <div
+                  className="px-2 py-1 rounded text-xs font-medium text-white"
+                  style={{ backgroundColor: "#6FC2E4" }}
+                >
+                  {badge}
+                </div>
+              )}
+            </div>
+            <div className="absolute top-2 right-2 z-10">
+              <Button
+                size="icon"
+                variant="outline"
+                className="rounded-full h-8 w-8 bg-white/90 hover:bg-white shadow-md border-gray-300"
+              >
+                <Heart className="h-4 w-4 text-gray-600" />
+              </Button>
+            </div>
+
+            {/* Content */}
+            <div className="p-3">
+              <h3 className="text-sm font-medium mb-1 line-clamp-2">{title}</h3>
+              <div className="flex items-center gap-1 mb-3">
+                <span className="text-sm font-bold text-gray-900">{price}</span>
+                {originalPrice && (
+                  <span className="text-gray-500 text-xs line-through">{originalPrice}</span>
+                )}
+              </div>
+
+              {/* Button */}
+              <Button
+                className="w-full gap-1 text-sm"
+                onClick={handleAddToCart}
+                style={{ backgroundColor: "#FF8C42", border: "none" }}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                Add to Cart
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
+  // Default variant
   return (
-    <Link to={`/product/${id}`}>
+    <Link to={`/product/${id}`} className="block">
       <div
-        className="group relative overflow-hidden bg-accent hover:bg-accent/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 block cursor-pointer w-full aspect-square max-w-[160px] sm:max-w-[180px] md:max-w-[200px]"
-        style={{ borderRadius: "16px" }}
+        className="group relative overflow-hidden bg-accent hover:bg-accent/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 block cursor-pointer aspect-square w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px]"
+        style={{
+          borderRadius: "16px",
+        } as React.CSSProperties}
       >
         <div className="relative w-full h-full">
           <ImageWithFallback
@@ -93,7 +158,7 @@ export function ProductCard({ id, image, title, price, originalPrice, badge, tag
                 )}
               </div>
             </div>
-            
+
             <div className="p-2 sm:p-3 pt-1">
               <Button
                 className="w-full rounded-full gap-1 text-xs"

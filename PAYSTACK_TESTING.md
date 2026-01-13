@@ -55,8 +55,8 @@ This guide provides step-by-step instructions for testing the Paystack payment i
 
 ### Step 5: Verify Success
 - [ ] Payment popup closes
-- [ ] Success toast appears: "Payment successful! 🎉"
-- [ ] User is redirected to home page
+- [ ] Success toast appears: "Payment successful!"
+- [ ] User is redirected to cart page (this should be /profiles page...to view the order.)
 - [ ] Cart is cleared
 
 ### Step 6: Check Database
