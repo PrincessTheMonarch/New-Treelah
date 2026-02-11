@@ -11,22 +11,19 @@ const DesktopHeader: React.FC = () => {
   return (
     <header className="absolute top-0 left-0 z-50 flex w-full items-center justify-between px-20 py-5 bg-transparent text-white">
       {/* Brand Section */}
-      <div className="flex items-center gap-3 shrink-0">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-md">
-          <span className="text-[10px] font-bold uppercase tracking-tighter">Logo</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-lg font-bold leading-tight">Product Name</span>
-          <span className="text-xs font-light opacity-80">Tag line</span>
-        </div>
-      </div>
+      <Link to="/">
+        <img src="/images/logo.png" alt="Treelah Logo" />
+      </Link>
 
       {/* Main Navigation */}
       <nav className="flex items-center gap-8 ml-10">
         <button className="flex items-center gap-1 text-sm font-medium hover:opacity-70 transition-opacity">
           Categories <ChevronDown size={16} />
         </button>
-        <a href="#" className="text-sm font-medium hover:opacity-70 transition-opacity">
+        <a
+          href="#"
+          className="text-sm font-medium hover:opacity-70 transition-opacity"
+        >
           Souvenirs & Bulk Orders
         </a>
       </nav>
@@ -46,21 +43,36 @@ const DesktopHeader: React.FC = () => {
             placeholder="Search for the perfect gift"
             className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-full py-2 px-5 pr-10 text-sm placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF8C42]/50"
           />
-          <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60" size={18} />
+          <Search
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60"
+            size={18}
+          />
         </div>
 
         {/* Utility Icons */}
         <div className="flex items-center gap-5">
-          <button className="hover:text-[#FF8C42] transition-colors" aria-label="Cart">
+          <button
+            className="hover:text-[#FF8C42] transition-colors"
+            aria-label="Cart"
+          >
             <ShoppingCart size={22} />
           </button>
-          <button className="hover:text-[#FF8C42] transition-colors" aria-label="Wishlist">
+          <button
+            className="hover:text-[#FF8C42] transition-colors"
+            aria-label="Wishlist"
+          >
             <Heart size={22} />
           </button>
-          <button className="hover:text-[#FF8C42] transition-colors" aria-label="Support">
+          <button
+            className="hover:text-[#FF8C42] transition-colors"
+            aria-label="Support"
+          >
             <Headphones size={22} />
           </button>
-          <button className="hover:text-[#FF8C42] transition-colors" aria-label="Account">
+          <button
+            className="hover:text-[#FF8C42] transition-colors"
+            aria-label="Account"
+          >
             <User size={22} />
           </button>
         </div>

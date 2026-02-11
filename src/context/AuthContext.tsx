@@ -1,10 +1,22 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { supabase, type User } from '../lib/supabase';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+} from "react";
+import { supabase, type User } from "../lib/supabase";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signUp: (email: string, password: string, fullName?: string) => Promise<{ error: Error | null }>;
+  signUp: (
+    email: string,
+    password: string,
+    fullName?: string,
+    phoneNumber?: string,
+  ) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   clearError: () => void;
@@ -24,29 +36,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string, fullName?: string) => {
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName || '',
+  const signUp = useCallback(
+    async (
+      email: string,
+      password: string,
+      fullName?: string,
+      phoneNumber?: string,
+    ) => {
+      try {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: fullName || "",
+              phone_number: phoneNumber || "",
+            },
           },
-        },
-      });
-      return { error: error ? new Error(error.message) : null };
-    } catch (err) {
-      return { error: err instanceof Error ? err : new Error('An unexpected error occurred') };
-    }
-  }, []);
+        });
+        return { error: error ? new Error(error.message) : null };
+      } catch (err) {
+        return {
+          error:
+            err instanceof Error
+              ? err
+              : new Error("An unexpected error occurred"),
+        };
+      }
+    },
+    [],
+  );
 
   const signIn = useCallback(async (email: string, password: string) => {
     try {
@@ -56,7 +84,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       return { error: error ? new Error(error.message) : null };
     } catch (err) {
-      return { error: err instanceof Error ? err : new Error('An unexpected error occurred') };
+      return {
+        error:
+          err instanceof Error
+            ? err
+            : new Error("An unexpected error occurred"),
+      };
     }
   }, []);
 
@@ -87,7 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

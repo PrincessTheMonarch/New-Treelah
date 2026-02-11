@@ -750,32 +750,36 @@ export function CheckoutPage() {
       <header style={headerStyle}>
         <div style={headerContainerStyle}>
           {/* Left: Logo + Brand Name + Tagline */}
-          <div style={headerLeftStyle}>
-            <div style={logoCircleStyle}>
-              <span style={{ fontSize: '11px', fontWeight: 600, color: '#6B7280' }}>Logo</span>
-            </div>
-            <div style={brandStackStyle}>
-              <span style={brandNameStyle}>Treelah</span>
-              <span style={brandTaglineStyle}>Tag line</span>
-            </div>
-          </div>
+          <Link to="/">
+            <img src="/images/logo.png" alt="Treelah Logo" />
+          </Link>
 
           {/* Center: Navigation Links */}
           <div style={navLinksStyle} className="desktop-nav">
             {/* Categories with Mega Menu */}
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: "relative" }}>
               <div
                 style={navLinkStyle}
                 onClick={() => setCategoriesOpen(!categoriesOpen)}
               >
                 Categories
-                <ChevronDown size={14} style={{
-                  transform: categoriesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s'
-                }} />
+                <ChevronDown
+                  size={14}
+                  style={{
+                    transform: categoriesOpen
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.2s",
+                  }}
+                />
               </div>
               {/* Mega Menu Dropdown */}
-              <div style={{...megaMenuContainerStyle, display: categoriesOpen ? 'flex' : 'none'}}>
+              <div
+                style={{
+                  ...megaMenuContainerStyle,
+                  display: categoriesOpen ? "flex" : "none",
+                }}
+              >
                 {megaMenuColumns.map((column, colIndex) => (
                   <div key={colIndex} style={megaMenuColumnStyle}>
                     <span style={megaMenuHeaderStyle}>{column.header}</span>
@@ -790,12 +794,12 @@ export function CheckoutPage() {
                           setCategoriesOpen(false);
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.textDecoration = 'underline';
-                          e.currentTarget.style.color = '#FF8C42';
+                          e.currentTarget.style.textDecoration = "underline";
+                          e.currentTarget.style.color = "#FF8C42";
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.textDecoration = 'none';
-                          e.currentTarget.style.color = '#1A1A1A';
+                          e.currentTarget.style.textDecoration = "none";
+                          e.currentTarget.style.color = "#1A1A1A";
                         }}
                       >
                         {link}
@@ -806,7 +810,10 @@ export function CheckoutPage() {
               </div>
             </div>
 
-            <Link to="/bulk-orders" style={{ ...navLinkStyle, textDecoration: 'none' }}>
+            <Link
+              to="/bulk-orders"
+              style={{ ...navLinkStyle, textDecoration: "none" }}
+            >
               Souvenirs & Bulk Orders
             </Link>
 
@@ -818,44 +825,143 @@ export function CheckoutPage() {
                   Shopping Assistant
                 </button>
               </DialogTrigger>
-              <DialogContent style={{ maxWidth: '500px', maxHeight: '80vh', overflow: 'auto' }}>
+              <DialogContent
+                style={{
+                  maxWidth: "500px",
+                  maxHeight: "80vh",
+                  overflow: "auto",
+                }}
+              >
                 <DialogHeader>
-                  <DialogTitle style={{ fontSize: '18px' }}>Find Your Perfect Gift</DialogTitle>
-                  <DialogDescription style={{ fontSize: '14px' }}>
-                    Answer a few quick questions and we'll suggest the best gifts!
+                  <DialogTitle style={{ fontSize: "18px" }}>
+                    Find Your Perfect Gift
+                  </DialogTitle>
+                  <DialogDescription style={{ fontSize: "14px" }}>
+                    Answer a few quick questions and we'll suggest the best
+                    gifts!
                   </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleGiftFinderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '8px' }}>
+                <form
+                  onSubmit={handleGiftFinderSubmit}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                    marginTop: "8px",
+                  }}
+                >
                   <div>
-                    <Label style={{ fontSize: '14px', fontWeight: 500 }}>Who's the gift for?</Label>
+                    <Label style={{ fontSize: "14px", fontWeight: 500 }}>
+                      Who's the gift for?
+                    </Label>
                     <RadioGroup
                       value={giftFinderForm.recipient}
-                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, recipient: value })}
-                      style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}
+                      onValueChange={(value: string) =>
+                        setGiftFinderForm({
+                          ...giftFinderForm,
+                          recipient: value,
+                        })
+                      }
+                      style={{
+                        marginTop: "8px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px",
+                      }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "12px",
+                          border: "1px solid #E5E7EB",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
+                      >
                         <RadioGroupItem value="male" id="gf-male" />
-                        <Label htmlFor="gf-male" style={{ cursor: 'pointer', flex: 1, fontSize: '14px' }}>For Him</Label>
+                        <Label
+                          htmlFor="gf-male"
+                          style={{
+                            cursor: "pointer",
+                            flex: 1,
+                            fontSize: "14px",
+                          }}
+                        >
+                          For Him
+                        </Label>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "12px",
+                          border: "1px solid #E5E7EB",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
+                      >
                         <RadioGroupItem value="female" id="gf-female" />
-                        <Label htmlFor="gf-female" style={{ cursor: 'pointer', flex: 1, fontSize: '14px' }}>For Her</Label>
+                        <Label
+                          htmlFor="gf-female"
+                          style={{
+                            cursor: "pointer",
+                            flex: 1,
+                            fontSize: "14px",
+                          }}
+                        >
+                          For Her
+                        </Label>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "12px",
+                          border: "1px solid #E5E7EB",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
+                      >
                         <RadioGroupItem value="other" id="gf-other" />
-                        <Label htmlFor="gf-other" style={{ cursor: 'pointer', flex: 1, fontSize: '14px' }}>Anyone</Label>
+                        <Label
+                          htmlFor="gf-other"
+                          style={{
+                            cursor: "pointer",
+                            flex: 1,
+                            fontSize: "14px",
+                          }}
+                        >
+                          Anyone
+                        </Label>
                       </div>
                     </RadioGroup>
                   </div>
 
                   <div>
-                    <Label htmlFor="gf-relationship" style={{ fontSize: '14px', fontWeight: 500 }}>Relationship</Label>
+                    <Label
+                      htmlFor="gf-relationship"
+                      style={{ fontSize: "14px", fontWeight: 500 }}
+                    >
+                      Relationship
+                    </Label>
                     <Select
                       value={giftFinderForm.relationship}
-                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, relationship: value })}
+                      onValueChange={(value: string) =>
+                        setGiftFinderForm({
+                          ...giftFinderForm,
+                          relationship: value,
+                        })
+                      }
                     >
-                      <SelectTrigger id="gf-relationship" style={{ marginTop: '8px', height: '40px' }}>
+                      <SelectTrigger
+                        id="gf-relationship"
+                        style={{ marginTop: "8px", height: "40px" }}
+                      >
                         <SelectValue placeholder="Select relationship" />
                       </SelectTrigger>
                       <SelectContent>
@@ -870,12 +976,25 @@ export function CheckoutPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="gf-occasion" style={{ fontSize: '14px', fontWeight: 500 }}>Occasion</Label>
+                    <Label
+                      htmlFor="gf-occasion"
+                      style={{ fontSize: "14px", fontWeight: 500 }}
+                    >
+                      Occasion
+                    </Label>
                     <Select
                       value={giftFinderForm.occasion}
-                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, occasion: value })}
+                      onValueChange={(value: string) =>
+                        setGiftFinderForm({
+                          ...giftFinderForm,
+                          occasion: value,
+                        })
+                      }
                     >
-                      <SelectTrigger id="gf-occasion" style={{ marginTop: '8px', height: '40px' }}>
+                      <SelectTrigger
+                        id="gf-occasion"
+                        style={{ marginTop: "8px", height: "40px" }}
+                      >
                         <SelectValue placeholder="Select occasion" />
                       </SelectTrigger>
                       <SelectContent>
@@ -884,18 +1003,33 @@ export function CheckoutPage() {
                         <SelectItem value="anniversary">Anniversary</SelectItem>
                         <SelectItem value="graduation">Graduation</SelectItem>
                         <SelectItem value="promotion">Promotion</SelectItem>
-                        <SelectItem value="justbecause">Just Because</SelectItem>
+                        <SelectItem value="justbecause">
+                          Just Because
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label htmlFor="gf-age" style={{ fontSize: '14px', fontWeight: 500 }}>Age Group</Label>
+                    <Label
+                      htmlFor="gf-age"
+                      style={{ fontSize: "14px", fontWeight: 500 }}
+                    >
+                      Age Group
+                    </Label>
                     <Select
                       value={giftFinderForm.ageGroup}
-                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, ageGroup: value })}
+                      onValueChange={(value: string) =>
+                        setGiftFinderForm({
+                          ...giftFinderForm,
+                          ageGroup: value,
+                        })
+                      }
                     >
-                      <SelectTrigger id="gf-age" style={{ marginTop: '8px', height: '40px' }}>
+                      <SelectTrigger
+                        id="gf-age"
+                        style={{ marginTop: "8px", height: "40px" }}
+                      >
                         <SelectValue placeholder="Select age group" />
                       </SelectTrigger>
                       <SelectContent>
@@ -910,16 +1044,16 @@ export function CheckoutPage() {
                   <button
                     type="submit"
                     style={{
-                      width: '100%',
-                      padding: '12px',
-                      borderRadius: '24px',
-                      backgroundColor: '#FF8C42',
-                      color: 'white',
-                      border: 'none',
-                      fontSize: '14px',
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: "24px",
+                      backgroundColor: "#FF8C42",
+                      color: "white",
+                      border: "none",
+                      fontSize: "14px",
                       fontWeight: 500,
-                      cursor: 'pointer',
-                      marginTop: '8px',
+                      cursor: "pointer",
+                      marginTop: "8px",
                     }}
                   >
                     Find My Perfect Gift
@@ -935,12 +1069,12 @@ export function CheckoutPage() {
             <button
               className="mobile-menu-button"
               style={{
-                display: 'none',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: '8px',
-                marginRight: '8px'
+                display: "none",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: "8px",
+                marginRight: "8px",
               }}
               onClick={() => setMobileMenuOpen(true)}
             >
@@ -963,28 +1097,30 @@ export function CheckoutPage() {
               </form>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <div 
-                style={{ position: 'relative', ...iconButtonStyle }} 
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <div
+                style={{ position: "relative", ...iconButtonStyle }}
                 onClick={() => navigate("/cart")}
               >
                 <ShoppingCart size={20} />
                 {getTotalItems() > 0 && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '-8px',
-                    right: '-8px',
-                    backgroundColor: '#FF8C42',
-                    color: 'white',
-                    borderRadius: '50%',
-                    width: '18px',
-                    height: '18px',
-                    fontSize: '11px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 600,
-                  }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "-8px",
+                      right: "-8px",
+                      backgroundColor: "#FF8C42",
+                      color: "white",
+                      borderRadius: "50%",
+                      width: "18px",
+                      height: "18px",
+                      fontSize: "11px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 600,
+                    }}
+                  >
                     {getTotalItems()}
                   </span>
                 )}
@@ -1007,48 +1143,52 @@ export function CheckoutPage() {
       {mobileMenuOpen && (
         <div
           style={{
-            position: 'fixed',
+            position: "fixed",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100vh',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            width: "100%",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 999,
             opacity: mobileMenuOpen ? 1 : 0,
-            visibility: mobileMenuOpen ? 'visible' : 'hidden',
-            transition: 'opacity 0.3s ease-in-out',
+            visibility: mobileMenuOpen ? "visible" : "hidden",
+            transition: "opacity 0.3s ease-in-out",
           }}
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       {/* Mobile Menu */}
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100vh',
-        backgroundColor: 'white',
-        zIndex: 1000,
-        transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(-100%)',
-        transition: 'transform 0.3s ease-in-out',
-        overflowY: 'auto',
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '16px',
-          borderBottom: '1px solid #E5E7EB',
-        }}>
-          <span style={{ fontSize: '18px', fontWeight: 600 }}>Menu</span>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100vh",
+          backgroundColor: "white",
+          zIndex: 1000,
+          transform: mobileMenuOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s ease-in-out",
+          overflowY: "auto",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "16px",
+            borderBottom: "1px solid #E5E7EB",
+          }}
+        >
+          <span style={{ fontSize: "18px", fontWeight: 600 }}>Menu</span>
           <button
             style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '8px',
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: "8px",
             }}
             onClick={() => setMobileMenuOpen(false)}
           >
@@ -1056,92 +1196,167 @@ export function CheckoutPage() {
           </button>
         </div>
 
-        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Home</Link>
+        <div
+          style={{
+            padding: "16px",
+            borderBottom: "1px solid #F3F4F6",
+            cursor: "pointer",
+          }}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link to="/" style={{ textDecoration: "none", color: "#1A1A1A" }}>
+            Home
+          </Link>
         </div>
 
-        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/products" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Products</Link>
+        <div
+          style={{
+            padding: "16px",
+            borderBottom: "1px solid #F3F4F6",
+            cursor: "pointer",
+          }}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link
+            to="/products"
+            style={{ textDecoration: "none", color: "#1A1A1A" }}
+          >
+            Products
+          </Link>
         </div>
 
-        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/bulk-orders" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Bulk Orders</Link>
+        <div
+          style={{
+            padding: "16px",
+            borderBottom: "1px solid #F3F4F6",
+            cursor: "pointer",
+          }}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link
+            to="/bulk-orders"
+            style={{ textDecoration: "none", color: "#1A1A1A" }}
+          >
+            Bulk Orders
+          </Link>
         </div>
 
-        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/cart" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Cart</Link>
+        <div
+          style={{
+            padding: "16px",
+            borderBottom: "1px solid #F3F4F6",
+            cursor: "pointer",
+          }}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link to="/cart" style={{ textDecoration: "none", color: "#1A1A1A" }}>
+            Cart
+          </Link>
         </div>
 
-        <div style={{ padding: '16px', borderBottom: '1px solid #F3F4F6', cursor: 'pointer' }} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/profile" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Profile</Link>
+        <div
+          style={{
+            padding: "16px",
+            borderBottom: "1px solid #F3F4F6",
+            cursor: "pointer",
+          }}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link
+            to="/profile"
+            style={{ textDecoration: "none", color: "#1A1A1A" }}
+          >
+            Profile
+          </Link>
         </div>
       </div>
 
       {/* Checkout Progress Stepper */}
-      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #E5E7EB' }}>
+      <div
+        style={{ backgroundColor: "white", borderBottom: "1px solid #E5E7EB" }}
+      >
         <div style={stepperContainerStyle} className="stepper-container">
           {/* Step 1 */}
           <div style={stepContainerStyle} className="step-container">
-            <div style={{
-              ...stepCircleStyle,
-              backgroundColor: currentStep >= 1 ? '#FF8C42' : '#E5E7EB',
-              color: currentStep >= 1 ? 'white' : '#6B7280'
-            }} className="step-circle">
+            <div
+              style={{
+                ...stepCircleStyle,
+                backgroundColor: currentStep >= 1 ? "#FF8C42" : "#E5E7EB",
+                color: currentStep >= 1 ? "white" : "#6B7280",
+              }}
+              className="step-circle"
+            >
               1
             </div>
-            <span style={{
-              ...stepLabelStyle,
-              color: currentStep >= 1 ? '#1A1A1A' : '#6B7280',
-              fontWeight: currentStep === 1 ? 600 : 500
-            }} className="step-label">
+            <span
+              style={{
+                ...stepLabelStyle,
+                color: currentStep >= 1 ? "#1A1A1A" : "#6B7280",
+                fontWeight: currentStep === 1 ? 600 : 500,
+              }}
+              className="step-label"
+            >
               Delivery info
             </span>
           </div>
-          
+
           {/* Connector 1-2 */}
-          <div style={{
-            ...stepConnectorStyle,
-            backgroundColor: '#1A1A1A'
-          }} className="step-connector" />
-          
+          <div
+            style={{
+              ...stepConnectorStyle,
+              backgroundColor: "#1A1A1A",
+            }}
+            className="step-connector"
+          />
+
           {/* Step 2 */}
           <div style={stepContainerStyle}>
-            <div style={{ 
-              ...stepCircleStyle, 
-              backgroundColor: currentStep >= 2 ? '#FF8C42' : '#E5E7EB',
-              color: currentStep >= 2 ? 'white' : '#6B7280'
-            }}>
+            <div
+              style={{
+                ...stepCircleStyle,
+                backgroundColor: currentStep >= 2 ? "#FF8C42" : "#E5E7EB",
+                color: currentStep >= 2 ? "white" : "#6B7280",
+              }}
+            >
               2
             </div>
-            <span style={{ 
-              ...stepLabelStyle, 
-              color: currentStep >= 2 ? '#1A1A1A' : '#6B7280',
-              fontWeight: currentStep === 2 ? 600 : 500
-            }}>
+            <span
+              style={{
+                ...stepLabelStyle,
+                color: currentStep >= 2 ? "#1A1A1A" : "#6B7280",
+                fontWeight: currentStep === 2 ? 600 : 500,
+              }}
+            >
               Packaging Options
             </span>
           </div>
-          
+
           {/* Connector 2-3 */}
-          <div style={{ 
-            ...stepConnectorStyle, 
-            backgroundColor: '#1A1A1A'
-          }} />
-          
+          <div
+            style={{
+              ...stepConnectorStyle,
+              backgroundColor: "#1A1A1A",
+            }}
+          />
+
           {/* Step 3 */}
           <div style={stepContainerStyle}>
-            <div style={{ 
-              ...stepCircleStyle, 
-              backgroundColor: currentStep >= 3 ? '#FF8C42' : '#E5E7EB',
-              color: currentStep >= 3 ? 'white' : '#6B7280'
-            }}>
+            <div
+              style={{
+                ...stepCircleStyle,
+                backgroundColor: currentStep >= 3 ? "#FF8C42" : "#E5E7EB",
+                color: currentStep >= 3 ? "white" : "#6B7280",
+              }}
+            >
               3
             </div>
-            <span style={{ 
-              ...stepLabelStyle, 
-              color: currentStep >= 3 ? '#1A1A1A' : '#6B7280',
-              fontWeight: currentStep === 3 ? 600 : 500
-            }}>
+            <span
+              style={{
+                ...stepLabelStyle,
+                color: currentStep >= 3 ? "#1A1A1A" : "#6B7280",
+                fontWeight: currentStep === 3 ? 600 : 500,
+              }}
+            >
               Payment
             </span>
           </div>
@@ -1149,33 +1364,51 @@ export function CheckoutPage() {
       </div>
 
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '32px' }} className="checkout-grid">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 380px",
+            gap: "32px",
+          }}
+          className="checkout-grid"
+        >
           {/* Left Column - Delivery Information Form */}
           <div>
             {/* Breadcrumb */}
-            <div 
-              style={{ marginBottom: '24px', cursor: 'pointer' }}
+            <div
+              style={{ marginBottom: "24px", cursor: "pointer" }}
               onClick={() => navigate("/cart")}
             >
-              <span style={{ color: '#1A1A1A', fontSize: '14px' }}>← Back to cart</span>
+              <span style={{ color: "#1A1A1A", fontSize: "14px" }}>
+                ← Back to cart
+              </span>
             </div>
 
             {/* Step 1: Delivery Information */}
             {currentStep === 1 && (
               <div style={formContainerStyle} className="form-container">
-                <h2 style={sectionHeadingStyle}>
-                  Delivery Information
-                </h2>
+                <h2 style={sectionHeadingStyle}>Delivery Information</h2>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "24px",
+                  }}
+                >
                   {/* Full Name */}
                   <div>
-                    <Label htmlFor="fullName" style={formLabelStyle}>Full Name *</Label>
+                    <Label htmlFor="fullName" style={formLabelStyle}>
+                      Full Name *
+                    </Label>
                     <Input
                       id="fullName"
                       value={deliveryInfo.fullName}
                       onChange={(e) =>
-                        setDeliveryInfo({ ...deliveryInfo, fullName: e.target.value })
+                        setDeliveryInfo({
+                          ...deliveryInfo,
+                          fullName: e.target.value,
+                        })
                       }
                       placeholder="Enter recipient name"
                       style={inputStyle}
@@ -1184,21 +1417,34 @@ export function CheckoutPage() {
                   </div>
 
                   {/* Phone Number - Two side by side */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "16px",
+                    }}
+                  >
                     <div>
-                      <Label htmlFor="phone1" style={formLabelStyle}>Phone Number *</Label>
+                      <Label htmlFor="phone1" style={formLabelStyle}>
+                        Phone Number *
+                      </Label>
                       <Input
                         id="phone1"
                         value={deliveryInfo.phone}
                         onChange={(e) =>
-                          setDeliveryInfo({ ...deliveryInfo, phone: e.target.value })
+                          setDeliveryInfo({
+                            ...deliveryInfo,
+                            phone: e.target.value,
+                          })
                         }
                         placeholder="Enter phone number"
                         style={inputStyle}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="phone2" style={formLabelStyle}>Alternative Phone Number</Label>
+                      <Label htmlFor="phone2" style={formLabelStyle}>
+                        Alternative Phone Number
+                      </Label>
                       <Input
                         id="phone2"
                         placeholder="Enter alternative phone number"
@@ -1209,12 +1455,17 @@ export function CheckoutPage() {
 
                   {/* Delivery Address */}
                   <div>
-                    <Label htmlFor="address" style={formLabelStyle}>Delivery Address *</Label>
+                    <Label htmlFor="address" style={formLabelStyle}>
+                      Delivery Address *
+                    </Label>
                     <Textarea
                       id="address"
                       value={deliveryInfo.address}
                       onChange={(e) =>
-                        setDeliveryInfo({ ...deliveryInfo, address: e.target.value })
+                        setDeliveryInfo({
+                          ...deliveryInfo,
+                          address: e.target.value,
+                        })
                       }
                       placeholder="Enter address"
                       style={textareaStyle}
@@ -1222,15 +1473,23 @@ export function CheckoutPage() {
                   </div>
 
                   {/* City & State - Side by side */}
-                  <div style={twoColumnLayoutStyle} className="two-column-layout">
+                  <div
+                    style={twoColumnLayoutStyle}
+                    className="two-column-layout"
+                  >
                     {/* City */}
                     <div>
-                      <Label htmlFor="city" style={formLabelStyle}>City *</Label>
+                      <Label htmlFor="city" style={formLabelStyle}>
+                        City *
+                      </Label>
                       <Input
                         id="city"
                         value={deliveryInfo.city}
                         onChange={(e) =>
-                          setDeliveryInfo({ ...deliveryInfo, city: e.target.value })
+                          setDeliveryInfo({
+                            ...deliveryInfo,
+                            city: e.target.value,
+                          })
                         }
                         placeholder="Enter city"
                         style={inputStyle}
@@ -1243,7 +1502,10 @@ export function CheckoutPage() {
                       <Input
                         value={deliveryInfo.state}
                         onChange={(e) =>
-                          setDeliveryInfo({ ...deliveryInfo, state: e.target.value })
+                          setDeliveryInfo({
+                            ...deliveryInfo,
+                            state: e.target.value,
+                          })
                         }
                         placeholder="Enter state"
                         style={inputStyle}
@@ -1251,25 +1513,36 @@ export function CheckoutPage() {
                     </div>
                   </div>
 
-                  <Separator style={{ borderColor: '#E5E7EB' }} />
+                  <Separator style={{ borderColor: "#E5E7EB" }} />
 
                   {/* Send Directly to Receiver Toggle */}
-                  <div style={{ ...toggleSectionStyle, cursor: 'pointer' }}>
+                  <div style={{ ...toggleSectionStyle, cursor: "pointer" }}>
                     <div style={toggleHeaderStyle}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ 
-                          width: '40px', 
-                          height: '40px', 
-                          borderRadius: '8px', 
-                          backgroundColor: '#FFF4E6',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          <Truck size={20} style={{ color: '#FF8C42' }} />
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "12px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "8px",
+                            backgroundColor: "#FFF4E6",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Truck size={20} style={{ color: "#FF8C42" }} />
                         </div>
                         <div>
-                          <Label htmlFor="recipient-toggle" style={toggleLabelStyle}>
+                          <Label
+                            htmlFor="recipient-toggle"
+                            style={toggleLabelStyle}
+                          >
                             Send Directly to Receiver
                           </Label>
                           <p style={toggleSubtextStyle}>
@@ -1289,12 +1562,17 @@ export function CheckoutPage() {
                       <div style={conditionalFieldsStyle}>
                         {/* Recipient Name */}
                         <div>
-                          <Label htmlFor="recipientName" style={formLabelStyle}>Recipient Name</Label>
+                          <Label htmlFor="recipientName" style={formLabelStyle}>
+                            Recipient Name
+                          </Label>
                           <Input
                             id="recipientName"
                             value={recipientInfo.name}
                             onChange={(e) =>
-                              setRecipientInfo({ ...recipientInfo, name: e.target.value })
+                              setRecipientInfo({
+                                ...recipientInfo,
+                                name: e.target.value,
+                              })
                             }
                             placeholder="Enter recipient name"
                             style={inputStyle}
@@ -1303,12 +1581,20 @@ export function CheckoutPage() {
 
                         {/* Recipient Phone */}
                         <div>
-                          <Label htmlFor="recipientPhone" style={formLabelStyle}>Phone Number</Label>
+                          <Label
+                            htmlFor="recipientPhone"
+                            style={formLabelStyle}
+                          >
+                            Phone Number
+                          </Label>
                           <Input
                             id="recipientPhone"
                             value={recipientInfo.phone}
                             onChange={(e) =>
-                              setRecipientInfo({ ...recipientInfo, phone: e.target.value })
+                              setRecipientInfo({
+                                ...recipientInfo,
+                                phone: e.target.value,
+                              })
                             }
                             placeholder="Enter phone number"
                             style={inputStyle}
@@ -1317,12 +1603,20 @@ export function CheckoutPage() {
 
                         {/* Recipient Address */}
                         <div>
-                          <Label htmlFor="recipientAddress" style={formLabelStyle}>Delivery Address</Label>
+                          <Label
+                            htmlFor="recipientAddress"
+                            style={formLabelStyle}
+                          >
+                            Delivery Address
+                          </Label>
                           <Textarea
                             id="recipientAddress"
                             value={recipientInfo.address}
                             onChange={(e) =>
-                              setRecipientInfo({ ...recipientInfo, address: e.target.value })
+                              setRecipientInfo({
+                                ...recipientInfo,
+                                address: e.target.value,
+                              })
                             }
                             placeholder="Enter address"
                             style={textareaStyle}
@@ -1331,27 +1625,32 @@ export function CheckoutPage() {
 
                         {/* Schedule Delivery Date */}
                         <div>
-                          <Label style={formLabelStyle}>Schedule Delivery Date (Optional)</Label>
-                          <div style={{ position: 'relative' }}>
+                          <Label style={formLabelStyle}>
+                            Schedule Delivery Date (Optional)
+                          </Label>
+                          <div style={{ position: "relative" }}>
                             <Input
                               type="date"
                               value={recipientInfo.deliveryDate}
                               onChange={(e) =>
-                                setRecipientInfo({ ...recipientInfo, deliveryDate: e.target.value })
+                                setRecipientInfo({
+                                  ...recipientInfo,
+                                  deliveryDate: e.target.value,
+                                })
                               }
                               placeholder="Choose a delivery date"
-                              style={{ ...inputStyle, paddingRight: '40px' }}
+                              style={{ ...inputStyle, paddingRight: "40px" }}
                             />
-                            <CalendarIcon 
-                              size={18} 
-                              style={{ 
-                                position: 'absolute', 
-                                right: '12px', 
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                color: '#FF8C42',
-                                pointerEvents: 'none'
-                              }} 
+                            <CalendarIcon
+                              size={18}
+                              style={{
+                                position: "absolute",
+                                right: "12px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                color: "#FF8C42",
+                                pointerEvents: "none",
+                              }}
                             />
                           </div>
                         </div>
@@ -1360,7 +1659,11 @@ export function CheckoutPage() {
                   </div>
 
                   {/* Continue Button */}
-                  <button style={continueButtonStyle} onClick={handleNextStep} className="continue-button">
+                  <button
+                    style={continueButtonStyle}
+                    onClick={handleNextStep}
+                    className="continue-button"
+                  >
                     Continue
                   </button>
                 </div>
@@ -1370,88 +1673,110 @@ export function CheckoutPage() {
             {/* Step 2: Packaging Options */}
             {currentStep === 2 && (
               <div style={formContainerStyle}>
-                <h2 style={sectionHeadingStyle}>
-                  Packaging Options
-                </h2>
+                <h2 style={sectionHeadingStyle}>Packaging Options</h2>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "24px",
+                  }}
+                >
                   {/* Packaging Option Dropdown */}
-                  <div style={{ position: 'relative' }}>
+                  <div style={{ position: "relative" }}>
                     <Label style={formLabelStyle}>Packaging Option</Label>
-                    <div 
-                      onClick={() => setIsPackagingDropdownOpen(!isPackagingDropdownOpen)}
+                    <div
+                      onClick={() =>
+                        setIsPackagingDropdownOpen(!isPackagingDropdownOpen)
+                      }
                       style={{
                         ...inputStyle,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        cursor: 'pointer',
-                        paddingRight: '12px'
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        cursor: "pointer",
+                        paddingRight: "12px",
                       }}
                     >
-                      <span style={{ color: packagingOption ? '#1A1A1A' : '#9CA3AF' }}>
+                      <span
+                        style={{
+                          color: packagingOption ? "#1A1A1A" : "#9CA3AF",
+                        }}
+                      >
                         {packagingOption || "Select packaging"}
                       </span>
-                      <ChevronDown 
-                        size={18} 
-                        style={{ 
-                          color: '#6B7280',
-                          transform: isPackagingDropdownOpen ? 'rotate(180deg)' : 'rotate(0)',
-                          transition: 'transform 0.2s'
-                        }} 
+                      <ChevronDown
+                        size={18}
+                        style={{
+                          color: "#6B7280",
+                          transform: isPackagingDropdownOpen
+                            ? "rotate(180deg)"
+                            : "rotate(0)",
+                          transition: "transform 0.2s",
+                        }}
                       />
                     </div>
-                    
+
                     {/* Dropdown Menu */}
                     {isPackagingDropdownOpen && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: 0,
-                        right: 0,
-                        marginTop: '4px',
-                        backgroundColor: 'white',
-                        borderRadius: '8px',
-                        border: '1px solid #E5E7EB',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                        zIndex: 50,
-                        overflow: 'hidden'
-                      }}>
-                        <div 
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 0,
+                          right: 0,
+                          marginTop: "4px",
+                          backgroundColor: "white",
+                          borderRadius: "8px",
+                          border: "1px solid #E5E7EB",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                          zIndex: 50,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div
                           onClick={() => {
                             setPackagingOption("Standard Pack (free)");
                             setIsPackagingDropdownOpen(false);
                           }}
                           style={{
-                            padding: '12px 16px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontFamily: 'Poppins',
+                            padding: "12px 16px",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            fontFamily: "Poppins",
                             fontWeight: 400,
-                            color: '#1A1A1A',
-                            transition: 'background-color 0.15s'
+                            color: "#1A1A1A",
+                            transition: "background-color 0.15s",
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FDF6F3'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#FDF6F3")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor = "white")
+                          }
                         >
                           Standard Pack (free)
                         </div>
-                        <div 
+                        <div
                           onClick={() => {
                             setPackagingOption("Premium Gift Box (+ ₦5000)");
                             setIsPackagingDropdownOpen(false);
                           }}
                           style={{
-                            padding: '12px 16px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontFamily: 'Poppins',
+                            padding: "12px 16px",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            fontFamily: "Poppins",
                             fontWeight: 400,
-                            color: '#1A1A1A',
-                            transition: 'background-color 0.15s'
+                            color: "#1A1A1A",
+                            transition: "background-color 0.15s",
                           }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FDF6F3'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#FDF6F3")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor = "white")
+                          }
                         >
                           Premium Gift Box (+ ₦5000)
                         </div>
@@ -1459,25 +1784,36 @@ export function CheckoutPage() {
                     )}
                   </div>
 
-                  <Separator style={{ borderColor: '#E5E7EB' }} />
+                  <Separator style={{ borderColor: "#E5E7EB" }} />
 
                   {/* Add a Custom Message Toggle */}
-                  <div style={{ ...toggleSectionStyle, cursor: 'pointer' }}>
+                  <div style={{ ...toggleSectionStyle, cursor: "pointer" }}>
                     <div style={toggleHeaderStyle}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ 
-                          width: '40px', 
-                          height: '40px', 
-                          borderRadius: '8px', 
-                          backgroundColor: '#FFF4E6',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          <Pencil size={20} style={{ color: '#FF8C42' }} />
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "12px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "8px",
+                            backgroundColor: "#FFF4E6",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Pencil size={20} style={{ color: "#FF8C42" }} />
                         </div>
                         <div>
-                          <Label htmlFor="custom-message-toggle" style={toggleLabelStyle}>
+                          <Label
+                            htmlFor="custom-message-toggle"
+                            style={toggleLabelStyle}
+                          >
                             Add a custom message
                           </Label>
                           <p style={toggleSubtextStyle}>
@@ -1501,9 +1837,9 @@ export function CheckoutPage() {
                           placeholder="Write your message here"
                           style={{
                             ...textareaStyle,
-                            height: '100px',
-                            backgroundColor: '#FBFBFB',
-                            border: '1px solid #E5E7EB'
+                            height: "100px",
+                            backgroundColor: "#FBFBFB",
+                            border: "1px solid #E5E7EB",
                           }}
                         />
                       </div>
@@ -1511,22 +1847,33 @@ export function CheckoutPage() {
                   </div>
 
                   {/* Personalize Gift Toggle */}
-                  <div style={{ ...toggleSectionStyle, cursor: 'pointer' }}>
+                  <div style={{ ...toggleSectionStyle, cursor: "pointer" }}>
                     <div style={toggleHeaderStyle}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ 
-                          width: '40px', 
-                          height: '40px', 
-                          borderRadius: '8px', 
-                          backgroundColor: '#FFF4E6',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          <Upload size={20} style={{ color: '#FF8C42' }} />
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "12px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "8px",
+                            backgroundColor: "#FFF4E6",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Upload size={20} style={{ color: "#FF8C42" }} />
                         </div>
                         <div>
-                          <Label htmlFor="personalize-gift-toggle" style={toggleLabelStyle}>
+                          <Label
+                            htmlFor="personalize-gift-toggle"
+                            style={toggleLabelStyle}
+                          >
                             Personalize Gift
                           </Label>
                           <p style={toggleSubtextStyle}>
@@ -1546,7 +1893,9 @@ export function CheckoutPage() {
                       <div style={conditionalFieldsStyle}>
                         {/* Custom Text Field */}
                         <div>
-                          <Label htmlFor="customText" style={formLabelStyle}>Custom Text</Label>
+                          <Label htmlFor="customText" style={formLabelStyle}>
+                            Custom Text
+                          </Label>
                           <Input
                             id="customText"
                             value={customText}
@@ -1559,45 +1908,49 @@ export function CheckoutPage() {
                         {/* Upload Area */}
                         <div>
                           <Label style={formLabelStyle}>Upload Image</Label>
-                          <div 
-                            onClick={() => document.getElementById('image-upload')?.click()}
+                          <div
+                            onClick={() =>
+                              document.getElementById("image-upload")?.click()
+                            }
                             style={{
-                              width: '100%',
-                              padding: '32px',
-                              borderRadius: '8px',
-                              border: '2px dashed #E5E7EB',
-                              backgroundColor: '#FAFAFA',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '12px',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s'
+                              width: "100%",
+                              padding: "32px",
+                              borderRadius: "8px",
+                              border: "2px dashed #E5E7EB",
+                              backgroundColor: "#FAFAFA",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: "12px",
+                              cursor: "pointer",
+                              transition: "all 0.2s",
                             }}
                             onMouseEnter={(e) => {
-                              e.currentTarget.style.borderColor = '#FF8C42';
-                              e.currentTarget.style.backgroundColor = '#FFF4E6';
+                              e.currentTarget.style.borderColor = "#FF8C42";
+                              e.currentTarget.style.backgroundColor = "#FFF4E6";
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.borderColor = '#E5E7EB';
-                              e.currentTarget.style.backgroundColor = '#FAFAFA';
+                              e.currentTarget.style.borderColor = "#E5E7EB";
+                              e.currentTarget.style.backgroundColor = "#FAFAFA";
                             }}
                           >
-                            <Upload size={32} style={{ color: '#FF8C42' }} />
-                            <span style={{ 
-                              fontSize: '14px', 
-                              fontFamily: 'Poppins',
-                              fontWeight: 400,
-                              color: '#1A1A1A'
-                            }}>
+                            <Upload size={32} style={{ color: "#FF8C42" }} />
+                            <span
+                              style={{
+                                fontSize: "14px",
+                                fontFamily: "Poppins",
+                                fontWeight: 400,
+                                color: "#1A1A1A",
+                              }}
+                            >
                               Click to upload image
                             </span>
                             <input
                               type="file"
                               id="image-upload"
                               accept="image/*"
-                              style={{ display: 'none' }}
+                              style={{ display: "none" }}
                               onChange={(e) => {
                                 const file = e.target.files?.[0];
                                 if (file) setUploadedImage(file);
@@ -1605,13 +1958,15 @@ export function CheckoutPage() {
                             />
                           </div>
                           {uploadedImage && (
-                            <p style={{ 
-                              marginTop: '8px', 
-                              fontSize: '13px', 
-                              color: '#059669',
-                              fontFamily: 'Poppins',
-                              fontWeight: 400
-                            }}>
+                            <p
+                              style={{
+                                marginTop: "8px",
+                                fontSize: "13px",
+                                color: "#059669",
+                                fontFamily: "Poppins",
+                                fontWeight: 400,
+                              }}
+                            >
                               ✓ {uploadedImage.name}
                             </p>
                           )}
@@ -1632,85 +1987,103 @@ export function CheckoutPage() {
             {currentStep === 3 && (
               <div>
                 {/* Payment Method Container */}
-                <div style={{
-                  width: '100%',
-                  maxWidth: '760px',
-                  backgroundColor: '#F6F6F6',
-                  borderRadius: '24px',
-                  padding: '24px',
-                  marginBottom: '24px'
-                }}>
-                  <h2 style={sectionHeadingStyle}>
-                    Payment Method
-                  </h2>
-                  
+                <div
+                  style={{
+                    width: "100%",
+                    maxWidth: "760px",
+                    backgroundColor: "#F6F6F6",
+                    borderRadius: "24px",
+                    padding: "24px",
+                    marginBottom: "24px",
+                  }}
+                >
+                  <h2 style={sectionHeadingStyle}>Payment Method</h2>
+
                   {/* Payment Options */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "16px",
+                    }}
+                  >
                     {/* Option 1: Credit Card */}
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '16px',
-                      borderRadius: '12px',
-                      backgroundColor: 'transparent',
-                      cursor: 'pointer'
-                    }}>
-                      <div style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '8px',
-                        backgroundColor: '#FFF4E6',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        <CreditCard size={20} style={{ color: '#FF8C42' }} />
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        padding: "16px",
+                        borderRadius: "12px",
+                        backgroundColor: "transparent",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "8px",
+                          backgroundColor: "#FFF4E6",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <CreditCard size={20} style={{ color: "#FF8C42" }} />
                       </div>
-                      <span style={{
-                        fontFamily: 'Poppins',
-                        fontWeight: 500,
-                        fontSize: '16px',
-                        color: '#1A1A1A'
-                      }}>
+                      <span
+                        style={{
+                          fontFamily: "Poppins",
+                          fontWeight: 500,
+                          fontSize: "16px",
+                          color: "#1A1A1A",
+                        }}
+                      >
                         Add a custom message
                       </span>
                     </div>
 
                     {/* Option 2: Delivery Truck */}
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '16px',
-                      borderRadius: '12px',
-                      backgroundColor: 'transparent',
-                      cursor: 'pointer'
-                    }}>
-                      <div style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '8px',
-                        backgroundColor: '#FFF4E6',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        <Truck size={20} style={{ color: '#FF8C42' }} />
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        padding: "16px",
+                        borderRadius: "12px",
+                        backgroundColor: "transparent",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "8px",
+                          backgroundColor: "#FFF4E6",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Truck size={20} style={{ color: "#FF8C42" }} />
                       </div>
-                      <span style={{
-                        fontFamily: 'Poppins',
-                        fontWeight: 500,
-                        fontSize: '16px',
-                        color: '#1A1A1A'
-                      }}>
+                      <span
+                        style={{
+                          fontFamily: "Poppins",
+                          fontWeight: 500,
+                          fontSize: "16px",
+                          color: "#1A1A1A",
+                        }}
+                      >
                         Add a custom message
                       </span>
                     </div>
                   </div>
 
                   {/* Place Order Button */}
-                  <PlaceOrderButton 
+                  <PlaceOrderButton
                     amount={total}
                     onSuccess={handlePaymentSuccess}
                   />
@@ -1722,14 +2095,25 @@ export function CheckoutPage() {
           {/* Right Column - Order Summary */}
           <div>
             <div style={orderSummaryStyle} className="order-summary">
-              <h3 style={{ fontFamily: 'Poppins', fontSize: '18px', fontWeight: 600, marginBottom: '20px' }}>
+              <h3
+                style={{
+                  fontFamily: "Poppins",
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  marginBottom: "20px",
+                }}
+              >
                 Order Summary
               </h3>
 
               {/* Product Review Cards */}
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: "20px" }}>
                 {items.map((item) => (
-                  <div key={item.id} style={productCardStyle} className="product-card">
+                  <div
+                    key={item.id}
+                    style={productCardStyle}
+                    className="product-card"
+                  >
                     <div style={productImageStyle} className="product-image">
                       <ImageWithFallback
                         src={item.image}
@@ -1738,13 +2122,33 @@ export function CheckoutPage() {
                       />
                     </div>
                     <div style={{ flex: 1 }}>
-                      <p style={{ fontSize: '14px', fontWeight: 600, color: '#1A1A1A', marginBottom: '4px' }}>
+                      <p
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 600,
+                          color: "#1A1A1A",
+                          marginBottom: "4px",
+                        }}
+                      >
                         {item.title}
                       </p>
-                      <p style={{ fontSize: '12px', color: '#6B7280', marginBottom: '4px' }}>
+                      <p
+                        style={{
+                          fontSize: "12px",
+                          color: "#6B7280",
+                          marginBottom: "4px",
+                        }}
+                      >
                         {item.category}
                       </p>
-                      <p style={{ fontSize: '14px', fontWeight: 600, color: '#717182', textAlign: 'right' }}>
+                      <p
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 600,
+                          color: "#717182",
+                          textAlign: "right",
+                        }}
+                      >
                         {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
@@ -1752,22 +2156,48 @@ export function CheckoutPage() {
                 ))}
               </div>
 
-              <Separator style={{ borderColor: '#E5E7EB', margin: '16px 0' }} />
+              <Separator style={{ borderColor: "#E5E7EB", margin: "16px 0" }} />
 
               {/* Financial Breakdown */}
               <div>
                 <div style={priceRowStyle}>
-                  <span style={{ color: '#6B7280', fontFamily: 'Poppins', fontWeight: 400 }}>Subtotal</span>
-                  <span style={{ fontWeight: 600, color: '#1A1A1A' }}>{formatPrice(subtotal)}</span>
+                  <span
+                    style={{
+                      color: "#6B7280",
+                      fontFamily: "Poppins",
+                      fontWeight: 400,
+                    }}
+                  >
+                    Subtotal
+                  </span>
+                  <span style={{ fontWeight: 600, color: "#1A1A1A" }}>
+                    {formatPrice(subtotal)}
+                  </span>
                 </div>
                 <div style={priceRowStyle}>
-                  <span style={{ color: '#6B7280', fontFamily: 'Poppins', fontWeight: 400 }}>Delivery Fee</span>
-                  <span style={{ fontWeight: 600, color: '#1A1A1A' }}>{formatPrice(deliveryFee)}</span>
+                  <span
+                    style={{
+                      color: "#6B7280",
+                      fontFamily: "Poppins",
+                      fontWeight: 400,
+                    }}
+                  >
+                    Delivery Fee
+                  </span>
+                  <span style={{ fontWeight: 600, color: "#1A1A1A" }}>
+                    {formatPrice(deliveryFee)}
+                  </span>
                 </div>
-                <Separator style={{ borderColor: '#E5E7EB', margin: '12px 0' }} />
-                <div style={{ ...priceRowStyle, fontSize: '16px' }}>
-                  <span style={{ fontWeight: 700, color: '#1A1A1A' }}>Total</span>
-                  <span style={{ fontWeight: 700, color: '#FF8C42' }}>{formatPrice(total)}</span>
+                <Separator
+                  style={{ borderColor: "#E5E7EB", margin: "12px 0" }}
+                />
+                <div style={{ ...priceRowStyle, fontSize: "16px" }}>
+                  <span style={{ fontWeight: 700, color: "#1A1A1A" }}>
+                    Total
+                  </span>
+                  <span style={{ fontWeight: 700, color: "#FF8C42" }}>
+                    {formatPrice(total)}
+                  </span>
                 </div>
               </div>
             </div>

@@ -726,7 +726,9 @@ export function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div
+        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
         {/* Responsive CSS */}
         <style>
           {`
@@ -988,29 +990,28 @@ export function CartPage() {
         <header style={headerStyle}>
           <div style={headerContainerStyle} className="header-container">
             {/* Left: Logo + Brand Name + Tagline */}
-            <div style={headerLeftStyle}>
-              <div style={logoCircleStyle}>
-                <span style={{ fontSize: '11px', fontWeight: 600, color: '#6B7280' }}>Logo</span>
-              </div>
-              <div style={brandStackStyle}>
-                <span style={brandNameStyle}>Treelah</span>
-                <span style={brandTaglineStyle}>Tag line</span>
-              </div>
-            </div>
+            <Link to="/">
+              <img src="/images/logo.png" alt="Treelah Logo" />
+            </Link>
 
             {/* Center: Navigation Links */}
             <div style={navLinksStyle} className="desktop-nav">
               {/* Categories with Mega Menu */}
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: "relative" }}>
                 <div
                   style={navLinkStyle}
                   onClick={() => setCategoriesOpen(!categoriesOpen)}
                 >
                   Categories
-                  <ChevronDown size={14} style={{
-                    transform: categoriesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s'
-                  }} />
+                  <ChevronDown
+                    size={14}
+                    style={{
+                      transform: categoriesOpen
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.2s",
+                    }}
+                  />
                 </div>
                 {/* Mega Menu Dropdown */}
                 <div style={megaMenuContainerStyle}>
@@ -1023,12 +1024,12 @@ export function CartPage() {
                           style={megaMenuLinkStyle}
                           onClick={() => handleMegaMenuClick(link)}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.textDecoration = 'underline';
-                            e.currentTarget.style.color = '#FF8C42';
+                            e.currentTarget.style.textDecoration = "underline";
+                            e.currentTarget.style.color = "#FF8C42";
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.textDecoration = 'none';
-                            e.currentTarget.style.color = '#1A1A1A';
+                            e.currentTarget.style.textDecoration = "none";
+                            e.currentTarget.style.color = "#1A1A1A";
                           }}
                         >
                           {link}
@@ -1039,7 +1040,10 @@ export function CartPage() {
                 </div>
               </div>
 
-              <Link to="/bulk-orders" style={{ ...navLinkStyle, textDecoration: 'none' }}>
+              <Link
+                to="/bulk-orders"
+                style={{ ...navLinkStyle, textDecoration: "none" }}
+              >
                 Souvenirs & Bulk Orders
               </Link>
               <button style={shoppingAssistantButtonStyle}>
@@ -1067,8 +1071,13 @@ export function CartPage() {
                 </form>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                <Link to="/cart" style={{ position: 'relative', ...iconButtonStyle }}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "14px" }}
+              >
+                <Link
+                  to="/cart"
+                  style={{ position: "relative", ...iconButtonStyle }}
+                >
                   <ShoppingCart size={20} />
                 </Link>
                 <div style={iconButtonStyle}>
@@ -1090,14 +1099,16 @@ export function CartPage() {
           <div style={emptyCartSectionStyle}>
             {/* Central Icon - Grey outline shopping cart */}
             <ShoppingCart style={emptyCartIconStyle} />
-            
+
             {/* Primary Message */}
             <h1 style={emptyCartTitleStyle}>Your Cart is Empty</h1>
-            
+
             {/* Secondary Message */}
-            <p style={emptyCartSubtitleStyle}>Looks like you haven't added anything to your cart</p>
+            <p style={emptyCartSubtitleStyle}>
+              Looks like you haven't added anything to your cart
+            </p>
             <p style={emptyCartSubtitle2Style}>Let's find the perfect gift</p>
-            
+
             {/* Action Button - Shop Gifts */}
             <Link to="/products" style={shopGiftsButtonStyle}>
               Shop Gifts
@@ -1162,34 +1173,35 @@ export function CartPage() {
   const amountForFreeDelivery = freeDeliveryThreshold - subtotal;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    >
       {/* Header from BulkOrderPage */}
       <header style={headerStyle}>
         <div style={headerContainerStyle}>
           {/* Left: Logo + Brand Name + Tagline */}
-          <div style={headerLeftStyle}>
-            <div style={logoCircleStyle}>
-              <span style={{ fontSize: '11px', fontWeight: 600, color: '#6B7280' }}>Logo</span>
-            </div>
-            <div style={brandStackStyle}>
-              <span style={brandNameStyle}>Treelah</span>
-              <span style={brandTaglineStyle}>Tag line</span>
-            </div>
-          </div>
+          <Link to="/">
+            <img src="/images/logo.png" alt="Treelah Logo" />
+          </Link>
 
           {/* Center: Navigation Links */}
           <div style={navLinksStyle}>
             {/* Categories with Mega Menu */}
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: "relative" }}>
               <div
                 style={navLinkStyle}
                 onClick={() => setCategoriesOpen(!categoriesOpen)}
               >
                 Categories
-                <ChevronDown size={14} style={{
-                  transform: categoriesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s'
-                }} />
+                <ChevronDown
+                  size={14}
+                  style={{
+                    transform: categoriesOpen
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.2s",
+                  }}
+                />
               </div>
               {/* Mega Menu Dropdown */}
               <div style={megaMenuContainerStyle}>
@@ -1202,12 +1214,12 @@ export function CartPage() {
                         style={megaMenuLinkStyle}
                         onClick={() => handleMegaMenuClick(link)}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.textDecoration = 'underline';
-                          e.currentTarget.style.color = '#FF8C42';
+                          e.currentTarget.style.textDecoration = "underline";
+                          e.currentTarget.style.color = "#FF8C42";
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.textDecoration = 'none';
-                          e.currentTarget.style.color = '#1A1A1A';
+                          e.currentTarget.style.textDecoration = "none";
+                          e.currentTarget.style.color = "#1A1A1A";
                         }}
                       >
                         {link}
@@ -1218,7 +1230,10 @@ export function CartPage() {
               </div>
             </div>
 
-            <Link to="/bulk-orders" style={{ ...navLinkStyle, textDecoration: 'none' }}>
+            <Link
+              to="/bulk-orders"
+              style={{ ...navLinkStyle, textDecoration: "none" }}
+            >
               Souvenirs & Bulk Orders
             </Link>
             <button style={shoppingAssistantButtonStyle}>
@@ -1233,12 +1248,12 @@ export function CartPage() {
             <button
               className="mobile-menu-button"
               style={{
-                display: 'none',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: '8px',
-                marginRight: '8px'
+                display: "none",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: "8px",
+                marginRight: "8px",
               }}
               onClick={() => setMobileMenuOpen(true)}
             >
@@ -1262,25 +1277,32 @@ export function CartPage() {
               </form>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <Link to="/cart" style={{ position: 'relative', ...iconButtonStyle }} className="cart-icon-link">
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <Link
+                to="/cart"
+                style={{ position: "relative", ...iconButtonStyle }}
+                className="cart-icon-link"
+              >
                 <ShoppingCart size={20} />
                 {items.length > 0 && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '-8px',
-                    right: '-8px',
-                    backgroundColor: '#FF8C42',
-                    color: 'white',
-                    borderRadius: '50%',
-                    width: '18px',
-                    height: '18px',
-                    fontSize: '11px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 600,
-                  }} className="cart-badge">
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "-8px",
+                      right: "-8px",
+                      backgroundColor: "#FF8C42",
+                      color: "white",
+                      borderRadius: "50%",
+                      width: "18px",
+                      height: "18px",
+                      fontSize: "11px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 600,
+                    }}
+                    className="cart-badge"
+                  >
                     {items.length}
                   </span>
                 )}
@@ -1292,8 +1314,8 @@ export function CartPage() {
                 <Headset size={20} />
               </div>
               <Link to="/profile" style={iconButtonStyle}>
-                  <User size={20} />
-                </Link>
+                <User size={20} />
+              </Link>
             </div>
           </div>
         </div>
@@ -1310,7 +1332,7 @@ export function CartPage() {
       {/* Mobile Menu */}
       <div style={mobileMenuStyle}>
         <div style={mobileMenuHeaderStyle}>
-          <span style={{ fontSize: '18px', fontWeight: 600 }}>Menu</span>
+          <span style={{ fontSize: "18px", fontWeight: 600 }}>Menu</span>
           <button
             style={mobileMenuCloseButtonStyle}
             onClick={() => setMobileMenuOpen(false)}
@@ -1319,24 +1341,58 @@ export function CartPage() {
           </button>
         </div>
 
-        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Home</Link>
+        <div
+          style={mobileMenuItemStyle}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link to="/" style={{ textDecoration: "none", color: "#1A1A1A" }}>
+            Home
+          </Link>
         </div>
 
-        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/products" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Products</Link>
+        <div
+          style={mobileMenuItemStyle}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link
+            to="/products"
+            style={{ textDecoration: "none", color: "#1A1A1A" }}
+          >
+            Products
+          </Link>
         </div>
 
-        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/bulk-orders" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Bulk Orders</Link>
+        <div
+          style={mobileMenuItemStyle}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link
+            to="/bulk-orders"
+            style={{ textDecoration: "none", color: "#1A1A1A" }}
+          >
+            Bulk Orders
+          </Link>
         </div>
 
-        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/cart" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Cart</Link>
+        <div
+          style={mobileMenuItemStyle}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link to="/cart" style={{ textDecoration: "none", color: "#1A1A1A" }}>
+            Cart
+          </Link>
         </div>
 
-        <div style={mobileMenuItemStyle} onClick={() => setMobileMenuOpen(false)}>
-          <Link to="/profile" style={{ textDecoration: 'none', color: '#1A1A1A' }}>Profile</Link>
+        <div
+          style={mobileMenuItemStyle}
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <Link
+            to="/profile"
+            style={{ textDecoration: "none", color: "#1A1A1A" }}
+          >
+            Profile
+          </Link>
         </div>
       </div>
 
@@ -1349,25 +1405,41 @@ export function CartPage() {
         </Link>
 
         {/* Page Header */}
-        <h1 style={cartPageHeaderStyle}>Shopping Cart ({items.length} {items.length === 1 ? 'item' : 'items'})</h1>
+        <h1 style={cartPageHeaderStyle}>
+          Shopping Cart ({items.length} {items.length === 1 ? "item" : "items"})
+        </h1>
 
         <div style={cartContainerStyle} className="cart-container">
           {/* Left Column: Cart Items */}
           <div style={cartItemsSectionStyle} className="cart-items-section">
             {items.map((item) => (
-              <div key={item.id} style={productCardStyleNew} className="product-card-new">
+              <div
+                key={item.id}
+                style={productCardStyleNew}
+                className="product-card-new"
+              >
                 {/* Product Image */}
-                <div style={productImagePlaceholderStyle} className="product-image-placeholder">
+                <div
+                  style={productImagePlaceholderStyle}
+                  className="product-image-placeholder"
+                >
                   <ImageWithFallback
                     src={item.image}
                     alt={item.title}
                     className="w-full h-full object-cover"
-                    style={{ width: '113px', height: '113px', borderRadius: '12px' }}
+                    style={{
+                      width: "113px",
+                      height: "113px",
+                      borderRadius: "12px",
+                    }}
                   />
                 </div>
 
                 {/* Product Info */}
-                <div style={productInfoSectionStyle} className="product-info-section">
+                <div
+                  style={productInfoSectionStyle}
+                  className="product-info-section"
+                >
                   {/* Product name and item type */}
                   <div>
                     <p style={productNameStyleNew}>{item.title}</p>
@@ -1375,30 +1447,54 @@ export function CartPage() {
                   </div>
 
                   {/* Price */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <p style={productPriceStyleNew}>₦{(item.price * item.quantity).toLocaleString()}</p>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <p style={productPriceStyleNew}>
+                      ₦{(item.price * item.quantity).toLocaleString()}
+                    </p>
                   </div>
 
                   {/* Quantity Selector and Remove Action */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                    }}
+                  >
                     {/* Quantity Selector */}
-                    <div style={quantitySelectorStyle} className="quantity-selector">
+                    <div
+                      style={quantitySelectorStyle}
+                      className="quantity-selector"
+                    >
                       <button
                         style={quantityButtonStyle}
-                        onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                        onClick={() =>
+                          updateQuantity(
+                            item.id,
+                            Math.max(1, item.quantity - 1),
+                          )
+                        }
                       >
                         —
                       </button>
                       <span style={quantityDisplayStyle}>{item.quantity}</span>
                       <button
                         style={quantityButtonStyle}
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() =>
+                          updateQuantity(item.id, item.quantity + 1)
+                        }
                       >
                         +
                       </button>
                       {/* Remove Action beside + */}
-                      <button 
-                        style={{ ...removeButtonStyle, marginLeft: '8px' }} 
+                      <button
+                        style={{ ...removeButtonStyle, marginLeft: "8px" }}
                         onClick={() => {
                           removeFromCart(item.id);
                           toast.success(`${item.title} removed from cart`);
@@ -1408,7 +1504,15 @@ export function CartPage() {
                       </button>
                     </div>
                     {/* Product Name at far right */}
-                    <p style={{ fontSize: '12px', color: '#717182', marginLeft: 'auto' }}>{item.title}</p>
+                    <p
+                      style={{
+                        fontSize: "12px",
+                        color: "#717182",
+                        marginLeft: "auto",
+                      }}
+                    >
+                      {item.title}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1416,33 +1520,45 @@ export function CartPage() {
           </div>
 
           {/* Right Column: Order Summary */}
-          <div style={orderSummaryContainerStyle} className="order-summary-container">
+          <div
+            style={orderSummaryContainerStyle}
+            className="order-summary-container"
+          >
             {/* Summary Header */}
             <h2 style={orderSummaryHeaderStyle}>Order Summary</h2>
 
             {/* Line Items */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+            >
               <div style={summaryLineStyle}>
                 <span style={summaryLabelStyle}>Subtotal</span>
-                <span style={summaryValueStyle}>₦{subtotal.toLocaleString()}</span>
+                <span style={summaryValueStyle}>
+                  ₦{subtotal.toLocaleString()}
+                </span>
               </div>
 
               <div style={summaryLineStyle}>
                 <span style={summaryLabelStyle}>Delivery Fee</span>
-                <span style={summaryValueStyle}>₦{deliveryFeeAmount.toLocaleString()}</span>
+                <span style={summaryValueStyle}>
+                  ₦{deliveryFeeAmount.toLocaleString()}
+                </span>
               </div>
 
               {/* Incentive Alert */}
               {subtotal < freeDeliveryThreshold && (
                 <div style={incentiveAlertStyle}>
                   <span>ℹ️</span>
-                  <span>Add ₦{amountForFreeDelivery.toLocaleString()} for free delivery</span>
+                  <span>
+                    Add ₦{amountForFreeDelivery.toLocaleString()} for free
+                    delivery
+                  </span>
                 </div>
               )}
             </div>
 
             {/* Horizontal Divider */}
-            <div style={{ borderTop: '1px solid #E5E7EB' }}></div>
+            <div style={{ borderTop: "1px solid #E5E7EB" }}></div>
 
             {/* Coupon Section */}
             <div style={couponSectionStyle}>
@@ -1465,21 +1581,33 @@ export function CartPage() {
             {/* Totals */}
             <div style={totalSectionStyle}>
               <span style={totalLabelStyle}>Total</span>
-              <span style={totalValueStyle}>₦{(subtotal + deliveryFeeAmount).toLocaleString()}</span>
+              <span style={totalValueStyle}>
+                ₦{(subtotal + deliveryFeeAmount).toLocaleString()}
+              </span>
             </div>
 
             {/* Delivery Estimate */}
             <div style={deliveryEstimateStyle}>
-              <Truck size={20} style={{ color: '#FF8C42' }} />
-              <span style={deliveryEstimateTextStyle}>Estimated delivery 5-10 business days</span>
+              <Truck size={20} style={{ color: "#FF8C42" }} />
+              <span style={deliveryEstimateTextStyle}>
+                Estimated delivery 5-10 business days
+              </span>
             </div>
 
             {/* Primary Actions */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <button style={primaryButtonStyle} onClick={() => navigate("/checkout")}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            >
+              <button
+                style={primaryButtonStyle}
+                onClick={() => navigate("/checkout")}
+              >
                 Proceed to checkout
               </button>
-              <button style={secondaryButtonStyle} onClick={() => navigate("/products")}>
+              <button
+                style={secondaryButtonStyle}
+                onClick={() => navigate("/products")}
+              >
                 <ArrowLeft size={16} />
                 Continue Shopping
               </button>
@@ -1490,24 +1618,58 @@ export function CartPage() {
         {/* Cross-Sell Section */}
         <div style={crossSellSectionStyle} className="cross-sell-section">
           <h2 style={crossSellHeaderStyle}>Products you may also Love</h2>
-          <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '16px' }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "16px",
+              overflowX: "auto",
+              paddingBottom: "16px",
+            }}
+          >
             {recommendedProducts.map((product) => (
               <Link
                 key={product.id}
                 to={`/product/${product.id}`}
-                style={{ flexShrink: 0, width: '200px', textDecoration: 'none' }}
+                style={{
+                  flexShrink: 0,
+                  width: "200px",
+                  textDecoration: "none",
+                }}
               >
-                <div style={{ width: '200px', height: '200px', borderRadius: '12px', backgroundColor: '#F3F4F6', marginBottom: '12px', overflow: 'hidden' }}>
+                <div
+                  style={{
+                    width: "200px",
+                    height: "200px",
+                    borderRadius: "12px",
+                    backgroundColor: "#F3F4F6",
+                    marginBottom: "12px",
+                    overflow: "hidden",
+                  }}
+                >
                   <ImageWithFallback
                     src={product.image}
                     alt={product.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <p style={{ fontSize: '14px', fontWeight: 500, color: '#1A1A1A', marginBottom: '4px', lineHeight: '1.4' }}>
+                <p
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    color: "#1A1A1A",
+                    marginBottom: "4px",
+                    lineHeight: "1.4",
+                  }}
+                >
                   {product.title}
                 </p>
-                <p style={{ fontSize: '16px', fontWeight: 600, color: '#FF8C42' }}>
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: "#FF8C42",
+                  }}
+                >
                   {product.price}
                 </p>
               </Link>

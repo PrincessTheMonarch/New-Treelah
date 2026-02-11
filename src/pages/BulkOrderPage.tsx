@@ -7,8 +7,20 @@ import { Label } from "../components/ui/label";
 import { Badge } from "../components/ui/badge";
 import { Separator } from "../components/ui/separator";
 import { Checkbox } from "../components/ui/checkbox";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../components/ui/sheet";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../components/ui/tooltip";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../components/ui/tooltip";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useBulkOrder } from "../context/BulkOrderContext";
 import { useCart } from "../context/CartContext";
@@ -48,17 +60,32 @@ import {
 import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
 
 export function BulkOrderPage() {
-  const { items, addItem, removeItem, updateQuantity, updateCustomization, getTotalItems, getTotalPrice, clearOrder } = useBulkOrder();
-  const { addToCart, items: cartItems, getTotalItems: getCartItems } = useCart();
+  const {
+    items,
+    addItem,
+    removeItem,
+    updateQuantity,
+    updateCustomization,
+    getTotalItems,
+    getTotalPrice,
+    clearOrder,
+  } = useBulkOrder();
+  const {
+    addToCart,
+    items: cartItems,
+    getTotalItems: getCartItems,
+  } = useCart();
   const navigate = useNavigate();
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedOccasion, setSelectedOccasion] = useState("all");
   const [priceRange, setPriceRange] = useState("all");
   const [deliveryTime, setDeliveryTime] = useState("all");
   const [customizableOnly, setCustomizableOnly] = useState(false);
-  const [currentStep, setCurrentStep] = useState<"selection" | "customization" | "checkout">("selection");
+  const [currentStep, setCurrentStep] = useState<
+    "selection" | "customization" | "checkout"
+  >("selection");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sortBy, setSortBy] = useState("popularity");
   const [giftFinderOpen, setGiftFinderOpen] = useState(false);
@@ -86,36 +113,50 @@ export function BulkOrderPage() {
   // Filter products (only show products suitable for bulk orders)
   const filteredProducts = useMemo(() => {
     let filtered = [...allProducts];
-    
-    const matchesSearch = searchQuery.toLowerCase() === "" || 
-      filtered.filter((product) => 
-        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+
+    const matchesSearch =
+      searchQuery.toLowerCase() === "" ||
+      filtered.filter(
+        (product) =>
+          product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.description.toLowerCase().includes(searchQuery.toLowerCase()),
       ).length > 0;
-    
+
     if (matchesSearch && searchQuery) {
-      filtered = filtered.filter((product) => 
-        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        (product) =>
+          product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.description.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
-    
-    const matchesCategory = selectedCategory === "all" || filtered.filter((product) => product.category === selectedCategory).length > 0;
+
+    const matchesCategory =
+      selectedCategory === "all" ||
+      filtered.filter((product) => product.category === selectedCategory)
+        .length > 0;
     if (matchesCategory && selectedCategory !== "all") {
-      filtered = filtered.filter((product) => product.category === selectedCategory);
+      filtered = filtered.filter(
+        (product) => product.category === selectedCategory,
+      );
     }
-    
-    const matchesOccasion = selectedOccasion === "all" || filtered.filter((product) => product.occasion.includes(selectedOccasion)).length > 0;
+
+    const matchesOccasion =
+      selectedOccasion === "all" ||
+      filtered.filter((product) => product.occasion.includes(selectedOccasion))
+        .length > 0;
     if (matchesOccasion && selectedOccasion !== "all") {
-      filtered = filtered.filter((product) => product.occasion.includes(selectedOccasion));
+      filtered = filtered.filter((product) =>
+        product.occasion.includes(selectedOccasion),
+      );
     }
-    
+
     let matchesPrice = true;
     const price = parseFloat(filtered[0]?.price.replace("$", "") || "0");
     if (priceRange === "under50") matchesPrice = price < 50;
-    else if (priceRange === "50to100") matchesPrice = price >= 50 && price <= 100;
+    else if (priceRange === "50to100")
+      matchesPrice = price >= 50 && price <= 100;
     else if (priceRange === "over100") matchesPrice = price > 100;
-    
+
     if (!matchesPrice && priceRange !== "all") {
       filtered = filtered.filter((product) => {
         const p = parseFloat(product.price.replace("$", ""));
@@ -125,14 +166,22 @@ export function BulkOrderPage() {
         return true;
       });
     }
-    
+
     // Sort products
     switch (sortBy) {
       case "price-low":
-        filtered.sort((a, b) => parseFloat(a.price.replace("$", "")) - parseFloat(b.price.replace("$", "")));
+        filtered.sort(
+          (a, b) =>
+            parseFloat(a.price.replace("$", "")) -
+            parseFloat(b.price.replace("$", "")),
+        );
         break;
       case "price-high":
-        filtered.sort((a, b) => parseFloat(b.price.replace("$", "")) - parseFloat(a.price.replace("$", "")));
+        filtered.sort(
+          (a, b) =>
+            parseFloat(b.price.replace("$", "")) -
+            parseFloat(a.price.replace("$", "")),
+        );
         break;
       case "newest":
         filtered.reverse();
@@ -142,7 +191,7 @@ export function BulkOrderPage() {
         filtered.sort((a, b) => b.reviews - a.reviews);
         break;
     }
-    
+
     return filtered;
   }, [searchQuery, selectedCategory, selectedOccasion, priceRange, sortBy]);
 
@@ -154,24 +203,29 @@ export function BulkOrderPage() {
     e.preventDefault();
     const params = new URLSearchParams();
     if (giftFinderForm.recipient === "male") params.append("tag", "For Him");
-    else if (giftFinderForm.recipient === "female") params.append("tag", "For Her");
+    else if (giftFinderForm.recipient === "female")
+      params.append("tag", "For Her");
     if (giftFinderForm.occasion) {
-      const occasionFormatted = giftFinderForm.occasion.charAt(0).toUpperCase() + giftFinderForm.occasion.slice(1);
+      const occasionFormatted =
+        giftFinderForm.occasion.charAt(0).toUpperCase() +
+        giftFinderForm.occasion.slice(1);
       params.append("occasion", occasionFormatted);
     }
     params.append("fromGiftFinder", "true");
-    if (giftFinderForm.relationship) params.append("relationship", giftFinderForm.relationship);
-    if (giftFinderForm.ageGroup) params.append("ageGroup", giftFinderForm.ageGroup);
+    if (giftFinderForm.relationship)
+      params.append("relationship", giftFinderForm.relationship);
+    if (giftFinderForm.ageGroup)
+      params.append("ageGroup", giftFinderForm.ageGroup);
     setGiftFinderOpen(false);
     navigate(`/products?${params.toString()}`);
   };
 
-  const handleAddToBulkOrder = (product: typeof allProducts[0]) => {
+  const handleAddToBulkOrder = (product: (typeof allProducts)[0]) => {
     // Add to bulk order context
     addItem(product, 10);
-    
+
     // Also add to regular cart
-    const priceNum = parseFloat(product.price.replace('$', ''));
+    const priceNum = parseFloat(product.price.replace("$", ""));
     addToCart({
       id: product.id,
       title: product.title,
@@ -179,7 +233,7 @@ export function BulkOrderPage() {
       image: product.image,
       category: product.category,
     });
-    
+
     toast.success(`${product.title} added to cart!`);
   };
 
@@ -199,7 +253,11 @@ export function BulkOrderPage() {
   };
 
   const handlePlaceOrder = () => {
-    if (!companyDetails.companyName || !companyDetails.contactPerson || !companyDetails.email) {
+    if (
+      !companyDetails.companyName ||
+      !companyDetails.contactPerson ||
+      !companyDetails.email
+    ) {
       toast.error("Please fill in all required company details");
       return;
     }
@@ -218,7 +276,7 @@ export function BulkOrderPage() {
 
   const calculateBulkDiscount = (totalPrice: number) => {
     if (totalPrice > 1000) return 0.15;
-    if (totalPrice > 500) return 0.10;
+    if (totalPrice > 500) return 0.1;
     if (totalPrice > 250) return 0.05;
     return 0;
   };
@@ -230,181 +288,194 @@ export function BulkOrderPage() {
 
   // Header styles from ProductListPage
   const headerStyle: CSSProperties = {
-    position: 'sticky',
+    position: "sticky",
     top: 0,
     zIndex: 50,
-    backgroundColor: 'white',
-    borderBottom: '1px solid #E5E7EB',
-    width: '100%',
-    padding: '12px 16px',
+    backgroundColor: "white",
+    borderBottom: "1px solid #E5E7EB",
+    width: "100%",
+    padding: "12px 16px",
   };
 
   const headerContainerStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: '20px',
-    maxWidth: '1400px',
-    margin: '0 auto',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "20px",
+    maxWidth: "1400px",
+    margin: "0 auto",
   };
 
   const headerLeftStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
   };
 
   const logoCircleStyle: CSSProperties = {
-    width: '40px',
-    height: '40px',
-    borderRadius: '50%',
-    backgroundColor: '#F3F4F6',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "40px",
+    height: "40px",
+    borderRadius: "50%",
+    backgroundColor: "#F3F4F6",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   };
 
   const brandStackStyle: CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2px',
+    display: "flex",
+    flexDirection: "column",
+    gap: "2px",
   };
 
   const brandNameStyle: CSSProperties = {
-    fontSize: '18px',
+    fontSize: "18px",
     fontWeight: 700,
-    color: '#1A1A1A',
-    lineHeight: '1.2',
+    color: "#1A1A1A",
+    lineHeight: "1.2",
   };
 
   const brandTaglineStyle: CSSProperties = {
-    fontSize: '11px',
-    color: '#6B7280',
-    lineHeight: '1.2',
+    fontSize: "11px",
+    color: "#6B7280",
+    lineHeight: "1.2",
   };
 
   const navLinksStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '20px',
+    display: "flex",
+    alignItems: "center",
+    gap: "20px",
   };
 
   const navLinkStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    fontSize: '14px',
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    fontSize: "14px",
     fontWeight: 500,
-    color: '#1A1A1A',
-    cursor: 'pointer',
-    padding: '8px 0',
+    color: "#1A1A1A",
+    cursor: "pointer",
+    padding: "8px 0",
   };
 
   const shoppingAssistantButtonStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '8px 14px',
-    borderRadius: '20px',
-    backgroundColor: '#FF8C42',
-    color: 'white',
-    border: 'none',
-    fontSize: '12px',
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "8px 14px",
+    borderRadius: "20px",
+    backgroundColor: "#FF8C42",
+    color: "white",
+    border: "none",
+    fontSize: "12px",
     fontWeight: 500,
-    cursor: 'pointer',
+    cursor: "pointer",
   };
 
   const headerCenterStyle: CSSProperties = {
     flex: 1,
-    maxWidth: '400px',
-    marginLeft: '20px',
-    marginRight: '20px',
+    maxWidth: "400px",
+    marginLeft: "20px",
+    marginRight: "20px",
   };
 
   const searchBarContainerStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    position: 'relative',
+    display: "flex",
+    alignItems: "center",
+    position: "relative",
   };
 
   const searchInputStyle: CSSProperties = {
-    width: '100%',
-    padding: '8px 36px 8px 14px',
-    borderRadius: '20px',
-    border: '1px solid #E5E7EB',
-    backgroundColor: '#F6F6F6',
-    fontSize: '13px',
-    outline: 'none',
+    width: "100%",
+    padding: "8px 36px 8px 14px",
+    borderRadius: "20px",
+    border: "1px solid #E5E7EB",
+    backgroundColor: "#F6F6F6",
+    fontSize: "13px",
+    outline: "none",
   };
 
   const searchIconStyle: CSSProperties = {
-    position: 'absolute',
-    right: '12px',
-    color: '#6B7280',
-    cursor: 'pointer',
+    position: "absolute",
+    right: "12px",
+    color: "#6B7280",
+    cursor: "pointer",
   };
 
   const headerRightStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
+    display: "flex",
+    alignItems: "center",
+    gap: "16px",
   };
 
   const iconButtonStyle: CSSProperties = {
-    cursor: 'pointer',
-    color: '#1A1A1A',
+    cursor: "pointer",
+    color: "#1A1A1A",
   };
 
   // Mega Menu styles
   const megaMenuContainerStyle: CSSProperties = {
-    position: 'absolute',
-    top: '100%',
-    left: '70%',
-    transform: 'translateX(-30%)',
-    width: '480px',
-    backgroundColor: '#FBFBFB',
-    borderRadius: '12px',
-    padding: '16px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    marginTop: '8px',
+    position: "absolute",
+    top: "100%",
+    left: "70%",
+    transform: "translateX(-30%)",
+    width: "480px",
+    backgroundColor: "#FBFBFB",
+    borderRadius: "12px",
+    padding: "16px",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+    marginTop: "8px",
     zIndex: 100,
-    display: categoriesOpen ? 'flex' : 'none',
-    gap: '12px',
+    display: categoriesOpen ? "flex" : "none",
+    gap: "12px",
   };
 
   const megaMenuColumnStyle: CSSProperties = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: '6px 12px',
-    alignItems: 'flex-start',
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: "6px 12px",
+    alignItems: "flex-start",
   };
 
   const megaMenuHeaderStyle: CSSProperties = {
-    width: '100%',
-    fontSize: '12px',
+    width: "100%",
+    fontSize: "12px",
     fontWeight: 500,
-    color: '#717182',
-    marginBottom: '4px',
+    color: "#717182",
+    marginBottom: "4px",
   };
 
   const megaMenuLinkStyle: CSSProperties = {
-    fontSize: '13px',
+    fontSize: "13px",
     fontWeight: 400,
-    color: '#1A1A1A',
-    cursor: 'pointer',
-    textDecoration: 'none',
-    transition: 'all 0.2s',
+    color: "#1A1A1A",
+    cursor: "pointer",
+    textDecoration: "none",
+    transition: "all 0.2s",
   };
 
   const megaMenuColumns = [
     {
       header: "By Occasion",
-      links: ["Birthdays", "Weddings", "Anniversaries", "Baby Showers", "Graduations"],
+      links: [
+        "Birthdays",
+        "Weddings",
+        "Anniversaries",
+        "Baby Showers",
+        "Graduations",
+      ],
     },
     {
       header: "By Recipient",
-      links: ["For Him", "For Her", "For Kids", "For Teens", "For Colleagues", "For Couples"],
+      links: [
+        "For Him",
+        "For Her",
+        "For Kids",
+        "For Teens",
+        "For Colleagues",
+        "For Couples",
+      ],
     },
     {
       header: "By Age",
@@ -412,7 +483,14 @@ export function BulkOrderPage() {
     },
     {
       header: "By Type",
-      links: ["Toys & Games", "Home & Living", "Beauty & Wellness", "Fashion & Accessories", "Tech & Gadgets", "Food & Beverages"],
+      links: [
+        "Toys & Games",
+        "Home & Living",
+        "Beauty & Wellness",
+        "Fashion & Accessories",
+        "Tech & Gadgets",
+        "Food & Beverages",
+      ],
     },
   ];
 
@@ -422,29 +500,28 @@ export function BulkOrderPage() {
       <header style={headerStyle}>
         <div style={headerContainerStyle}>
           {/* Left: Logo + Brand Name + Tagline */}
-          <div style={headerLeftStyle}>
-            <div style={logoCircleStyle}>
-              <span style={{ fontSize: '11px', fontWeight: 600, color: '#6B7280' }}>Logo</span>
-            </div>
-            <div style={brandStackStyle}>
-              <span style={brandNameStyle}>Treelah</span>
-              <span style={brandTaglineStyle}>Tag line</span>
-            </div>
-          </div>
+          <Link to="/">
+            <img src="/images/logo.png" alt="Treelah Logo" />
+          </Link>
 
           {/* Center: Navigation Links */}
           <div style={navLinksStyle}>
             {/* Categories with Mega Menu */}
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: "relative" }}>
               <div
                 style={navLinkStyle}
                 onClick={() => setCategoriesOpen(!categoriesOpen)}
               >
                 Categories
-                <ChevronDown size={14} style={{
-                  transform: categoriesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s'
-                }} />
+                <ChevronDown
+                  size={14}
+                  style={{
+                    transform: categoriesOpen
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.2s",
+                  }}
+                />
               </div>
               {/* Mega Menu Dropdown */}
               <div style={megaMenuContainerStyle}>
@@ -462,12 +539,12 @@ export function BulkOrderPage() {
                           navigate(`/products?${params.toString()}`);
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.textDecoration = 'underline';
-                          e.currentTarget.style.color = '#FF8C42';
+                          e.currentTarget.style.textDecoration = "underline";
+                          e.currentTarget.style.color = "#FF8C42";
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.textDecoration = 'none';
-                          e.currentTarget.style.color = '#1A1A1A';
+                          e.currentTarget.style.textDecoration = "none";
+                          e.currentTarget.style.color = "#1A1A1A";
                         }}
                       >
                         {link}
@@ -478,7 +555,10 @@ export function BulkOrderPage() {
               </div>
             </div>
 
-            <Link to="/bulk-orders" style={{ ...navLinkStyle, textDecoration: 'none' }}>
+            <Link
+              to="/bulk-orders"
+              style={{ ...navLinkStyle, textDecoration: "none" }}
+            >
               Souvenirs & Bulk Orders
             </Link>
 
@@ -490,44 +570,143 @@ export function BulkOrderPage() {
                   Shopping Assistant
                 </button>
               </DialogTrigger>
-              <DialogContent style={{ maxWidth: '500px', maxHeight: '80vh', overflow: 'auto' }}>
+              <DialogContent
+                style={{
+                  maxWidth: "500px",
+                  maxHeight: "80vh",
+                  overflow: "auto",
+                }}
+              >
                 <DialogHeader>
-                  <DialogTitle style={{ fontSize: '18px' }}>Find Your Perfect Gift</DialogTitle>
-                  <DialogDescription style={{ fontSize: '14px' }}>
-                    Answer a few quick questions and we'll suggest the best gifts!
+                  <DialogTitle style={{ fontSize: "18px" }}>
+                    Find Your Perfect Gift
+                  </DialogTitle>
+                  <DialogDescription style={{ fontSize: "14px" }}>
+                    Answer a few quick questions and we'll suggest the best
+                    gifts!
                   </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleGiftFinderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '8px' }}>
+                <form
+                  onSubmit={handleGiftFinderSubmit}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                    marginTop: "8px",
+                  }}
+                >
                   <div>
-                    <Label style={{ fontSize: '14px', fontWeight: 500 }}>Who's the gift for?</Label>
+                    <Label style={{ fontSize: "14px", fontWeight: 500 }}>
+                      Who's the gift for?
+                    </Label>
                     <RadioGroup
                       value={giftFinderForm.recipient}
-                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, recipient: value })}
-                      style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}
+                      onValueChange={(value: string) =>
+                        setGiftFinderForm({
+                          ...giftFinderForm,
+                          recipient: value,
+                        })
+                      }
+                      style={{
+                        marginTop: "8px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px",
+                      }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "12px",
+                          border: "1px solid #E5E7EB",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
+                      >
                         <RadioGroupItem value="male" id="gf-male" />
-                        <Label htmlFor="gf-male" style={{ cursor: 'pointer', flex: 1, fontSize: '14px' }}>For Him</Label>
+                        <Label
+                          htmlFor="gf-male"
+                          style={{
+                            cursor: "pointer",
+                            flex: 1,
+                            fontSize: "14px",
+                          }}
+                        >
+                          For Him
+                        </Label>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "12px",
+                          border: "1px solid #E5E7EB",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
+                      >
                         <RadioGroupItem value="female" id="gf-female" />
-                        <Label htmlFor="gf-female" style={{ cursor: 'pointer', flex: 1, fontSize: '14px' }}>For Her</Label>
+                        <Label
+                          htmlFor="gf-female"
+                          style={{
+                            cursor: "pointer",
+                            flex: 1,
+                            fontSize: "14px",
+                          }}
+                        >
+                          For Her
+                        </Label>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "12px",
+                          border: "1px solid #E5E7EB",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
+                      >
                         <RadioGroupItem value="other" id="gf-other" />
-                        <Label htmlFor="gf-other" style={{ cursor: 'pointer', flex: 1, fontSize: '14px' }}>Anyone</Label>
+                        <Label
+                          htmlFor="gf-other"
+                          style={{
+                            cursor: "pointer",
+                            flex: 1,
+                            fontSize: "14px",
+                          }}
+                        >
+                          Anyone
+                        </Label>
                       </div>
                     </RadioGroup>
                   </div>
 
                   <div>
-                    <Label htmlFor="gf-relationship" style={{ fontSize: '14px', fontWeight: 500 }}>Relationship</Label>
+                    <Label
+                      htmlFor="gf-relationship"
+                      style={{ fontSize: "14px", fontWeight: 500 }}
+                    >
+                      Relationship
+                    </Label>
                     <Select
                       value={giftFinderForm.relationship}
-                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, relationship: value })}
+                      onValueChange={(value: string) =>
+                        setGiftFinderForm({
+                          ...giftFinderForm,
+                          relationship: value,
+                        })
+                      }
                     >
-                      <SelectTrigger id="gf-relationship" style={{ marginTop: '8px', height: '40px' }}>
+                      <SelectTrigger
+                        id="gf-relationship"
+                        style={{ marginTop: "8px", height: "40px" }}
+                      >
                         <SelectValue placeholder="Select relationship" />
                       </SelectTrigger>
                       <SelectContent>
@@ -542,12 +721,25 @@ export function BulkOrderPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="gf-occasion" style={{ fontSize: '14px', fontWeight: 500 }}>Occasion</Label>
+                    <Label
+                      htmlFor="gf-occasion"
+                      style={{ fontSize: "14px", fontWeight: 500 }}
+                    >
+                      Occasion
+                    </Label>
                     <Select
                       value={giftFinderForm.occasion}
-                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, occasion: value })}
+                      onValueChange={(value: string) =>
+                        setGiftFinderForm({
+                          ...giftFinderForm,
+                          occasion: value,
+                        })
+                      }
                     >
-                      <SelectTrigger id="gf-occasion" style={{ marginTop: '8px', height: '40px' }}>
+                      <SelectTrigger
+                        id="gf-occasion"
+                        style={{ marginTop: "8px", height: "40px" }}
+                      >
                         <SelectValue placeholder="Select occasion" />
                       </SelectTrigger>
                       <SelectContent>
@@ -556,18 +748,33 @@ export function BulkOrderPage() {
                         <SelectItem value="anniversary">Anniversary</SelectItem>
                         <SelectItem value="graduation">Graduation</SelectItem>
                         <SelectItem value="promotion">Promotion</SelectItem>
-                        <SelectItem value="justbecause">Just Because</SelectItem>
+                        <SelectItem value="justbecause">
+                          Just Because
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label htmlFor="gf-age" style={{ fontSize: '14px', fontWeight: 500 }}>Age Group</Label>
+                    <Label
+                      htmlFor="gf-age"
+                      style={{ fontSize: "14px", fontWeight: 500 }}
+                    >
+                      Age Group
+                    </Label>
                     <Select
                       value={giftFinderForm.ageGroup}
-                      onValueChange={(value) => setGiftFinderForm({ ...giftFinderForm, ageGroup: value })}
+                      onValueChange={(value: string) =>
+                        setGiftFinderForm({
+                          ...giftFinderForm,
+                          ageGroup: value,
+                        })
+                      }
                     >
-                      <SelectTrigger id="gf-age" style={{ marginTop: '8px', height: '40px' }}>
+                      <SelectTrigger
+                        id="gf-age"
+                        style={{ marginTop: "8px", height: "40px" }}
+                      >
                         <SelectValue placeholder="Select age group" />
                       </SelectTrigger>
                       <SelectContent>
@@ -582,16 +789,16 @@ export function BulkOrderPage() {
                   <button
                     type="submit"
                     style={{
-                      width: '100%',
-                      padding: '12px',
-                      borderRadius: '24px',
-                      backgroundColor: '#FF8C42',
-                      color: 'white',
-                      border: 'none',
-                      fontSize: '14px',
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: "24px",
+                      backgroundColor: "#FF8C42",
+                      color: "white",
+                      border: "none",
+                      fontSize: "14px",
                       fontWeight: 500,
-                      cursor: 'pointer',
-                      marginTop: '8px',
+                      cursor: "pointer",
+                      marginTop: "8px",
                     }}
                   >
                     Find My Perfect Gift
@@ -618,25 +825,30 @@ export function BulkOrderPage() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <Link to="/cart" style={{ position: 'relative', ...iconButtonStyle }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <Link
+                to="/cart"
+                style={{ position: "relative", ...iconButtonStyle }}
+              >
                 <ShoppingCart size={20} />
                 {getCartItems() > 0 && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '-8px',
-                    right: '-8px',
-                    backgroundColor: '#FF8C42',
-                    color: 'white',
-                    borderRadius: '50%',
-                    width: '18px',
-                    height: '18px',
-                    fontSize: '11px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: 600,
-                  }}>
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "-8px",
+                      right: "-8px",
+                      backgroundColor: "#FF8C42",
+                      color: "white",
+                      borderRadius: "50%",
+                      width: "18px",
+                      height: "18px",
+                      fontSize: "11px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 600,
+                    }}
+                  >
                     {getCartItems()}
                   </span>
                 )}
@@ -657,50 +869,103 @@ export function BulkOrderPage() {
 
       {/* Hero Banner with Gradient */}
       {currentStep === "selection" && (
-        <div style={{
-          background: 'linear-gradient(to right, #FEEFE6 0%, #EAF9FF 50%, #FEEFE6 100%)',
-          backdropFilter: 'blur(80px)',
-          WebkitBackdropFilter: 'blur(80px)',
-          paddingTop: '24px',
-          paddingBottom: '24px',
-        }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px' }}>
-            <div style={{ textAlign: 'center' }}>
-              <h1 style={{
-                fontFamily: 'Poppins',
-                fontWeight: 500,
-                fontSize: '36px',
-                lineHeight: '120%',
-                letterSpacing: '0%',
-                textAlign: 'center',
-                verticalAlign: 'middle',
-                marginBottom: '8px',
-                color: '#1A1A1A',
-              }}>
+        <div
+          style={{
+            background:
+              "linear-gradient(to right, #FEEFE6 0%, #EAF9FF 50%, #FEEFE6 100%)",
+            backdropFilter: "blur(80px)",
+            WebkitBackdropFilter: "blur(80px)",
+            paddingTop: "24px",
+            paddingBottom: "24px",
+          }}
+        >
+          <div
+            style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 16px" }}
+          >
+            <div style={{ textAlign: "center" }}>
+              <h1
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: 500,
+                  fontSize: "36px",
+                  lineHeight: "120%",
+                  letterSpacing: "0%",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                  marginBottom: "8px",
+                  color: "#1A1A1A",
+                }}
+              >
                 Bulk Orders
               </h1>
-              <p style={{
-                fontSize: '14px',
-                color: '#6B7280',
-                maxWidth: '600px',
-                margin: '0 auto',
-              }}>
-                Need gifts for your team, clients, or event? We've got you covered. Bulk discounts, personalized packaging, and fast delivery, all in one place.
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#6B7280",
+                  maxWidth: "600px",
+                  margin: "0 auto",
+                }}
+              >
+                Need gifts for your team, clients, or event? We've got you
+                covered. Bulk discounts, personalized packaging, and fast
+                delivery, all in one place.
               </p>
 
               {/* Bulk Discount Info */}
               <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto">
-                <div style={{ backgroundColor: '#EAF9FF', borderRadius: '12px', border: '1px solid #1A1A1A', padding: '16px' }}>
-                  <p className="font-semibold text-sm sm:text-base" style={{ color: '#1A1A1A' }}>5% OFF</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Orders from ₦250,000+</p>
+                <div
+                  style={{
+                    backgroundColor: "#EAF9FF",
+                    borderRadius: "12px",
+                    border: "1px solid #1A1A1A",
+                    padding: "16px",
+                  }}
+                >
+                  <p
+                    className="font-semibold text-sm sm:text-base"
+                    style={{ color: "#1A1A1A" }}
+                  >
+                    5% OFF
+                  </p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    Orders from ₦250,000+
+                  </p>
                 </div>
-                <div style={{ backgroundColor: '#EAF9FF', borderRadius: '12px', border: '1px solid #1A1A1A', padding: '16px' }}>
-                  <p className="font-semibold text-sm sm:text-base" style={{ color: '#1A1A1A' }}>10% OFF</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Orders from ₦500,000+</p>
+                <div
+                  style={{
+                    backgroundColor: "#EAF9FF",
+                    borderRadius: "12px",
+                    border: "1px solid #1A1A1A",
+                    padding: "16px",
+                  }}
+                >
+                  <p
+                    className="font-semibold text-sm sm:text-base"
+                    style={{ color: "#1A1A1A" }}
+                  >
+                    10% OFF
+                  </p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    Orders from ₦500,000+
+                  </p>
                 </div>
-                <div style={{ backgroundColor: '#EAF9FF', borderRadius: '12px', border: '1px solid #1A1A1A', padding: '16px' }}>
-                  <p className="font-semibold text-sm sm:text-base" style={{ color: '#1A1A1A' }}>15% OFF</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Orders from ₦1,000,000+</p>
+                <div
+                  style={{
+                    backgroundColor: "#EAF9FF",
+                    borderRadius: "12px",
+                    border: "1px solid #1A1A1A",
+                    padding: "16px",
+                  }}
+                >
+                  <p
+                    className="font-semibold text-sm sm:text-base"
+                    style={{ color: "#1A1A1A" }}
+                  >
+                    15% OFF
+                  </p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    Orders from ₦1,000,000+
+                  </p>
                 </div>
               </div>
             </div>
@@ -715,33 +980,68 @@ export function BulkOrderPage() {
             {/* Bulk Filter & Search Bar */}
             <div className="mb-6 sm:mb-8">
               {/* Row 1: Four Dropdown Filters */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '12px' }}>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger style={{ height: '44px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, 1fr)",
+                  gap: "12px",
+                  marginBottom: "12px",
+                }}
+              >
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
+                  <SelectTrigger
+                    style={{
+                      height: "44px",
+                      borderRadius: "8px",
+                      border: "1px solid #E5E7EB",
+                    }}
+                  >
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
                     {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
 
-                <Select value={selectedOccasion} onValueChange={setSelectedOccasion}>
-                  <SelectTrigger style={{ height: '44px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                <Select
+                  value={selectedOccasion}
+                  onValueChange={setSelectedOccasion}
+                >
+                  <SelectTrigger
+                    style={{
+                      height: "44px",
+                      borderRadius: "8px",
+                      border: "1px solid #E5E7EB",
+                    }}
+                  >
                     <SelectValue placeholder="All Occasions" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Occasions</SelectItem>
                     {occasions.map((occ) => (
-                      <SelectItem key={occ} value={occ}>{occ}</SelectItem>
+                      <SelectItem key={occ} value={occ}>
+                        {occ}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
 
                 <Select value={priceRange} onValueChange={setPriceRange}>
-                  <SelectTrigger style={{ height: '44px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                  <SelectTrigger
+                    style={{
+                      height: "44px",
+                      borderRadius: "8px",
+                      border: "1px solid #E5E7EB",
+                    }}
+                  >
                     <SelectValue placeholder="All Price Range" />
                   </SelectTrigger>
                   <SelectContent>
@@ -753,7 +1053,13 @@ export function BulkOrderPage() {
                 </Select>
 
                 <Select value={deliveryTime} onValueChange={setDeliveryTime}>
-                  <SelectTrigger style={{ height: '44px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                  <SelectTrigger
+                    style={{
+                      height: "44px",
+                      borderRadius: "8px",
+                      border: "1px solid #E5E7EB",
+                    }}
+                  >
                     <SelectValue placeholder="All Delivery Time" />
                   </SelectTrigger>
                   <SelectContent>
@@ -766,32 +1072,50 @@ export function BulkOrderPage() {
               </div>
 
               {/* Row 2: Search & Toggle */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ flex: 1, position: 'relative' }}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "16px" }}
+              >
+                <div style={{ flex: 1, position: "relative" }}>
                   <input
                     type="text"
                     placeholder="Search for the perfect gift"
                     style={{
-                      width: '100%',
-                      padding: '12px 40px 12px 16px',
-                      borderRadius: '8px',
-                      border: '1px solid #E5E7EB',
-                      backgroundColor: '#F6F6F6',
-                      fontSize: '14px',
-                      outline: 'none',
+                      width: "100%",
+                      padding: "12px 40px 12px 16px",
+                      borderRadius: "8px",
+                      border: "1px solid #E5E7EB",
+                      backgroundColor: "#F6F6F6",
+                      fontSize: "14px",
+                      outline: "none",
                     }}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#6B7280' }} />
+                  <Search
+                    size={18}
+                    style={{
+                      position: "absolute",
+                      right: "14px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      color: "#6B7280",
+                    }}
+                  />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
                   <Checkbox
                     id="customizable"
                     checked={customizableOnly}
-                    onCheckedChange={(checked) => setCustomizableOnly(checked as boolean)}
+                    onCheckedChange={(checked: boolean | "indeterminate") =>
+                      setCustomizableOnly(checked as boolean)
+                    }
                   />
-                  <Label htmlFor="customizable" className="cursor-pointer text-sm">
+                  <Label
+                    htmlFor="customizable"
+                    className="cursor-pointer text-sm"
+                  >
                     Customizable Items Only
                   </Label>
                 </div>
@@ -799,12 +1123,25 @@ export function BulkOrderPage() {
             </div>
 
             {/* Results Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <p style={{ fontSize: '14px', color: '#6B7280' }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "24px",
+              }}
+            >
+              <p style={{ fontSize: "14px", color: "#6B7280" }}>
                 Showing ({filteredProducts.length}) items
               </p>
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger style={{ width: '160px', borderRadius: '24px', height: '40px' }}>
+                <SelectTrigger
+                  style={{
+                    width: "160px",
+                    borderRadius: "24px",
+                    height: "40px",
+                  }}
+                >
                   <SelectValue placeholder="Popularity" />
                 </SelectTrigger>
                 <SelectContent>
@@ -819,9 +1156,9 @@ export function BulkOrderPage() {
             {/* Floating Action Button - Talk to a consultant */}
             <div
               style={{
-                position: 'fixed',
-                bottom: '24px',
-                right: '24px',
+                position: "fixed",
+                bottom: "24px",
+                right: "24px",
                 zIndex: 100,
               }}
             >
@@ -831,23 +1168,27 @@ export function BulkOrderPage() {
                     <a
                       href="#"
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 20px',
-                        borderRadius: '24px',
-                        backgroundColor: '#FF8C42',
-                        color: 'white',
-                        border: 'none',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        textDecoration: 'none',
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        padding: "12px 20px",
+                        borderRadius: "24px",
+                        backgroundColor: "#FF8C42",
+                        color: "white",
+                        border: "none",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease",
+                        textDecoration: "none",
                       }}
-                      onClick={(e) => { e.preventDefault(); }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                      }}
                     >
                       <MessageSquare size={18} />
-                      <span style={{ whiteSpace: 'nowrap' }}>Talk to a consultant</span>
+                      <span style={{ whiteSpace: "nowrap" }}>
+                        Talk to a consultant
+                      </span>
                     </a>
                   </TooltipTrigger>
                   <TooltipContent side="left">
@@ -864,21 +1205,33 @@ export function BulkOrderPage() {
                   <TooltipTrigger asChild>
                     <SheetTrigger asChild>
                       <Button
-                        size="lg"
                         className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 h-16 w-16 sm:h-20 sm:w-20 rounded-full shadow-lg hover:shadow-xl transition-all z-50 p-0 bg-gradient-to-br from-primary to-secondary hover:scale-110"
-                        style={{ background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)' }}
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)",
+                        }}
                       >
                         <div className="flex flex-col items-center justify-center relative w-full h-full">
                           <ShoppingBag className="h-5 w-5 sm:h-7 sm:w-7" />
-                          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                          <svg
+                            className="absolute inset-0 w-full h-full"
+                            viewBox="0 0 100 100"
+                          >
                             <defs>
                               <path
                                 id="circlePath"
                                 d="M 50,50 m -35,0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0"
                               />
                             </defs>
-                            <text className="fill-white text-[6px] sm:text-[8px] tracking-wider" style={{ fontWeight: 600 }}>
-                              <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
+                            <text
+                              className="fill-white text-[6px] sm:text-[8px] tracking-wider"
+                              style={{ fontWeight: 600 }}
+                            >
+                              <textPath
+                                href="#circlePath"
+                                startOffset="50%"
+                                textAnchor="middle"
+                              >
                                 BULK ORDER CHECKOUT
                               </textPath>
                             </text>
@@ -900,7 +1253,9 @@ export function BulkOrderPage() {
 
               <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
                 <SheetHeader>
-                  <SheetTitle className="text-lg sm:text-xl">My Bulk Order</SheetTitle>
+                  <SheetTitle className="text-lg sm:text-xl">
+                    My Bulk Order
+                  </SheetTitle>
                   <SheetDescription className="text-sm">
                     Review your bulk order items and proceed to customization
                   </SheetDescription>
@@ -909,7 +1264,9 @@ export function BulkOrderPage() {
                 {items.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center">
                     <ShoppingBag className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-4" />
-                    <p className="text-sm sm:text-base text-muted-foreground mb-2">No items in bulk order</p>
+                    <p className="text-sm sm:text-base text-muted-foreground mb-2">
+                      No items in bulk order
+                    </p>
                     <p className="text-xs sm:text-sm text-muted-foreground">
                       Add items from the product list
                     </p>
@@ -918,7 +1275,10 @@ export function BulkOrderPage() {
                   <>
                     <div className="space-y-3 sm:space-y-4 py-4 sm:py-6">
                       {items.map((item) => (
-                        <div key={item.product.id} className="flex gap-2 sm:gap-3 border rounded-lg p-2 sm:p-3">
+                        <div
+                          key={item.product.id}
+                          className="flex gap-2 sm:gap-3 border rounded-lg p-2 sm:p-3"
+                        >
                           <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden bg-muted flex-shrink-0">
                             <ImageWithFallback
                               src={item.product.image}
@@ -935,10 +1295,13 @@ export function BulkOrderPage() {
                             </p>
                             <div className="flex items-center gap-1 sm:gap-2">
                               <Button
-                                size="icon"
-                                variant="outline"
                                 className="h-6 w-6 sm:h-7 sm:w-7"
-                                onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                                onClick={() =>
+                                  updateQuantity(
+                                    item.product.id,
+                                    item.quantity - 1,
+                                  )
+                                }
                                 disabled={item.quantity <= 10}
                               >
                                 <Minus className="h-2 w-2 sm:h-3 sm:w-3" />
@@ -947,16 +1310,17 @@ export function BulkOrderPage() {
                                 {item.quantity}
                               </span>
                               <Button
-                                size="icon"
-                                variant="outline"
                                 className="h-6 w-6 sm:h-7 sm:w-7"
-                                onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                                onClick={() =>
+                                  updateQuantity(
+                                    item.product.id,
+                                    item.quantity + 1,
+                                  )
+                                }
                               >
                                 <Plus className="h-2 w-2 sm:h-3 sm:w-3" />
                               </Button>
                               <Button
-                                size="icon"
-                                variant="ghost"
                                 className="h-6 w-6 sm:h-7 sm:w-7 ml-auto"
                                 onClick={() => removeItem(item.product.id)}
                               >
@@ -977,7 +1341,9 @@ export function BulkOrderPage() {
                       </div>
                       {discountRate > 0 && (
                         <div className="flex justify-between text-xs sm:text-sm text-primary">
-                          <span>Bulk Discount ({(discountRate * 100).toFixed(0)}%)</span>
+                          <span>
+                            Bulk Discount ({(discountRate * 100).toFixed(0)}%)
+                          </span>
                           <span>-${discount.toFixed(2)}</span>
                         </div>
                       )}
@@ -990,9 +1356,11 @@ export function BulkOrderPage() {
 
                     <Button
                       className="w-full h-12"
-                      size="lg"
                       onClick={handleProceedToCustomization}
-                      style={{ background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)' }}
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)",
+                      }}
                     >
                       Proceed to Customization
                     </Button>
@@ -1008,9 +1376,12 @@ export function BulkOrderPage() {
                   <div
                     key={product.id}
                     className="bg-card rounded-lg border overflow-hidden hover:shadow-lg transition-shadow"
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: "pointer" }}
                   >
-                    <div className="aspect-square overflow-hidden bg-muted" style={{ borderRadius: '16px 16px 0 0' }}>
+                    <div
+                      className="aspect-square overflow-hidden bg-muted"
+                      style={{ borderRadius: "16px 16px 0 0" }}
+                    >
                       <ImageWithFallback
                         src={product.image}
                         alt={product.title}
@@ -1018,7 +1389,9 @@ export function BulkOrderPage() {
                       />
                     </div>
                     <div className="p-3 sm:p-4">
-                      <h3 className="font-semibold mb-2 line-clamp-2 text-sm sm:text-base">{product.title}</h3>
+                      <h3 className="font-semibold mb-2 line-clamp-2 text-sm sm:text-base">
+                        {product.title}
+                      </h3>
                       <div className="flex items-center gap-1 sm:gap-2 mb-3">
                         <Badge variant="secondary" className="text-xs">
                           Min. 10 units
@@ -1029,14 +1402,21 @@ export function BulkOrderPage() {
                       </div>
                       <div className="flex items-center justify-between mb-3">
                         <div>
-                          <p className="text-xs sm:text-sm text-muted-foreground">Per unit</p>
-                          <p className="font-semibold text-sm sm:text-base">{product.price}</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            Per unit
+                          </p>
+                          <p className="font-semibold text-sm sm:text-base">
+                            {product.price}
+                          </p>
                         </div>
                       </div>
                       <Button
                         className="w-full h-9 text-xs sm:text-sm"
                         onClick={() => handleAddToBulkOrder(product)}
-                        style={{ background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)' }}
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)",
+                        }}
                       >
                         Add to Bulk Order
                       </Button>
@@ -1053,14 +1433,15 @@ export function BulkOrderPage() {
           <div>
             <div className="mb-4 sm:mb-6">
               <Button
-                variant="ghost"
                 onClick={() => setCurrentStep("selection")}
                 className="mb-3 sm:mb-4 h-10 text-sm"
               >
-                <ArrowLeft size={16} style={{ marginRight: '8px' }} />
+                <ArrowLeft size={16} style={{ marginRight: "8px" }} />
                 Back to Product Selection
               </Button>
-              <h2 className="text-xl sm:text-2xl lg:text-3xl mb-2">Customize Your Bulk Order</h2>
+              <h2 className="text-xl sm:text-2xl lg:text-3xl mb-2">
+                Customize Your Bulk Order
+              </h2>
               <p className="text-sm sm:text-base text-muted-foreground">
                 Add personalization to make your gifts extra special
               </p>
@@ -1068,7 +1449,10 @@ export function BulkOrderPage() {
 
             <div className="space-y-4 sm:space-y-6">
               {items.map((item) => (
-                <div key={item.product.id} className="bg-card rounded-lg border p-4 sm:p-6">
+                <div
+                  key={item.product.id}
+                  className="bg-card rounded-lg border p-4 sm:p-6"
+                >
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
                     <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-md overflow-hidden bg-muted flex-shrink-0 mx-auto sm:mx-0">
                       <ImageWithFallback
@@ -1078,7 +1462,9 @@ export function BulkOrderPage() {
                       />
                     </div>
                     <div className="flex-1 text-center sm:text-left">
-                      <h3 className="font-semibold mb-1 text-sm sm:text-base">{item.product.title}</h3>
+                      <h3 className="font-semibold mb-1 text-sm sm:text-base">
+                        {item.product.title}
+                      </h3>
                       <p className="text-xs sm:text-sm text-muted-foreground">
                         Quantity: {item.quantity} units
                       </p>
@@ -1087,7 +1473,12 @@ export function BulkOrderPage() {
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                     <div>
-                      <Label htmlFor={`logo-${item.product.id}`} className="text-sm">Add Company Logo</Label>
+                      <Label
+                        htmlFor={`logo-${item.product.id}`}
+                        className="text-sm"
+                      >
+                        Add Company Logo
+                      </Label>
                       <div className="mt-2 border-2 border-dashed rounded-lg p-4 sm:p-6 text-center hover:border-primary transition-colors cursor-pointer">
                         <p className="text-xs sm:text-sm text-muted-foreground">
                           Click to upload logo (PNG, JPG)
@@ -1096,7 +1487,10 @@ export function BulkOrderPage() {
                     </div>
 
                     <div>
-                      <Label htmlFor={`message-${item.product.id}`} className="text-sm">
+                      <Label
+                        htmlFor={`message-${item.product.id}`}
+                        className="text-sm"
+                      >
                         Personalized Message Card
                       </Label>
                       <textarea
@@ -1105,34 +1499,52 @@ export function BulkOrderPage() {
                         rows={3}
                         className="mt-2 w-full px-3 py-2 border rounded-md text-sm"
                         onChange={(e) =>
-                          updateCustomization(item.product.id, { message: e.target.value })
+                          updateCustomization(item.product.id, {
+                            message: e.target.value,
+                          })
                         }
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor={`packaging-${item.product.id}`} className="text-sm">
+                      <Label
+                        htmlFor={`packaging-${item.product.id}`}
+                        className="text-sm"
+                      >
                         Packaging Option
                       </Label>
                       <Select
-                        onValueChange={(value) =>
-                          updateCustomization(item.product.id, { packaging: value })
+                        onValueChange={(value: string) =>
+                          updateCustomization(item.product.id, {
+                            packaging: value,
+                          })
                         }
                       >
                         <SelectTrigger className="mt-2 h-10">
                           <SelectValue placeholder="Select packaging" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="standard">Standard Gift Box</SelectItem>
-                          <SelectItem value="premium">Premium Gift Wrap (+$2/unit)</SelectItem>
-                          <SelectItem value="branded">Branded Box (+$3/unit)</SelectItem>
-                          <SelectItem value="eco">Eco-Friendly Wrap (+$1.50/unit)</SelectItem>
+                          <SelectItem value="standard">
+                            Standard Gift Box
+                          </SelectItem>
+                          <SelectItem value="premium">
+                            Premium Gift Wrap (+$2/unit)
+                          </SelectItem>
+                          <SelectItem value="branded">
+                            Branded Box (+$3/unit)
+                          </SelectItem>
+                          <SelectItem value="eco">
+                            Eco-Friendly Wrap (+$1.50/unit)
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div>
-                      <Label htmlFor={`delivery-note-${item.product.id}`} className="text-sm">
+                      <Label
+                        htmlFor={`delivery-note-${item.product.id}`}
+                        className="text-sm"
+                      >
                         Delivery Instructions
                       </Label>
                       <textarea
@@ -1141,7 +1553,9 @@ export function BulkOrderPage() {
                         rows={3}
                         className="mt-2 w-full px-3 py-2 border rounded-md text-sm"
                         onChange={(e) =>
-                          updateCustomization(item.product.id, { deliveryNote: e.target.value })
+                          updateCustomization(item.product.id, {
+                            deliveryNote: e.target.value,
+                          })
                         }
                       />
                     </div>
@@ -1152,15 +1566,26 @@ export function BulkOrderPage() {
 
             <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0 bg-card rounded-lg border p-4 sm:p-6">
               <div className="text-center sm:text-left">
-                <p className="text-sm text-muted-foreground">Total Order Value</p>
-                <p className="text-xl sm:text-2xl font-semibold">${total.toFixed(2)}</p>
+                <p className="text-sm text-muted-foreground">
+                  Total Order Value
+                </p>
+                <p className="text-xl sm:text-2xl font-semibold">
+                  ${total.toFixed(2)}
+                </p>
                 {discountRate > 0 && (
                   <p className="text-xs sm:text-sm text-primary">
                     {(discountRate * 100).toFixed(0)}% bulk discount applied
                   </p>
                 )}
               </div>
-              <Button size="lg" onClick={handleProceedToCheckout} className="h-12 w-full sm:w-auto" style={{ background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)' }}>
+              <Button
+                onClick={handleProceedToCheckout}
+                className="h-12 w-full sm:w-auto"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)",
+                }}
+              >
                 Continue to Checkout
               </Button>
             </div>
@@ -1172,14 +1597,15 @@ export function BulkOrderPage() {
           <div>
             <div className="mb-4 sm:mb-6">
               <Button
-                variant="ghost"
                 onClick={() => setCurrentStep("customization")}
                 className="mb-3 sm:mb-4 h-10 text-sm"
               >
-                <ArrowLeft size={16} style={{ marginRight: '8px' }} />
+                <ArrowLeft size={16} style={{ marginRight: "8px" }} />
                 Back to Customization
               </Button>
-              <h2 className="text-xl sm:text-2xl lg:text-3xl mb-2">Complete Your Bulk Order</h2>
+              <h2 className="text-xl sm:text-2xl lg:text-3xl mb-2">
+                Complete Your Bulk Order
+              </h2>
               <p className="text-sm sm:text-base text-muted-foreground">
                 Enter your company details and finalize the order
               </p>
@@ -1189,16 +1615,23 @@ export function BulkOrderPage() {
               <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                 {/* Company Details */}
                 <div className="bg-card rounded-lg border p-4 sm:p-6">
-                  <h3 className="font-semibold mb-3 sm:mb-4 text-base sm:text-lg">Company Information</h3>
+                  <h3 className="font-semibold mb-3 sm:mb-4 text-base sm:text-lg">
+                    Company Information
+                  </h3>
                   <div className="space-y-3 sm:space-y-4">
                     <div>
-                      <Label htmlFor="company-name" className="text-sm">Company Name *</Label>
+                      <Label htmlFor="company-name" className="text-sm">
+                        Company Name *
+                      </Label>
                       <Input
                         id="company-name"
                         placeholder="Your Company Ltd."
                         value={companyDetails.companyName}
                         onChange={(e) =>
-                          setCompanyDetails({ ...companyDetails, companyName: e.target.value })
+                          setCompanyDetails({
+                            ...companyDetails,
+                            companyName: e.target.value,
+                          })
                         }
                         className="mt-1 h-10"
                       />
@@ -1206,7 +1639,9 @@ export function BulkOrderPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
-                        <Label htmlFor="contact-person" className="text-sm">Contact Person *</Label>
+                        <Label htmlFor="contact-person" className="text-sm">
+                          Contact Person *
+                        </Label>
                         <Input
                           id="contact-person"
                           placeholder="John Doe"
@@ -1221,14 +1656,19 @@ export function BulkOrderPage() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="email" className="text-sm">Email *</Label>
+                        <Label htmlFor="email" className="text-sm">
+                          Email *
+                        </Label>
                         <Input
                           id="email"
                           type="email"
                           placeholder="john@company.com"
                           value={companyDetails.email}
                           onChange={(e) =>
-                            setCompanyDetails({ ...companyDetails, email: e.target.value })
+                            setCompanyDetails({
+                              ...companyDetails,
+                              email: e.target.value,
+                            })
                           }
                           className="mt-1 h-10"
                         />
@@ -1237,20 +1677,27 @@ export function BulkOrderPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
-                        <Label htmlFor="phone" className="text-sm">Phone</Label>
+                        <Label htmlFor="phone" className="text-sm">
+                          Phone
+                        </Label>
                         <Input
                           id="phone"
                           type="tel"
                           placeholder="+1 (555) 123-4567"
                           value={companyDetails.phone}
                           onChange={(e) =>
-                            setCompanyDetails({ ...companyDetails, phone: e.target.value })
+                            setCompanyDetails({
+                              ...companyDetails,
+                              phone: e.target.value,
+                            })
                           }
                           className="mt-1 h-10"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="delivery-date" className="text-sm">Preferred Delivery Date</Label>
+                        <Label htmlFor="delivery-date" className="text-sm">
+                          Preferred Delivery Date
+                        </Label>
                         <Input
                           id="delivery-date"
                           type="date"
@@ -1267,14 +1714,19 @@ export function BulkOrderPage() {
                     </div>
 
                     <div>
-                      <Label htmlFor="address" className="text-sm">Delivery Address *</Label>
+                      <Label htmlFor="address" className="text-sm">
+                        Delivery Address *
+                      </Label>
                       <textarea
                         id="address"
                         placeholder="123 Business Street, Suite 100, New York, NY 10001"
                         rows={3}
                         value={companyDetails.address}
                         onChange={(e) =>
-                          setCompanyDetails({ ...companyDetails, address: e.target.value })
+                          setCompanyDetails({
+                            ...companyDetails,
+                            address: e.target.value,
+                          })
                         }
                         className="mt-1 w-full px-3 py-2 border rounded-md text-sm"
                       />
@@ -1284,26 +1736,40 @@ export function BulkOrderPage() {
 
                 {/* Payment Method */}
                 <div className="bg-card rounded-lg border p-4 sm:p-6">
-                  <h3 className="font-semibold mb-3 sm:mb-4 text-base sm:text-lg">Payment Method</h3>
-                  <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
+                  <h3 className="font-semibold mb-3 sm:mb-4 text-base sm:text-lg">
+                    Payment Method
+                  </h3>
+                  <RadioGroup
+                    value={paymentMethod}
+                    onValueChange={setPaymentMethod}
+                  >
                     <div className="space-y-2 sm:space-y-3">
                       <div className="flex items-center space-x-2 p-3 sm:p-4 border rounded-lg cursor-pointer hover:bg-muted/50">
                         <RadioGroupItem value="card" id="card" />
-                        <Label htmlFor="card" className="flex-1 cursor-pointer text-sm">
+                        <Label
+                          htmlFor="card"
+                          className="flex-1 cursor-pointer text-sm"
+                        >
                           Credit / Debit Card
                         </Label>
                       </div>
 
                       <div className="flex items-center space-x-2 p-3 sm:p-4 border rounded-lg cursor-pointer hover:bg-muted/50">
                         <RadioGroupItem value="transfer" id="transfer" />
-                        <Label htmlFor="transfer" className="flex-1 cursor-pointer text-sm">
+                        <Label
+                          htmlFor="transfer"
+                          className="flex-1 cursor-pointer text-sm"
+                        >
                           Bank Transfer
                         </Label>
                       </div>
 
                       <div className="flex items-center space-x-2 p-3 sm:p-4 border rounded-lg cursor-pointer hover:bg-muted/50">
                         <RadioGroupItem value="invoice" id="invoice" />
-                        <Label htmlFor="invoice" className="flex-1 cursor-pointer text-sm">
+                        <Label
+                          htmlFor="invoice"
+                          className="flex-1 cursor-pointer text-sm"
+                        >
                           Invoice Request (30-day terms)
                         </Label>
                       </div>
@@ -1314,7 +1780,8 @@ export function BulkOrderPage() {
                     <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-muted/50 rounded-lg">
                       <p className="text-xs sm:text-sm text-muted-foreground">
                         <Check className="inline h-3 w-3 sm:h-4 sm:w-4 mr-1 text-primary" />
-                        We'll send you an invoice after order confirmation. Payment due within 30 days.
+                        We'll send you an invoice after order confirmation.
+                        Payment due within 30 days.
                       </p>
                     </div>
                   )}
@@ -1324,11 +1791,16 @@ export function BulkOrderPage() {
               {/* Order Summary */}
               <div className="lg:col-span-1 order-first lg:order-last">
                 <div className="bg-card rounded-lg border p-4 sm:p-6 sticky top-16 sm:top-20">
-                  <h3 className="font-semibold mb-3 sm:mb-4 text-base sm:text-lg">Order Summary</h3>
+                  <h3 className="font-semibold mb-3 sm:mb-4 text-base sm:text-lg">
+                    Order Summary
+                  </h3>
 
                   <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
                     {items.map((item) => (
-                      <div key={item.product.id} className="flex gap-2 sm:gap-3 text-xs sm:text-sm">
+                      <div
+                        key={item.product.id}
+                        className="flex gap-2 sm:gap-3 text-xs sm:text-sm"
+                      >
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-md overflow-hidden bg-muted flex-shrink-0">
                           <ImageWithFallback
                             src={item.product.image}
@@ -1360,7 +1832,9 @@ export function BulkOrderPage() {
                     </div>
                     {discountRate > 0 && (
                       <div className="flex justify-between text-xs sm:text-sm text-primary">
-                        <span>Bulk Discount ({(discountRate * 100).toFixed(0)}%)</span>
+                        <span>
+                          Bulk Discount ({(discountRate * 100).toFixed(0)}%)
+                        </span>
                         <span>-${discount.toFixed(2)}</span>
                       </div>
                     )}
@@ -1378,16 +1852,19 @@ export function BulkOrderPage() {
                   </div>
 
                   <Button
-                    size="lg"
                     className="w-full mt-4 sm:mt-6 h-12"
                     onClick={handlePlaceOrder}
-                    style={{ background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)' }}
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)",
+                    }}
                   >
                     Place Bulk Order
                   </Button>
 
                   <p className="text-xs text-muted-foreground text-center mt-3 sm:mt-4">
-                    A gift consultant will contact you within 24 hours to confirm your order
+                    A gift consultant will contact you within 24 hours to
+                    confirm your order
                   </p>
                 </div>
               </div>
@@ -1402,4 +1879,3 @@ export function BulkOrderPage() {
 }
 
 export default BulkOrderPage;
-

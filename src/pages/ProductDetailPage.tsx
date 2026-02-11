@@ -30,6 +30,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
+import Header from "../components/Header";
+import { Separator } from "../components/ui/separator";
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -54,7 +56,14 @@ export function ProductDetailPage() {
   const [personalizeGift, setPersonalizeGift] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [commentLikes, setCommentLikes] = useState<{ [key: number]: { likes: number; liked: boolean; dislikes: number; disliked: boolean } }>({
+  const [commentLikes, setCommentLikes] = useState<{
+    [key: number]: {
+      likes: number;
+      liked: boolean;
+      dislikes: number;
+      disliked: boolean;
+    };
+  }>({
     1: { likes: 40, liked: false, dislikes: 40, disliked: false },
     2: { likes: 35, liked: false, dislikes: 5, disliked: false },
     3: { likes: 28, liked: false, dislikes: 3, disliked: false },
@@ -65,9 +74,13 @@ export function ProductDetailPage() {
       <div className="min-h-screen flex flex-col bg-white">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-3xl mb-4" style={{ color: '#1A1A1A' }}>Product Not Found</h1>
+            <h1 className="text-3xl mb-4" style={{ color: "#1A1A1A" }}>
+              Product Not Found
+            </h1>
             <Link to="/">
-              <Button className="bg-[#FF8C42] text-white">Return to Home</Button>
+              <Button className="bg-[#FF8C42] text-white">
+                Return to Home
+              </Button>
             </Link>
           </div>
         </div>
@@ -94,28 +107,36 @@ export function ProductDetailPage() {
   };
 
   const handleLikeToggle = (commentId: number) => {
-    setCommentLikes(prev => ({
+    setCommentLikes((prev) => ({
       ...prev,
       [commentId]: {
         ...prev[commentId],
         liked: !prev[commentId].liked,
-        dislikes: prev[commentId].disliked ? prev[commentId].dislikes - 1 : prev[commentId].dislikes,
+        dislikes: prev[commentId].disliked
+          ? prev[commentId].dislikes - 1
+          : prev[commentId].dislikes,
         disliked: false,
-        likes: prev[commentId].liked ? prev[commentId].likes - 1 : prev[commentId].likes + 1,
-      }
+        likes: prev[commentId].liked
+          ? prev[commentId].likes - 1
+          : prev[commentId].likes + 1,
+      },
     }));
   };
 
   const handleDislikeToggle = (commentId: number) => {
-    setCommentLikes(prev => ({
+    setCommentLikes((prev) => ({
       ...prev,
       [commentId]: {
         ...prev[commentId],
         disliked: !prev[commentId].disliked,
-        likes: prev[commentId].liked ? prev[commentId].likes - 1 : prev[commentId].likes,
+        likes: prev[commentId].liked
+          ? prev[commentId].likes - 1
+          : prev[commentId].likes,
         liked: false,
-        dislikes: prev[commentId].disliked ? prev[commentId].dislikes - 1 : prev[commentId].dislikes + 1,
-      }
+        dislikes: prev[commentId].disliked
+          ? prev[commentId].dislikes - 1
+          : prev[commentId].dislikes + 1,
+      },
     }));
   };
 
@@ -145,7 +166,7 @@ export function ProductDetailPage() {
       name: "John Doe",
       date: "11/11/2011",
       rating: 5,
-      text: "Include a heartfelt message with your gift",
+      text: "Lovely product, arrived on time and well-packaged. Highly recommend!",
     },
     {
       id: 2,
@@ -166,49 +187,29 @@ export function ProductDetailPage() {
   const [variants] = useState(["Classic", "Premium", "Luxury", "Ultimate"]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white" style={{ overflowX: 'hidden' }}>
+    <div className="min-h-screen flex flex-col">
       {/* 1. Header & Navigation - Full width like landing page */}
-      <header
+      {/* <header
         className="fixed top-0 z-50 bg-white border-b border-gray-100 w-full"
-        style={{ width: '100%', position: 'fixed', top: '0', left: '0', right: '0', zIndex: '50' }}
+        style={{
+          width: "100%",
+          position: "fixed",
+          top: "0",
+          left: "0",
+          right: "0",
+          zIndex: "50",
+        }}
       >
-        <div className="w-full px-4 py-3" style={{ width: '100%' }}>
-          {/* Top Bar */}
+        <div className="w-full px-4 py-3" style={{ width: "100%" }}>
           <div className="flex items-center justify-between">
-            {/* Left: Logo Placeholder - Grey Circular Background */}
-            <div className="flex items-center gap-2">
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: '#E5E7EB' }}
-              >
-                <span
-                  className="text-xs font-medium"
-                  style={{ color: '#6B7280' }}
-                >
-                  Logo
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span
-                  className="font-bold text-lg"
-                  style={{ color: '#1A1A1A' }}
-                >
-                  Treelah
-                </span>
-                <span
-                  className="text-xs"
-                  style={{ color: '#6B7280' }}
-                >
-                  Tag line
-                </span>
-              </div>
-            </div>
+            <Link to="/">
+              <img src="/images/logo.png" alt="Treelah Logo" />
+            </Link>
 
-            {/* Right: Hamburger Menu */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10">
-                  <Menu className="h-5 w-5" style={{ color: '#1A1A1A' }} />
+                <Button className="h-10 w-10">
+                  <Menu className="h-5 w-5" style={{ color: "#1A1A1A" }} />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80 p-0">
@@ -216,15 +217,11 @@ export function ProductDetailPage() {
                   <div className="flex items-center justify-between">
                     <span
                       className="font-semibold"
-                      style={{ color: '#1A1A1A' }}
+                      style={{ color: "#1A1A1A" }}
                     >
                       Menu
                     </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
+                    <Button onClick={() => setMobileMenuOpen(false)}>
                       <X className="h-5 w-5" />
                     </Button>
                   </div>
@@ -234,7 +231,7 @@ export function ProductDetailPage() {
                     to="/products"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block py-2"
-                    style={{ color: '#1A1A1A' }}
+                    style={{ color: "#1A1A1A" }}
                   >
                     Shop All
                   </Link>
@@ -242,7 +239,7 @@ export function ProductDetailPage() {
                     to="/bulk-orders"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block py-2"
-                    style={{ color: '#1A1A1A' }}
+                    style={{ color: "#1A1A1A" }}
                   >
                     Bulk Orders
                   </Link>
@@ -250,24 +247,30 @@ export function ProductDetailPage() {
                     to="#"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block py-2"
-                    style={{ color: '#1A1A1A' }}
+                    style={{ color: "#1A1A1A" }}
                   >
                     Support
                   </Link>
                   <Link to="/cart" onClick={() => setMobileMenuOpen(false)}>
                     <div className="flex items-center gap-2">
                       <div className="relative">
-                        <ShoppingCart className="h-5 w-5" style={{ color: '#FF8C42' }} />
+                        <ShoppingCart
+                          className="h-5 w-5"
+                          style={{ color: "#FF8C42" }}
+                        />
                         {getTotalItems() > 0 && (
                           <span
                             className="absolute -top-2 -right-2 h-5 w-5 rounded-full flex items-center justify-center text-xs font-semibold"
-                            style={{ backgroundColor: '#FF8C42', color: 'white' }}
+                            style={{
+                              backgroundColor: "#FF8C42",
+                              color: "white",
+                            }}
                           >
                             {getTotalItems()}
                           </span>
                         )}
                       </div>
-                      <span style={{ color: '#1A1A1A' }}>Cart</span>
+                      <span style={{ color: "#1A1A1A" }}>Cart</span>
                     </div>
                   </Link>
                 </div>
@@ -275,79 +278,88 @@ export function ProductDetailPage() {
             </Sheet>
           </div>
         </div>
-      </header>
-
-      <main className="flex-1 pb-24 w-full" style={{ paddingTop: '60px', overflowX: 'hidden' }}>
-        {/* Back Button - Right above Save for Later */}
-        <div className="w-full px-4 py-3">
-          <button
+      </header> */}
+      <Header />
+      <main className="flex-1 container mx-auto px-4 py-8">
+        {/* Back Button */}
+        <div className="mb-4">
+          <Button
+            variant="ghost"
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1 transition-colors"
-            style={{ color: '#1A1A1A' }}
+            className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm font-medium">Back</span>
-          </button>
+            Back
+          </Button>
         </div>
 
-        {/* 2. Action Bar (Wishlist & Share) */}
-        <div className="w-full px-4 py-3 border-b border-gray-100">
-          <div className="flex items-center justify-between">
-            {/* Left: Save for Later - Orange Heart */}
-            <button className="flex items-center gap-2">
-              <Heart className="h-5 w-5" style={{ color: '#FF8C42' }} />
-              <span
-                className="text-sm font-medium"
-                style={{ color: '#FF8C42' }}
-              >
-                Save for Later
-              </span>
-            </button>
-
-            {/* Right: Share */}
-            <button className="flex items-center gap-2">
-              <Share2 className="h-5 w-5" style={{ color: '#1A1A1A' }} />
-              <span
-                className="text-sm font-medium"
-                style={{ color: '#1A1A1A' }}
-              >
-                Share
-              </span>
-            </button>
-          </div>
+        {/* Breadcrumb */}
+        <div className="mb-12 text-sm text-muted-foreground">
+          <Link to="/" className="hover:text-primary">
+            Home
+          </Link>
+          <span className="mx-2">/</span>
+          <Link to="/products" className="hover:text-primary">
+            Products
+          </Link>
+          <span className="mx-2">/</span>
+          <span>{product.title}</span>
         </div>
 
-        {/* 3. Main Product Section - Responsive Layout */}
-        <div className="w-full px-4 py-4">
-          {/* Desktop: Two Column Layout | Mobile: Single Column */}
-          <div className="lg:grid lg:grid-cols-2 lg:gap-12" style={{ maxWidth: '80rem', marginLeft: 'auto', marginRight: 'auto' }}>
-            
-            {/* Left Column - Image Gallery */}
-            <div className="lg:col-span-1" style={{ maxWidth: '560px' }}>
-              {/* Main Image */}
-              <div
-                className="rounded-xl overflow-hidden aspect-square mb-4 w-full"
-                style={{ backgroundColor: '#E5E7EB', maxWidth: '560px', marginLeft: 'auto', marginRight: 'auto' }}
-              >
-                <ImageWithFallback
-                  src={productImages[selectedImageIndex]}
-                  alt={product.title}
-                  className="w-full h-full object-cover"
-                />
+        {/* Main Product Section */}
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mb-16">
+          {/* Left Column - Image Gallery */}
+          <div>
+            {/* Action Bar (Wishlist & Share) */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between">
+                {/* Left: Save for Later - Orange Heart */}
+                <button className="flex items-center gap-2">
+                  <Heart className="h-5 w-5" style={{ color: "#FF8C42" }} />
+                  <span
+                    className="text-sm font-medium"
+                    style={{ color: "#FF8C42" }}
+                  >
+                    Save for Later
+                  </span>
+                </button>
+
+                {/* Right: Share */}
+                <button className="flex items-center gap-2">
+                  <Share2 className="h-5 w-5" style={{ color: "#1A1A1A" }} />
+                  <span
+                    className="text-sm font-medium"
+                    style={{ color: "#1A1A1A" }}
+                  >
+                    Share
+                  </span>
+                </button>
               </div>
+            </div>
+            {/* Main Image */}
+            <div className="rounded-3xl overflow-hidden bg-accent">
+              <ImageWithFallback
+                src={productImages[selectedImageIndex]}
+                alt={product.title}
+                className="w-full h-full object-cover aspect-square"
+              />
+            </div>
 
-              {/* Thumbnails - Horizontal scroll for both mobile and desktop */}
-              <div className="flex gap-2 overflow-x-auto pb-2 w-full touch-x-auto overscroll-x-contain">
+            {/* Thumbnails - Horizontal scroll for both mobile and desktop */}
+            {/* <div className="flex gap-2 overflow-x-auto pb-2 w-full touch-x-auto overscroll-x-contain">
                 {productImages.map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden ${selectedImageIndex === index ? "ring-2" : ""
-                      }`}
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden ${
+                      selectedImageIndex === index ? "ring-2" : ""
+                    }`}
                     style={{
-                      backgroundColor: '#E5E7EB',
-                      ringColor: '#FF8C42',
-                      border: selectedImageIndex === index ? '2px solid #FF8C42' : 'none',
+                      backgroundColor: "#E5E7EB",
+                      border:
+                        selectedImageIndex === index
+                          ? "2px solid #FF8C42"
+                          : "none",
                     }}
                   >
                     <img
@@ -357,64 +369,68 @@ export function ProductDetailPage() {
                     />
                   </button>
                 ))}
-              </div>
-            </div>
+              </div> */}
+          </div>
 
-            {/* Right Column - Product Info */}
-            <div className="lg:col-span-1 lg:mt-0 mt-6">
-              {/* 4. Product Info & Title */}
-              <div className="w-full">
-                {/* Tags - 50% Off first, then Staff Pick, then In-stock */}
-                <div className="flex gap-2 flex-wrap mb-3">
-                  <span
-                    className="px-3 py-1 rounded-full text-xs font-medium"
-                    style={{
-                      backgroundColor: '#6FC2E4',
-                      color: 'white'
-                    }}
-                  >
-                    50% Off
-                  </span>
-                  <span
-                    className="px-3 py-1 rounded-full text-xs font-medium"
-                    style={{
-                      backgroundColor: '#E0F2FE',
-                      color: '#1A1A1A'
-                    }}
-                  >
-                    Staff Pick
-                  </span>
-                  <span
-                    className="px-3 py-1 rounded-full text-xs font-medium"
-                    style={{
-                      backgroundColor: '#F3F4F6',
-                      color: '#1A1A1A'
-                    }}
-                  >
-                    In-stock
-                  </span>
-                </div>
-
-                {/* Title */}
-                <h1
-                  className="text-2xl font-bold mb-2"
-                  style={{ color: '#1A1A1A' }}
+          {/* Right Column - Product Info */}
+          <div className="lg:col-span-1 lg:mt-0 mt-12">
+            {/* Product Info & Title */}
+            <div className="w-full">
+              {/* Tags - 50% Off first, then Staff Pick, then In-stock */}
+              <div className="flex gap-2 flex-wrap mb-8">
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-medium"
+                  style={{
+                    backgroundColor: "#6FC2E4",
+                    color: "white",
+                  }}
                 >
-                  {product.title}
-                </h1>
+                  50% Off
+                </span>
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-medium"
+                  style={{
+                    backgroundColor: "#E0F2FE",
+                    color: "#1A1A1A",
+                  }}
+                >
+                  Special
+                </span>
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-medium"
+                  style={{
+                    backgroundColor: "#F3F4F6",
+                    color: "#1A1A1A",
+                  }}
+                >
+                  In-stock
+                </span>
+              </div>
 
-                {/* Price - Orange */}
-                <div className="flex items-baseline gap-2 mb-3">
+              {/* Title */}
+              <h1
+                className="text-3xl font-bold mb-6"
+                style={{ color: "#1A1A1A" }}
+              >
+                {product.title}
+              </h1>
+
+              <div className="flex justify-between">
+                {/* Price */}
+                <div className="flex items-baseline gap-2 mb-4">
                   <span
                     className="text-2xl font-bold"
-                    style={{ color: '#FF8C42' }}
+                    style={{ color: "#FF8C42" }}
                   >
                     {product.price}
                   </span>
                   {product.originalPrice && (
                     <span
                       className="text-lg"
-                      style={{ color: '#6B7280', textDecoration: 'line-through' }}
+                      style={{
+                        color: "#6B7280",
+                        textDecoration: "line-through",
+                      }}
                     >
                       {product.originalPrice}
                     </span>
@@ -429,714 +445,636 @@ export function ProductDetailPage() {
                         key={i}
                         className="h-4 w-4"
                         style={{
-                          color: '#FF8C42',
-                          fill: i < 4 ? '#FF8C42' : 'none'
+                          color: "#FF8C42",
+                          fill: i < 4 ? "#FF8C42" : "none",
                         }}
                       />
                     ))}
                   </div>
-                  <span
-                    className="text-sm"
-                    style={{ color: '#6B7280' }}
-                  >
+                  <span className="text-sm" style={{ color: "#6B7280" }}>
                     4.5 from 100 review
                   </span>
                 </div>
-
-                {/* Short Description - Grey */}
-                <div className="mb-4">
-                  <h3 className="font-semibold mb-1" style={{ color: '#1A1A1A' }}>
-                    Why you should buy this.......
-                  </h3>
-                  <p
-                    className="text-sm leading-relaxed"
-                    style={{ color: '#6B7280' }}
-                  >
-                    {product.description}
-                  </p>
-                </div>
               </div>
 
-              {/* 5. Selectors (Variant & Quantity) */}
-              <div className="w-full py-4 lg:border-t lg:border-gray-100">
-                {/* Variants - Cards style */}
-                <div className="mb-4">
-                  <Label
-                    className="font-semibold mb-3 block"
-                    style={{ color: '#1A1A1A' }}
-                  >
-                    Select a Variant
-                  </Label>
-                  <div className="grid grid-cols-4 gap-2 w-full">
-                    {variants.map((variant, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedVariant(index)}
-                        className="p-3 rounded-xl text-center transition-all"
-                        style={{
-                          backgroundColor: selectedVariant === index ? 'white' : '#F6F6F6',
-                          border: selectedVariant === index ? '2px solid #FF8C42' : 'none',
-                        }}
-                      >
-                        <span
-                          className="text-xs font-medium"
-                          style={{ color: '#1A1A1A' }}
-                        >
-                          {variant}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Action Row */}
-                <div className="flex items-center gap-4 w-full" style={{ maxWidth: '28rem' }}>
-                  {/* Quantity Counter */}
-                  <div
-                    className="flex items-center rounded-full overflow-hidden"
-                    style={{ border: '1px solid #E5E7EB' }}
-                  >
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="px-4 py-2 transition-colors"
-                      style={{ backgroundColor: 'transparent' }}
-                    >
-                      -
-                    </button>
-                    <span className="px-4 py-2 text-sm font-medium">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="px-4 py-2 transition-colors"
-                      style={{ backgroundColor: 'transparent' }}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  {/* Add to Cart Button */}
-                  <button
-                    onClick={handleAddToCart}
-                    className="flex-1 flex items-center justify-center rounded-full h-12 transition-colors"
-                    style={{
-                      backgroundColor: '#FF8C42',
-                      color: 'white',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      flex: 'none',
-                      height: '40px',
-                      maxWidth: '28rem',
-                    }}
-                  >
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-
-              {/* 6. Trust/Delivery Strip - #FDF6F3 */}
-              <div
-                className="w-full px-4 py-4 rounded-xl lg:mt-4"
-                style={{ backgroundColor: '#FDF6F3' }}
-              >
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-2">
-                    <Truck className="h-5 w-5" style={{ color: '#FF8C42' }} />
-                    <span
-                      className="text-sm"
-                      style={{ color: '#1A1A1A' }}
-                    >
-                      Delivery within 7days
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Gift className="h-5 w-5" style={{ color: '#FF8C42' }} />
-                    <span
-                      className="text-sm"
-                      style={{ color: '#1A1A1A' }}
-                    >
-                      Free Gift Wrap
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 7. Make It Extra Special - On right side for desktop */}
-              <div className="w-full lg:mt-6 mt-4">
-                {/* Page Header */}
-                <h3
-                  className="font-semibold mb-4"
-                  style={{ color: '#1A1A1A', fontSize: '18px' }}
-                >
-                  Make It Extra Special
+              {/* Short Description - Grey */}
+              <div className="mb-4">
+                <h3 className="font-semibold mb-4" style={{ color: "#1A1A1A" }}>
+                  Why you should buy this.......
                 </h3>
-
-                {/* Section 1: Custom Message Card */}
-                <div
-                  className="rounded-xl mb-4 overflow-hidden w-full"
-                  style={{
-                    backgroundColor: 'white',
-                    border: '1px solid #E5E7EB',
-                    maxWidth: '42rem'
-                  }}
+                <p
+                  className="text-sm leading-relaxed"
+                  style={{ color: "#6B7280" }}
                 >
-                  {/* Header (Always Visible) */}
-                  <div
-                    className="flex items-center justify-between p-4 cursor-pointer"
-                    onClick={() => setAddMessageCard(!addMessageCard)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <PenLine className="h-5 w-5" style={{ color: '#FF8C42' }} />
-                      <div>
-                        <p
-                          className="font-medium"
-                          style={{ color: '#1A1A1A', fontSize: '14px' }}
-                        >
-                          Add a custom message
-                        </p>
-                        <p
-                          className="text-xs"
-                          style={{ color: '#6B7280' }}
-                        >
-                          Include a heartfelt message with your gift
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      checked={addMessageCard}
-                      onCheckedChange={setAddMessageCard}
-                    />
-                  </div>
+                  {product.description}
+                </p>
+              </div>
+            </div>
 
-                  {/* Expanded Content */}
-                  {addMessageCard && (
-                    <div
-                      className="px-4 pb-4 pt-4"
+            {/* Selectors (Variant & Quantity) */}
+            <div className="w-full py-4 lg:border-t lg:border-gray-100">
+              {/* Variants - Cards style */}
+              {/* <div className="mb-4">
+                <Label
+                  className="font-semibold mb-3 block"
+                  style={{ color: "#1A1A1A" }}
+                >
+                  Select a Variant
+                </Label>
+                <div className="grid grid-cols-4 gap-2 w-full">
+                  {variants.map((variant, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedVariant(index)}
+                      className="p-3 rounded-xl text-center transition-all"
                       style={{
-                        backgroundColor: 'white',
-                        borderTop: '1px solid #E5E7EB',
+                        backgroundColor:
+                          selectedVariant === index ? "white" : "#F6F6F6",
+                        border:
+                          selectedVariant === index
+                            ? "2px solid #FF8C42"
+                            : "none",
                       }}
                     >
-                      <div
-                        className="rounded-lg p-4"
-                        style={{
-                          backgroundColor: '#F9FAFB',
-                          border: '1px solid #E5E7EB'
-                        }}
+                      <span
+                        className="text-xs font-medium"
+                        style={{ color: "#1A1A1A" }}
                       >
-                        <Textarea
-                          placeholder="Write your message here"
-                          value={messageText}
-                          onChange={(e) => setMessageText(e.target.value)}
-                          className="w-full min-h-[100px] resize-none border-0 bg-transparent"
-                          style={{
-                            fontSize: '14px',
-                            color: '#1A1A1A'
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
+                        {variant}
+                      </span>
+                    </button>
+                  ))}
                 </div>
+              </div> */}
 
-                {/* Section 2: Delivery Card */}
+              {/* Action Row */}
+              <div className="w-full flex items-center justify-between mt-12">
+                {/* Quantity Counter */}
                 <div
-                  className="rounded-xl mb-4 overflow-hidden w-full"
-                  style={{
-                    backgroundColor: 'white',
-                    border: '1px solid #E5E7EB',
-                    maxWidth: '42rem'
-                  }}
+                  className="flex items-center rounded-full overflow-hidden"
+                  style={{ border: "1px solid #E5E7EB" }}
                 >
-                  {/* Header (Always Visible) */}
-                  <div
-                    className="flex items-center justify-between p-4 cursor-pointer"
-                    onClick={() => setSendDirectly(!sendDirectly)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Truck className="h-5 w-5" style={{ color: '#FF8C42' }} />
-                      <div>
-                        <p
-                          className="font-medium"
-                          style={{ color: '#1A1A1A', fontSize: '14px' }}
-                        >
-                          Send Directly to Receiver
-                        </p>
-                        <p
-                          className="text-xs"
-                          style={{ color: '#6B7280' }}
-                        >
-                          We'll ship it straight to their door
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      checked={sendDirectly}
-                      onCheckedChange={setSendDirectly}
-                    />
-                  </div>
-
-                  {/* Expanded Content */}
-                  {sendDirectly && (
-                    <div
-                      className="px-4 pb-4 space-y-4 pt-4"
-                      style={{
-                        backgroundColor: 'white',
-                        borderTop: '1px solid #E5E7EB',
-                      }}
-                    >
-                      {/* Recipient Name */}
-                      <div>
-                        <Label
-                          className="text-xs font-medium mb-1 block"
-                          style={{ color: '#1A1A1A' }}
-                        >
-                          Recipient Name
-                        </Label>
-                        <Input
-                          placeholder="Enter recipient name"
-                          className="h-10 rounded-lg"
-                          style={{
-                            backgroundColor: '#FBFBFB',
-                            border: '1px solid #E5E7EB',
-                            fontSize: '14px'
-                          }}
-                        />
-                      </div>
-
-                      {/* Phone Number */}
-                      <div>
-                        <Label
-                          className="text-xs font-medium mb-1 block"
-                          style={{ color: '#1A1A1A' }}
-                        >
-                          Phone Number
-                        </Label>
-                        <Input
-                          placeholder="Enter phone number"
-                          className="h-10 rounded-lg"
-                          style={{
-                            backgroundColor: '#FBFBFB',
-                            border: '1px solid #E5E7EB',
-                            fontSize: '14px'
-                          }}
-                        />
-                      </div>
-
-                      {/* Delivery Address */}
-                      <div>
-                        <Label
-                          className="text-xs font-medium mb-1 block"
-                          style={{ color: '#1A1A1A' }}
-                        >
-                          Delivery Address
-                        </Label>
-                        <Textarea
-                          placeholder="Enter address"
-                          className="h-20 rounded-lg resize-none"
-                          style={{
-                            backgroundColor: '#FBFBFB',
-                            border: '1px solid #E5E7EB',
-                            fontSize: '14px'
-                          }}
-                        />
-                      </div>
-
-                      {/* Schedule Delivery Date - Date picker */}
-                      <div>
-                        <Label
-                          className="text-xs font-medium mb-1 block"
-                          style={{ color: '#1A1A1A' }}
-                        >
-                          Schedule Delivery Date (Optional)
-                        </Label>
-                        <div className="relative">
-                          <Input
-                            type="date"
-                            className="h-10 rounded-lg pr-10"
-                            style={{
-                              backgroundColor: '#FBFBFB',
-                              border: '1px solid #E5E7EB',
-                              fontSize: '14px'
-                            }}
-                          />
-                          <Calendar
-                            className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4"
-                            style={{ color: '#FF8C42' }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Section 3: Personalize Gift Card */}
-                <div
-                  className="rounded-xl mb-4 overflow-hidden w-full"
-                  style={{
-                    backgroundColor: 'white',
-                    border: '1px solid #E5E7EB',
-                    maxWidth: '42rem'
-                  }}
-                >
-                  {/* Header (Always Visible) */}
-                  <div
-                    className="flex items-center justify-between p-4 cursor-pointer"
-                    onClick={() => setPersonalizeGift(!personalizeGift)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Upload className="h-5 w-5" style={{ color: '#FF8C42' }} />
-                      <div>
-                        <p
-                          className="font-medium"
-                          style={{ color: '#1A1A1A', fontSize: '14px' }}
-                        >
-                          Personalize Gift
-                        </p>
-                        <p
-                          className="text-xs"
-                          style={{ color: '#6B7280' }}
-                        >
-                          Add custom text or upload an image
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      checked={personalizeGift}
-                      onCheckedChange={setPersonalizeGift}
-                    />
-                  </div>
-
-                  {/* Expanded Content */}
-                  {personalizeGift && (
-                    <div
-                      className="px-4 pb-4 space-y-4 pt-4"
-                      style={{
-                        backgroundColor: 'white',
-                        borderTop: '1px solid #E5E7EB',
-                      }}
-                    >
-                      {/* Custom Text */}
-                      <div>
-                        <Label
-                          className="text-xs font-medium mb-1 block"
-                          style={{ color: '#1A1A1A' }}
-                        >
-                          Custom Text
-                        </Label>
-                        <Input
-                          placeholder="Enter name, initials, or message"
-                          className="h-10 rounded-lg"
-                          style={{
-                            backgroundColor: '#FBFBFB',
-                            border: '1px solid #E5E7EB',
-                            fontSize: '14px'
-                          }}
-                        />
-                      </div>
-
-                      {/* Upload Area */}
-                      <div
-                        className="rounded-xl p-6 text-center cursor-pointer"
-                        style={{
-                          backgroundColor: '#F9FAFB',
-                          border: '1px dashed #E5E7EB'
-                        }}
-                      >
-                        <Upload
-                          className="h-8 w-8 mx-auto mb-2"
-                          style={{ color: '#FF8C42' }}
-                        />
-                        <p
-                          className="text-sm font-medium"
-                          style={{ color: '#FF8C42' }}
-                        >
-                          Click to upload image
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Footer Actions */}
-                <div
-                  className="flex flex-nowrap items-center justify-between gap-2 mt-6 pt-4 w-full"
-                  style={{ borderTop: '1px solid #E5E7EB' }}
-                >
-                  {/* Left: Continue Shopping - Navigate to products page */}
                   <button
-                    className="flex items-center gap-1 flex-shrink-0"
-                    style={{ color: '#FF8C42', cursor: 'pointer' }}
-                    onClick={() => navigate("/products")}
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="px-4 py-2 transition-colors"
+                    style={{ backgroundColor: "transparent" }}
                   >
-                    <ArrowLeft className="h-4 w-4" />
-                    <span className="text-sm font-medium">Continue Shopping</span>
+                    -
                   </button>
-
-                  {/* Right: Proceed to Checkout - Navigate to checkout page */}
+                  <span className="px-4 py-2 text-sm font-medium">
+                    {quantity}
+                  </span>
                   <button
-                    onClick={() => navigate("/checkout")}
-                    className="flex items-center justify-center rounded-full h-10 transition-colors flex-shrink-0"
-                    style={{
-                      backgroundColor: '#FF8C42',
-                      color: 'white',
-                      border: 'none',
-                      cursor: 'pointer',
-                      width: 'auto',
-                      minWidth: '140px',
-                      gap: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      paddingLeft: '20px',
-                      paddingRight: '20px',
-                    }}
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="px-4 py-2 transition-colors"
+                    style={{ backgroundColor: "transparent" }}
                   >
-                    <ShoppingCart className="h-4 w-4" style={{ color: 'white' }} />
-                    Proceed to Checkout
-                    <ArrowRight className="h-4 w-4" />
+                    +
                   </button>
+                </div>
+
+                {/* Add to Cart Button */}
+                <button
+                  onClick={handleAddToCart}
+                  className="flex items-center justify-center bg-primary text-white cursor-pointer text-sm rounded-full h-12 transition-colors w-64"
+                >
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+
+            {/* Delivery Strip */}
+            <div
+              className="w-full px-4 py-4 rounded-xl lg:mt-4"
+              style={{ backgroundColor: "#FDF6F3" }}
+            >
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <Truck className="h-5 w-5" style={{ color: "#FF8C42" }} />
+                  <span className="text-sm" style={{ color: "#1A1A1A" }}>
+                    Delivery within 7days
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Gift className="h-5 w-5" style={{ color: "#FF8C42" }} />
+                  <span className="text-sm" style={{ color: "#1A1A1A" }}>
+                    Free Gift Wrap
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 8. Product Details - #717182 */}
-        <div className="w-full px-4 py-4 lg:max-w-7xl lg:mx-auto lg:px-8">
-          {/* Product Description */}
-          <div className="mb-6">
-            <h3
-              className="font-semibold mb-2"
-              style={{ color: '#1A1A1A' }}
-            >
-              Product Description
-            </h3>
-            <p
-              className="text-sm leading-relaxed"
-              style={{ color: '#717182' }}
-            >
-              {product.description}
-            </p>
-          </div>
+        {/* Additional */}
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mb-16">
+          {/* Left-Product Description */}
+          <div className="flex-1">
+            <div className="mb-6">
+              <h3 className="font-semibold mb-2">Product Description</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                {product.description}
+              </p>
+            </div>
 
-          {/* Key Features */}
-          <div>
-            <h3
-              className="font-semibold mb-3"
-              style={{ color: '#1A1A1A' }}
-            >
-              Key Features
-            </h3>
-            <ul className="space-y-2">
-              {product.features.map((feature, index) => (
-                <li
-                  key={index}
-                  className="flex items-start gap-2 text-sm"
-                  style={{ color: '#717182' }}
-                >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0"
-                    style={{ backgroundColor: '#FF8C42' }}
-                  />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* 9. Ratings and Review */}
-        <div className="w-full px-4 py-4 lg:max-w-7xl lg:mx-auto lg:px-8">
-          <div className="flex items-center justify-between mb-4">
-            <h3
-              className="font-semibold"
-              style={{ color: '#1A1A1A' }}
-            >
-              Ratings and Review
-            </h3>
-            <div className="flex items-center gap-2">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-4 w-4"
-                    style={{
-                      color: '#FF8C42',
-                      fill: i < 4 ? '#FF8C42' : 'none'
-                    }}
-                  />
+            {/* Key Features */}
+            <div>
+              <h3 className="font-semibold mb-3">Key Features</h3>
+              <ul className="space-y-2">
+                {product.features.map((feature, index) => (
+                  <li key={index} className="text-sm text-muted-foreground">
+                    {feature}
+                  </li>
                 ))}
-              </div>
-              <span
-                className="font-bold"
-                style={{ color: '#1A1A1A' }}
-              >
-                4.5
-              </span>
+              </ul>
             </div>
           </div>
 
-          {/* Rating Chart - Progress bars with varying widths */}
-          <div className="space-y-2">
-            {reviewsData.map((review) => (
-              <div key={review.stars} className="flex items-center gap-2">
-                <span
-                  className="text-sm w-8"
-                  style={{ color: '#6B7280' }}
-                >
-                  {review.stars} ★
-                </span>
+          {/* Right */}
+          <div className="flex-1 bg-gray-100 rounded-sm py-8 px-6">
+            <h2 className="text-xl md:text-2xl text-center mb-8">
+              Make It Extra Special
+            </h2>
+
+            {/* Section 1: Custom Message Card */}
+            <div
+              className="rounded-xl mb-4 overflow-hidden w-full"
+              style={{
+                backgroundColor: "white",
+                border: "1px solid #E5E7EB",
+                maxWidth: "42rem",
+              }}
+            >
+              {/* Header (Always Visible) */}
+              <div
+                className="flex items-center justify-between p-4 cursor-pointer"
+                onClick={() => setAddMessageCard(!addMessageCard)}
+              >
+                <div className="flex items-center gap-3">
+                  <PenLine className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-medium text-sm">Add a custom message</p>
+                    <p className="text-xs text-muted-foreground">
+                      Include a heartfelt message with your gift
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  checked={addMessageCard}
+                  onCheckedChange={setAddMessageCard}
+                />
+              </div>
+
+              {/* Expanded Content */}
+              {addMessageCard && (
                 <div
-                  className="flex-1 h-2 rounded-full overflow-hidden"
-                  style={{ backgroundColor: '#F3E3DD' }}
+                  className="px-4 pb-4 pt-4"
+                  style={{
+                    backgroundColor: "white",
+                    borderTop: "1px solid #E5E7EB",
+                  }}
                 >
                   <div
-                    className="h-full rounded-full"
+                    className="rounded-lg p-4"
                     style={{
-                      width: `${(review.count / maxCount) * 100}%`,
-                      backgroundColor: '#FF8C42',
+                      backgroundColor: "#F9FAFB",
+                      border: "1px solid #E5E7EB",
                     }}
-                  />
+                  >
+                    <Textarea
+                      placeholder="Write your message here"
+                      value={messageText}
+                      onChange={(e) => setMessageText(e.target.value)}
+                      className="w-full min-h-[100px] resize-none border-0 bg-transparent"
+                      style={{
+                        fontSize: "14px",
+                        color: "#1A1A1A",
+                      }}
+                    />
+                  </div>
                 </div>
-                <span
-                  className="text-sm w-8 text-right"
-                  style={{ color: '#6B7280' }}
-                >
-                  {review.count}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+              )}
+            </div>
 
-        {/* 10. Comments List - #F6F6F6 background with rounded corners */}
-        <div className="w-full px-4 py-4 lg:max-w-7xl lg:mx-auto lg:px-8">
-          <div
-            className="rounded-2xl w-full overflow-hidden"
-            style={{ backgroundColor: '#F6F6F6' }}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4">
-              <h3
-                className="font-semibold"
-                style={{ color: '#1A1A1A' }}
+            {/* Section 2: Delivery Card */}
+            <div
+              className="rounded-xl mb-4 overflow-hidden w-full"
+              style={{
+                backgroundColor: "white",
+                border: "1px solid #E5E7EB",
+                maxWidth: "42rem",
+              }}
+            >
+              {/* Header (Always Visible) */}
+              <div
+                className="flex items-center justify-between p-4 cursor-pointer"
+                onClick={() => setSendDirectly(!sendDirectly)}
               >
-                Comments
-              </h3>
+                <div className="flex items-center gap-3">
+                  <Truck className="h-5 w-5 text-primary" />
+                  <div>
+                    <p
+                      className="font-medium"
+                      style={{ color: "#1A1A1A", fontSize: "14px" }}
+                    >
+                      Send Directly to Receiver
+                    </p>
+                    <p className="text-xs" style={{ color: "#6B7280" }}>
+                      We'll ship it straight to their door
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  checked={sendDirectly}
+                  onCheckedChange={setSendDirectly}
+                />
+              </div>
+
+              {/* Expanded Content */}
+              {sendDirectly && (
+                <div
+                  className="px-4 pb-4 space-y-4 pt-4"
+                  style={{
+                    backgroundColor: "white",
+                    borderTop: "1px solid #E5E7EB",
+                  }}
+                >
+                  {/* Recipient Name */}
+                  <div className="mt-4">
+                    <Label
+                      className="text-xs font-medium mb-1 block"
+                      style={{ color: "#1A1A1A" }}
+                    >
+                      Recipient Name
+                    </Label>
+                    <Input
+                      placeholder="Enter recipient name"
+                      className="h-10 rounded-lg"
+                      style={{
+                        backgroundColor: "#FBFBFB",
+                        border: "1px solid #E5E7EB",
+                        fontSize: "14px",
+                      }}
+                    />
+                  </div>
+
+                  {/* Phone Number */}
+                  <div>
+                    <Label
+                      className="text-xs font-medium mb-1 block"
+                      style={{ color: "#1A1A1A" }}
+                    >
+                      Phone Number
+                    </Label>
+                    <Input
+                      placeholder="Enter phone number"
+                      className="h-10 rounded-lg"
+                      style={{
+                        backgroundColor: "#FBFBFB",
+                        border: "1px solid #E5E7EB",
+                        fontSize: "14px",
+                      }}
+                    />
+                  </div>
+
+                  {/* Delivery Address */}
+                  <div>
+                    <Label
+                      className="text-xs font-medium mb-1 block"
+                      style={{ color: "#1A1A1A" }}
+                    >
+                      Delivery Address
+                    </Label>
+                    <Textarea
+                      placeholder="Enter address"
+                      className="h-20 rounded-lg resize-none"
+                      style={{
+                        backgroundColor: "#FBFBFB",
+                        border: "1px solid #E5E7EB",
+                        fontSize: "14px",
+                      }}
+                    />
+                  </div>
+
+                  {/* Schedule Delivery Date - Date picker */}
+                  <div>
+                    <Label
+                      className="text-xs font-medium mb-1 block"
+                      style={{ color: "#1A1A1A" }}
+                    >
+                      Schedule Delivery Date (Optional)
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type="date"
+                        className="h-10 rounded-lg pr-10"
+                        style={{
+                          backgroundColor: "#FBFBFB",
+                          border: "1px solid #E5E7EB",
+                          fontSize: "14px",
+                        }}
+                      />
+                      <Calendar
+                        className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4"
+                        style={{ color: "#FF8C42" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Section 3: Personalize Gift Card */}
+            <div
+              className="rounded-xl mb-4 overflow-hidden w-full"
+              style={{
+                backgroundColor: "white",
+                border: "1px solid #E5E7EB",
+                maxWidth: "42rem",
+              }}
+            >
+              {/* Header (Always Visible) */}
+              <div
+                className="flex items-center justify-between p-4 cursor-pointer"
+                onClick={() => setPersonalizeGift(!personalizeGift)}
+              >
+                <div className="flex items-center gap-3">
+                  <Upload className="h-5 w-5" style={{ color: "#FF8C42" }} />
+                  <div>
+                    <p
+                      className="font-medium"
+                      style={{ color: "#1A1A1A", fontSize: "14px" }}
+                    >
+                      Personalize Gift
+                    </p>
+                    <p className="text-xs" style={{ color: "#6B7280" }}>
+                      Add custom text or upload an image
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  checked={personalizeGift}
+                  onCheckedChange={setPersonalizeGift}
+                />
+              </div>
+
+              {/* Expanded Content */}
+              {personalizeGift && (
+                <div
+                  className="px-4 pb-4 space-y-4 pt-4"
+                  style={{
+                    backgroundColor: "white",
+                    borderTop: "1px solid #E5E7EB",
+                  }}
+                >
+                  {/* Custom Text */}
+                  <div className="mt-4">
+                    <Label
+                      className="text-xs font-medium mb-1 block"
+                      style={{ color: "#1A1A1A" }}
+                    >
+                      Custom Text
+                    </Label>
+                    <Input
+                      placeholder="Enter name, initials, or message"
+                      className="h-10 rounded-lg"
+                      style={{
+                        backgroundColor: "#FBFBFB",
+                        border: "1px solid #E5E7EB",
+                        fontSize: "14px",
+                      }}
+                    />
+                  </div>
+
+                  {/* Upload Area */}
+                  <div
+                    className="rounded-xl p-6 text-center cursor-pointer"
+                    style={{
+                      backgroundColor: "#F9FAFB",
+                      border: "1px dashed #E5E7EB",
+                    }}
+                  >
+                    <Upload
+                      className="h-8 w-8 mx-auto mb-2"
+                      style={{ color: "#FF8C42" }}
+                    />
+                    <p
+                      className="text-sm font-medium"
+                      style={{ color: "#FF8C42" }}
+                    >
+                      Click to upload image
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer Actions */}
+            <div className="flex flex-nowrap items-center justify-end gap-2 mt-12 pt-4 w-full">
+              {/* Left: Continue Shopping - Navigate to products page */}
+              {/* <button
+                className="flex items-center gap-1 flex-shrink-0 cursor-pointer text-primary"
+                onClick={() => navigate("/products")}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="text-sm font-medium">Continue Shopping</span>
+              </button> */}
+
+              {/* Right: Proceed to Checkout - Navigate to checkout page */}
               <button
-                className="flex items-center gap-1 rounded-full px-4 h-8 text-sm transition-colors"
-                style={{
-                  border: '1px solid #E5E7EB',
-                  backgroundColor: 'white',
-                  color: '#1A1A1A'
-                }}
+                onClick={() => navigate("/checkout")}
+                className="bg-primary text-white px-8 gap-2 text-sm font-semibold  flex items-center justify-center rounded-full h-10 transition-colors flex-shrink-0"
               >
-                Popularity
-                <ChevronDown className="h-4 w-4" />
+                <ShoppingCart className="h-4 w-4" style={{ color: "white" }} />
+                All Done
+                <ArrowRight className="h-4 w-4" />
               </button>
             </div>
+          </div>
+        </div>
 
-            {/* Comment Items */}
-            <div className="-space-y-0">
-              {mockComments.map((comment) => {
-                const likeState = commentLikes[comment.id] || { likes: 40, liked: false, dislikes: 40, disliked: false };
-                return (
+        <div className="flex flex-col md:flex-row">
+          {/* Ratings and Review */}
+          <div className="flex-1 px-4 py-4 lg:px-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold" style={{ color: "#1A1A1A" }}>
+                Ratings and Review
+              </h3>
+              <div className="flex items-center gap-2">
+                <div className="flex ">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className="h-4 w-4"
+                      style={{
+                        color: "#FF8C42",
+                        fill: i < 4 ? "#FF8C42" : "none",
+                      }}
+                    />
+                  ))}
+                </div>
+                <span className="font-bold" style={{ color: "#1A1A1A" }}>
+                  4.5
+                </span>
+              </div>
+            </div>
+
+            {/* Rating Chart - Progress bars with varying widths */}
+            <div className="space-y-4">
+              {reviewsData.map((review) => (
+                <div key={review.stars} className="flex items-center gap-2">
+                  <span className="text-sm w-8" style={{ color: "#6B7280" }}>
+                    {review.stars} ★
+                  </span>
                   <div
-                    key={comment.id}
-                    className="p-4 w-full"
-                    style={{ backgroundColor: '#F6F6F6' }}
+                    className="flex-1 h-2 rounded-full overflow-hidden"
+                    style={{ backgroundColor: "#F3E3DD" }}
                   >
-                    <div className="flex items-start gap-3 mb-2">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                        style={{ backgroundColor: '#E5E7EB' }}
-                      >
-                        <span
-                          className="font-medium"
-                          style={{ color: '#6B7280' }}
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${(review.count / maxCount) * 100}%`,
+                        backgroundColor: "#FF8C42",
+                      }}
+                    />
+                  </div>
+                  <span
+                    className="text-sm w-8 text-right"
+                    style={{ color: "#6B7280" }}
+                  >
+                    {review.count}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Comments List */}
+          <div className="flex-1 px-4 py-4 lg:px-8">
+            <div
+              className="rounded-2xl w-full overflow-hidden"
+              style={{ backgroundColor: "#F6F6F6" }}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4">
+                <h3 className="font-semibold" style={{ color: "#1A1A1A" }}>
+                  Comments
+                </h3>
+                <button
+                  className="flex items-center gap-1 rounded-full px-4 h-8 text-sm transition-colors"
+                  style={{
+                    border: "1px solid #E5E7EB",
+                    backgroundColor: "white",
+                    color: "#1A1A1A",
+                  }}
+                >
+                  Popularity
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Comment Items */}
+              <div className="-space-y-0">
+                {mockComments.map((comment) => {
+                  const likeState = commentLikes[comment.id] || {
+                    likes: 40,
+                    liked: false,
+                    dislikes: 40,
+                    disliked: false,
+                  };
+                  return (
+                    <div
+                      key={comment.id}
+                      className="p-4 w-full"
+                      style={{ backgroundColor: "#F6F6F6" }}
+                    >
+                      <div className="flex items-start gap-3 mb-2">
+                        <div
+                          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: "#E5E7EB" }}
                         >
-                          {comment.name.charAt(0)}
-                        </span>
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
                           <span
                             className="font-medium"
-                            style={{ color: '#1A1A1A' }}
+                            style={{ color: "#6B7280" }}
                           >
-                            {comment.name}
-                          </span>
-                          <span
-                            className="text-xs"
-                            style={{ color: '#717182' }}
-                          >
-                            {comment.date}
+                            {comment.name.charAt(0)}
                           </span>
                         </div>
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className="h-3 w-3"
-                              style={{
-                                color: '#FF8C42',
-                                fill: i < comment.rating ? '#FF8C42' : 'none'
-                              }}
-                            />
-                          ))}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span
+                              className="font-medium"
+                              style={{ color: "#1A1A1A" }}
+                            >
+                              {comment.name}
+                            </span>
+                            <span
+                              className="text-xs"
+                              style={{ color: "#717182" }}
+                            >
+                              {comment.date}
+                            </span>
+                          </div>
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className="h-3 w-3"
+                                style={{
+                                  color: "#FF8C42",
+                                  fill: i < comment.rating ? "#FF8C42" : "none",
+                                }}
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
+                      <p className="text-sm mb-3" style={{ color: "#717182" }}>
+                        {comment.text}
+                      </p>
+                      {/* Thumbs up/down */}
+                      <div className="flex items-center gap-4 justify-end">
+                        <button
+                          className="flex items-center gap-1"
+                          style={{
+                            color: "#FF8C42",
+                          }}
+                          onClick={() => handleLikeToggle(comment.id)}
+                        >
+                          <ThumbsUp
+                            className="h-4 w-4"
+                            strokeWidth={1.5}
+                            fill={likeState.liked ? "#FF8C42" : "none"}
+                          />
+                          <span className="text-sm">{likeState.likes}</span>
+                        </button>
+                        <button
+                          className="flex items-center gap-1"
+                          style={{
+                            color: "#FF8C42",
+                          }}
+                          onClick={() => handleDislikeToggle(comment.id)}
+                        >
+                          <ThumbsDown
+                            className="h-4 w-4"
+                            strokeWidth={1.5}
+                            fill={likeState.disliked ? "#FF8C42" : "none"}
+                          />
+                          <span className="text-sm">{likeState.dislikes}</span>
+                        </button>
+                      </div>
                     </div>
-                    <p
-                      className="text-sm mb-3"
-                      style={{ color: '#717182' }}
-                    >
-                      {comment.text}
-                    </p>
-                    {/* Thumbs up/down */}
-                    <div className="flex items-center gap-4 justify-end">
-                      <button
-                        className="flex items-center gap-1"
-                        style={{
-                          color: '#FF8C42',
-                        }}
-                        onClick={() => handleLikeToggle(comment.id)}
-                      >
-                        <ThumbsUp
-                          className="h-4 w-4"
-                          strokeWidth={1.5}
-                          fill={likeState.liked ? '#FF8C42' : 'none'}
-                        />
-                        <span className="text-sm">{likeState.likes}</span>
-                      </button>
-                      <button
-                        className="flex items-center gap-1"
-                        style={{
-                          color: '#FF8C42',
-                        }}
-                        onClick={() => handleDislikeToggle(comment.id)}
-                      >
-                        <ThumbsDown
-                          className="h-4 w-4"
-                          strokeWidth={1.5}
-                          fill={likeState.disliked ? '#FF8C42' : 'none'}
-                        />
-                        <span className="text-sm">{likeState.dislikes}</span>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* 11. Products you may also Love - Horizontal scroll */}
+        {/* Products you may also Love - Horizontal scroll */}
         <div className="w-full px-4 py-4 lg:max-w-7xl lg:mx-auto lg:px-8">
-          <h3
-            className="font-semibold mb-4"
-            style={{ color: '#1A1A1A' }}
-          >
+          <h3 className="font-semibold mb-4" style={{ color: "#1A1A1A" }}>
             Products you may also Love
           </h3>
 
@@ -1144,8 +1082,8 @@ export function ProductDetailPage() {
           <div
             className="flex gap-3 overflow-x-auto pb-4 w-full"
             style={{
-              scrollSnapType: 'x mandatory',
-              WebkitOverflowScrolling: 'touch'
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
             }}
           >
             {relatedProducts.slice(0, 5).map((relatedProduct) => (
@@ -1153,11 +1091,11 @@ export function ProductDetailPage() {
                 key={relatedProduct.id}
                 to={`/product/${relatedProduct.id}`}
                 className="flex-shrink-0 w-40"
-                style={{ scrollSnapAlign: 'start' }}
+                style={{ scrollSnapAlign: "start" }}
               >
                 <div
                   className="rounded-xl aspect-square mb-2 overflow-hidden w-40"
-                  style={{ backgroundColor: '#E5E7EB' }}
+                  style={{ backgroundColor: "#E5E7EB" }}
                 >
                   <ImageWithFallback
                     src={relatedProduct.image}
@@ -1167,14 +1105,11 @@ export function ProductDetailPage() {
                 </div>
                 <p
                   className="text-sm font-medium line-clamp-2 mb-1 w-40"
-                  style={{ color: '#1A1A1A' }}
+                  style={{ color: "#1A1A1A" }}
                 >
                   {relatedProduct.title}
                 </p>
-                <p
-                  className="text-sm font-bold"
-                  style={{ color: '#FF8C42' }}
-                >
+                <p className="text-sm font-bold" style={{ color: "#FF8C42" }}>
                   {relatedProduct.price}
                 </p>
               </Link>
