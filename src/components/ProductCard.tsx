@@ -150,7 +150,7 @@ export function ProductCard({ id, image, title, price, originalPrice, badge, tag
 
           <div className="absolute bottom-0 left-0 right-0">
             <div className="p-2 sm:p-3 pb-0">
-              <h3 className="text-white text-[11px] font-medium mb-0.5 truncate">{title}</h3>
+              <h3 className="text-white text-xs md:text-sm font-medium mb-1">{title}</h3>
               <div className="flex items-center gap-1">
                 <span className="text-white text-[11px] font-semibold">{price}</span>
                 {originalPrice && (
@@ -159,7 +159,7 @@ export function ProductCard({ id, image, title, price, originalPrice, badge, tag
               </div>
             </div>
 
-            <div className="p-2 sm:p-3 pt-1">
+            <div className="px-2 mb-2">
               <Button
                 className="w-full rounded-full gap-1 text-xs"
                 size="sm"

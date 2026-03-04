@@ -63,11 +63,7 @@ export function ProductDetailPage() {
       dislikes: number;
       disliked: boolean;
     };
-  }>({
-    1: { likes: 40, liked: false, dislikes: 40, disliked: false },
-    2: { likes: 35, liked: false, dislikes: 5, disliked: false },
-    3: { likes: 28, liked: false, dislikes: 3, disliked: false },
-  });
+  }>({});
 
   if (!product) {
     return (
@@ -148,41 +144,65 @@ export function ProductDetailPage() {
     "https://images.unsplash.com/photo-1560343076-ec342d670c95?w=600",
   ];
 
-  // Mock reviews data with progress bar widths
-  const reviewsData = [
-    { stars: 5, count: 28 },
-    { stars: 4, count: 9 },
-    { stars: 3, count: 4 },
-    { stars: 2, count: 1 },
-    { stars: 1, count: 1 },
-  ];
+  // Reviews state — start unrated (counts zero) so customers can add the first review
+  const [reviewsData, setReviewsData] = useState(
+    [1, 2, 3, 4, 5].map((s) => ({ stars: s, count: 0 })),
+  );
 
-  // Calculate max count for progress bar scaling
-  const maxCount = Math.max(...reviewsData.map((r) => r.count));
+  // Calculate max count for progress bar scaling (avoid 0 division)
+  const maxCount = Math.max(1, ...reviewsData.map((r) => r.count));
 
-  const mockComments = [
-    {
-      id: 1,
-      name: "John Doe",
-      date: "11/11/2011",
-      rating: 5,
-      text: "Lovely product, arrived on time and well-packaged. Highly recommend!",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      date: "12/12/2021",
-      rating: 5,
-      text: "Beautiful gift packaging and fast delivery!",
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      date: "01/01/2022",
-      rating: 4,
-      text: "Great product, exactly as described. Would recommend!",
-    },
-  ];
+  // Summary values
+  const totalReviews = reviewsData.reduce((s, r) => s + r.count, 0);
+  const averageRating =
+    totalReviews > 0
+      ? reviewsData.reduce((s, r) => s + r.count * r.stars, 0) / totalReviews
+      : 0;
+
+  // Comments state (starts empty — will populate when customers submit reviews)
+  const [comments, setComments] = useState<
+    { id: number; name: string; date: string; rating: number; text: string }[]
+  >([]);
+
+  // Review form state
+  const [selectedRatingForForm, setSelectedRatingForForm] = useState(5);
+  const [reviewerName, setReviewerName] = useState("");
+  const [reviewTextInput, setReviewTextInput] = useState("");
+
+  const handleReviewSubmit = () => {
+    if (!reviewTextInput.trim()) {
+      toast.error("Please write a review");
+      return;
+    }
+    const id = Date.now();
+    const newComment = {
+      id,
+      name: reviewerName || "Anonymous",
+      date: new Date().toLocaleDateString(),
+      rating: selectedRatingForForm,
+      text: reviewTextInput,
+    };
+
+    // Add comment and update review counts
+    setComments((prev) => [newComment, ...prev]);
+    setReviewsData((prev) =>
+      prev.map((r) =>
+        r.stars === selectedRatingForForm ? { ...r, count: r.count + 1 } : r,
+      ),
+    );
+
+    // Initialize like state for the new comment
+    setCommentLikes((prev) => ({
+      ...prev,
+      [id]: { likes: 0, liked: false, dislikes: 0, disliked: false },
+    }));
+
+    // Reset form
+    setReviewTextInput("");
+    setReviewerName("");
+    setSelectedRatingForForm(5);
+    toast.success("Thank you — your review has been submitted!");
+  };
 
   const [variants] = useState(["Classic", "Premium", "Luxury", "Ultimate"]);
 
@@ -909,13 +929,16 @@ export function ProductDetailPage() {
                       className="h-4 w-4"
                       style={{
                         color: "#FF8C42",
-                        fill: i < 4 ? "#FF8C42" : "none",
+                        fill:
+                          totalReviews > 0 && i < Math.round(averageRating)
+                            ? "#FF8C42"
+                            : "none",
                       }}
                     />
                   ))}
                 </div>
                 <span className="font-bold" style={{ color: "#1A1A1A" }}>
-                  4.5
+                  {totalReviews > 0 ? averageRating.toFixed(1) : "Unrated"}
                 </span>
               </div>
             </div>
@@ -951,6 +974,51 @@ export function ProductDetailPage() {
           </div>
 
           {/* Comments List */}
+          {/* Review Submission Form */}
+          <div className="mt-6 px-4">
+            <h4 className="font-semibold mb-2">Write a review</h4>
+            <div className="flex items-center gap-2 mb-2">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSelectedRatingForForm(s)}
+                  className="p-1"
+                  aria-label={`Rate ${s} stars`}
+                >
+                  <Star
+                    className="h-5 w-5"
+                    style={{
+                      color: "#FF8C42",
+                      fill: s <= selectedRatingForForm ? "#FF8C42" : "none",
+                    }}
+                  />
+                </button>
+              ))}
+            </div>
+            <Input
+              placeholder="Your name (optional)"
+              value={reviewerName}
+              onChange={(e) => setReviewerName(e.target.value)}
+              className="mb-2 h-10"
+            />
+            <Textarea
+              placeholder="Write your review"
+              value={reviewTextInput}
+              onChange={(e) => setReviewTextInput(e.target.value)}
+              className="mb-2"
+            />
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleReviewSubmit}
+                className="bg-primary text-white"
+              >
+                Submit Review
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                {totalReviews} reviews
+              </span>
+            </div>
+          </div>
           <div className="flex-1 px-4 py-4 lg:px-8">
             <div
               className="rounded-2xl w-full overflow-hidden"
@@ -976,11 +1044,11 @@ export function ProductDetailPage() {
 
               {/* Comment Items */}
               <div className="-space-y-0">
-                {mockComments.map((comment) => {
+                {comments.map((comment) => {
                   const likeState = commentLikes[comment.id] || {
-                    likes: 40,
+                    likes: 0,
                     liked: false,
-                    dislikes: 40,
+                    dislikes: 0,
                     disliked: false,
                   };
                   return (

@@ -15,6 +15,7 @@ import { CartProvider } from "./context/CartContext";
 import { BulkOrderProvider } from "./context/BulkOrderContext";
 import { AuthProvider } from "./context/AuthContext";
 import { type ReactNode, useEffect } from "react";
+import { usePageTracking } from "./hooks/usePageTracking";
 
 // Protected Route Component
 function ProtectedRoute({ children, redirectTo = "/auth/login" }: { children: ReactNode; redirectTo?: string }) {
@@ -59,6 +60,7 @@ function AuthRoute({ children }: { children: ReactNode }) {
 }
 
 function AppRoutes() {
+  usePageTracking(); 
   return (
     <Routes>
       {/* Public Routes */}

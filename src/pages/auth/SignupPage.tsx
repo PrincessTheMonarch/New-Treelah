@@ -505,7 +505,7 @@ export function SignupPage() {
       </div>
       <div className="flex-1 hidden lg:flex min-h-0 h-screen overflow-hidden">
         <div
-          className="h-screen w-full bg-cover bg-center"
+          className="h-screen w-full bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('/images/login-img.png')" }}
           role="img"
           aria-label="Black couple"
