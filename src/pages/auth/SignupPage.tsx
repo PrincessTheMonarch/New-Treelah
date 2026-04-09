@@ -390,7 +390,7 @@ export function SignupPage() {
           </div>
 
           {/* Primary Action Button */}
-          <div className="flex justify-end mt-8">
+          <div className="flex justify-center lg:justify-end mt-8">
             <button
               type="submit"
               className="flex items-center justify-center transition-colors"
@@ -503,10 +503,15 @@ export function SignupPage() {
           </p>
         </div>
       </div>
-      <div className="flex-1 hidden lg:flex min-h-0 h-screen overflow-hidden">
+      <div className="flex-1 hidden lg:flex overflow-hidden">
         <div
-          className="h-screen w-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/login-img.png')" }}
+          style={{
+            backgroundImage: "url('/images/login-img.png')",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            width: "100%",
+          }}
           role="img"
           aria-label="Black couple"
         />

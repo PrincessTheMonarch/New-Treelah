@@ -89,8 +89,10 @@ export function LoginPage() {
   };
 
   return (
-    <div className="h-screen bg-white flex">
-      <div className="mx-auto max-w-sm px-4 py-6 flex-1 min-h-0 overflow-auto h-full">
+    <div className="w-full h-screen flex">
+      <div className="flex-1 py-6"
+      style={{ paddingInline: "2rem" }}   
+      >
         {/* Header & Navigation */}
         <div className="mb-8">
           {/* Back Navigation */}
@@ -206,7 +208,7 @@ export function LoginPage() {
           </div>
 
           {/* Primary Action Button */}
-          <div className="flex justify-end mt-6">
+          <div className="flex justify-center lg:justify-end mt-6">
             <button
               type="submit"
               className="flex items-center justify-center transition-colors"
@@ -319,10 +321,15 @@ export function LoginPage() {
           </p>
         </div>
       </div>
-      <div className="flex-1 hidden lg:flex min-h-0 h-screen overflow-hidden">
+      <div className="flex-1 hidden lg:flex overflow-hidden">
         <div
-          className="h-screen w-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/login-img.png')" }}
+          style={{
+            backgroundImage: "url('/images/login-img.png')",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            width: "100%",
+          }}
           role="img"
           aria-label="Black couple"
         />

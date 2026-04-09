@@ -21,6 +21,8 @@ export interface PaystackConfig {
   currency?: string; // Default: 'NGN'
   reference?: string;
   metadata?: Record<string, any>;
+  onSuccess?: (response: { reference: string }) => void;
+  onError?: (error: string) => void;
   callback?: (response: PaystackCallback) => void;
   onClose?: () => void;
 }
@@ -46,6 +48,8 @@ export interface PaymentVerificationResponse {
     currency: string;
     status: string;
     paid_at: string;
+    channel: string;
+    customerEmail: string;
   };
   order?: {
     id: string;
@@ -72,18 +76,21 @@ export function dollarsToKobo(dollars: number): number {
 }
 
 // Format currency for display
-export function formatCurrency(amount: number, currency: string = 'NGN'): string {
+export function formatCurrency(
+  amount: number,
+  currency: string = 'NGN',
+): string {
   const formatter = new Intl.NumberFormat('en-NG', {
     style: 'currency',
     currency: currency,
     minimumFractionDigits: 0,
   });
-  
+
   if (currency === 'NGN') {
     // For Naira, divide by 100 since amount is in kobo
     return formatter.format(amount / 100);
   }
-  
+
   return formatter.format(amount);
 }
 
@@ -100,7 +107,9 @@ export function loadPaystackScript(): Promise<void> {
     const existingScript = document.querySelector('script[src*="paystack"]');
     if (existingScript) {
       existingScript.addEventListener('load', () => resolve());
-      existingScript.addEventListener('error', () => reject(new Error('Failed to load Paystack script')));
+      existingScript.addEventListener('error', () =>
+        reject(new Error('Failed to load Paystack script')),
+      );
       return;
     }
 
@@ -116,15 +125,20 @@ export function loadPaystackScript(): Promise<void> {
 
 // Initialize Paystack payment popup
 export function initializePaystackPayment(
-  config: Omit<PaystackConfig, 'key' | 'reference'>,
+  config: Omit<
+    PaystackConfig,
+    'key' | 'reference' | 'onSuccess' | 'onError' | 'callback' | 'onClose'
+  >,
   onSuccess: (reference: string) => void,
   onError: (error: string) => void,
-  onClose: () => void
+  onClose: () => void,
 ): void {
   const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
-  
+
   if (!publicKey) {
-    onError('Paystack public key is not configured. Please check your environment variables.');
+    onError(
+      'Paystack public key is not configured. Please check your environment variables.',
+    );
     return;
   }
 
@@ -151,7 +165,10 @@ export function initializePaystackPayment(
         callback: (response: PaystackCallback) => {
           console.log('[Paystack] Payment callback received:', response);
           if (response.status === 'success') {
-            console.log('[Paystack] Payment successful, reference:', response.reference);
+            console.log(
+              '[Paystack] Payment successful, reference:',
+              response.reference,
+            );
             onSuccess(response.reference);
           } else {
             console.log('[Paystack] Payment failed:', response.message);
@@ -177,16 +194,18 @@ export function initializePaystackPayment(
 export async function verifyPayment(
   reference: string,
   expectedAmount?: number,
-  currency: string = 'NGN'
+  currency: string = 'NGN',
 ): Promise<PaymentVerificationResponse> {
   try {
     const { supabase } = await import('../lib/supabase');
-    const { data: { session } } = await supabase.auth.getSession();
-    
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     if (!session) {
       return {
         success: false,
-        error: 'User not authenticated'
+        error: 'User not authenticated',
       };
     }
 
@@ -196,32 +215,32 @@ export async function verifyPayment(
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           reference,
           expectedAmount,
           currency,
         }),
-      }
+      },
     );
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       return {
         success: false,
-        error: errorData.error || `HTTP error! status: ${response.status}`
+        error: errorData.error || `HTTP error! status: ${response.status}`,
       };
     }
 
     const data: PaymentVerificationResponse = await response.json();
     return data;
-
   } catch (error) {
     console.error('Payment verification error:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Payment verification failed'
+      error:
+        error instanceof Error ? error.message : 'Payment verification failed',
     };
   }
 }

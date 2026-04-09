@@ -100,26 +100,26 @@ export function Hero() {
     //     </div>
     //   </div>
     // </section>
-    <section className="relative w-full" style={{ height: "100vh" }}>
+    <section className="relative w-full" style={{ height: "85vh" }}>
       {/* Content overlay */}
       <div className="absolute inset-0 flex items-center justify-center px-4">
-        <div className="max-w-2xl pt-16 flex flex-col items-center text-center">
+        <div className="max-w-2xl flex flex-col items-center text-center">
           {/* <div className="w-fit inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md mb-6">
             <Rocket className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium text-main">Coming Soon !</span>
           </div> */}
 
-          <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
+          <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-bold tracking-wider my-4">
             Find the Perfect Gift for Every Occasion
           </h1>
 
-          <p className="text-white text-base md:text-lg max-w-xl mb-6">
+          <p className="text-white text-base md:text-lg max-w-xl my-6">
             From birthdays to weddings, surprises to "just because," we've got
             something special for everyone.
           </p>
 
           <Button
-            className="w-fit h-11 px-16 rounded-full gap-2 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
+            className="w-64 h-11 px-4 rounded-full gap-2 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
             asChild
           >
             <Link to="/products">

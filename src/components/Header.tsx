@@ -260,16 +260,16 @@ export function Header({ variant = "default" }: HeaderProps) {
     variant === "transparent" ? "text-foreground/70" : "text-muted-foreground";
   const searchInputClassName =
     variant === "transparent"
-      ? "pl-10 rounded-full border-white/70 bg-white/90 text-foreground placeholder:text-muted-foreground shadow-sm"
-      : "pl-10 rounded-full border-muted bg-accent/50";
-  const souvenirsLinkClassName =
+      ? "pl-5 rounded-full border-white/70 bg-white/90 text-foreground placeholder:text-muted-foreground shadow-sm"
+      : "pl-5 rounded-full border-muted bg-accent/50";
+  const textColor =
     variant === "transparent"
       ? `${isScrolled ? "text-black" : "text-white"} transition-colors`
       : "text-black";
 
   return (
     <header className={headerClassName}>
-      <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
+      <div className="container mx-auto flex h-20 items-center justify-between px-4">
         {/* <div className="flex h-16 items-center justify-between"> */}
         {/* Mobile Menu Button */}
         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -278,10 +278,10 @@ export function Header({ variant = "default" }: HeaderProps) {
               <Menu className={`h-6 w-6 ${headerIconClassName}`} />
             </button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-full p-0 flex flex-col h-full">
+          <SheetContent side="left" className="w-full p-0 flex flex-col h-full ">
             <SheetHeader className="p-6 pb-4">
               <Link to="/">
-                <img src="/logo.png" alt="Treelah Logo" />
+                <img src="/images/logo.png" alt="Treelah Logo" />
               </Link>
             </SheetHeader>
 
@@ -552,7 +552,7 @@ export function Header({ variant = "default" }: HeaderProps) {
                     Quick Links
                   </h3>
                   <ul className="space-y-3">
-                    <li>
+                    {/* <li>
                       <Link
                         to="/bulk-orders"
                         className="block py-2 hover:text-primary transition-colors"
@@ -560,7 +560,7 @@ export function Header({ variant = "default" }: HeaderProps) {
                       >
                         Souvenirs & Bulk Orders
                       </Link>
-                    </li>
+                    </li> */}
                     {/* <li>
                       <a 
                         href="#" 
@@ -578,14 +578,16 @@ export function Header({ variant = "default" }: HeaderProps) {
         </Sheet>
 
         <Link to="/">
-          <img src="/images/logo.png" alt="Treelah Logo" />
+          <img src="/images/logo.png" className="w-28" alt="Treelah Logo" />
         </Link>
 
         {/* Main Navigation - Hidden on mobile */}
         <NavigationMenu>
-          <NavigationMenuList className="hidden lg:flex gap-4">
+          <NavigationMenuList className="hidden lg:flex gap-8">
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
+              <NavigationMenuTrigger className={textColor}>
+                Categories
+              </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="w-[800px] p-4">
                   <div className="grid grid-cols-4 gap-4">
@@ -807,13 +809,13 @@ export function Header({ variant = "default" }: HeaderProps) {
               </Link>
             </NavigationMenuItem>
 
-            <NavigationMenuItem>
+            {/* <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Link to="/bulk-orders" className={souvenirsLinkClassName}>
+                <Link to="/bulk-orders" className={textColor}>
                   Souvenirs & Bulk Orders
                 </Link>
               </NavigationMenuLink>
-            </NavigationMenuItem>
+            </NavigationMenuItem> */}
 
             {/* <NavigationMenuItem>
               <NavigationMenuLink href="#" className="px-3 py-2 hover:text-primary transition-colors">
@@ -824,10 +826,10 @@ export function Header({ variant = "default" }: HeaderProps) {
         </NavigationMenu>
 
         {/* Search Bar - Hidden on mobile */}
-        <div className="hidden md:flex w-64">
+        <div className="hidden md:flex w-80">
           <div className="relative w-full">
             <Search
-              className={`absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${searchIconClassName}`}
+              className={`text-muted-foreground absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 ${searchIconClassName}`}
             />
             <Input
               placeholder="Search for the perfect gift"
@@ -837,18 +839,29 @@ export function Header({ variant = "default" }: HeaderProps) {
         </div>
 
         {/* Right Navigation */}
-        <div className="flex items-center gap-2 shrink-0">
-          <Heart className={`h-5 w-5 ${headerIconClassName}`} />
-          <Link to="/cart">
+        <div
+          className={`flex text-sm items-center gap-2 shrink-0 ${textColor}`}
+        >
+          <Link to="/cart" className="flex gap-1">
             <ShoppingCart className={`h-5 w-5 ${headerIconClassName}`} />
             {getTotalItems() > 0 && (
               <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-xs text-white flex items-center justify-center">
                 {getTotalItems()}
               </span>
             )}
+            <span className="hidden lg:block">Cart</span>
           </Link>
-          <Link to={user ? "/profile" : "/auth/login"}>
+          <Link to="" className="flex gap-1">
+            <Heart className={`h-5 w-5 ${headerIconClassName}`} />
+            <span className="hidden lg:block">Saved Items</span>
+          </Link>
+          <Link to={user ? "/profile" : "/auth/login"} className="flex gap-1">
             <UserCircle className={`h-5 w-5 ${headerIconClassName}`} />
+            <span className="hidden lg:block">Account</span>
+          </Link>
+          <Link to="" className="flex gap-1">
+            <Headphones className={`h-5 w-5 ${headerIconClassName}`} />
+            <span className="hidden lg:block">Help</span>
           </Link>
         </div>
       </div>

@@ -333,9 +333,7 @@ import {
 export function HomePage() {
   return (
     <div className="min-h-screen relative">
-      <div
-        className="relative w-full"
-      >
+      <div className="relative w-full">
         {/* Mobile background image */}
         <div
           className="md:hidden absolute inset-0"
@@ -367,12 +365,12 @@ export function HomePage() {
 
       <GiftFinder />
 
-      {/* <CategorySection
+      <CategorySection
         title="Find the Perfect Gift for Every Occasion"
         subtitle="Find the perfect gift for every special moment"
         categories={celebrationCategories}
         type="occasion"
-      /> */}
+      />
 
       <FeaturedProducts
         title="Trending Now"
@@ -380,13 +378,6 @@ export function HomePage() {
         products={featuredProducts}
         showRecipientBadge={true}
       />
-
-      {/* <CategorySection
-        title="Shop by Recipient"
-        subtitle="Gifts curated for everyone on your list"
-        categories={recipientCategories}
-        type="recipient"
-      /> */}
 
       {/* <FeaturedProducts
         title="Staff Picks"
@@ -399,6 +390,13 @@ export function HomePage() {
         subtitle="Make it unique, add their name, initials, or a special message!"
         products={featuredProducts}
       /> */}
+
+      <CategorySection
+        title="Shop by Recipient"
+        subtitle="Gifts curated for everyone on your list"
+        categories={recipientCategories}
+        type="recipient"
+      />
 
       {/* CTA Section */}
       <section className="py-20 bg-secondary text-white relative overflow-hidden">

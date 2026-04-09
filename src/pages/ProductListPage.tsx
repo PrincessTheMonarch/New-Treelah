@@ -686,12 +686,12 @@ export function ProductListPage() {
               </div>
             </div>
 
-            <Link
+            {/* <Link
               to="/bulk-orders"
               style={{ ...navLinkStyle, textDecoration: "none" }}
             >
               Souvenirs & Bulk Orders
-            </Link>
+            </Link> */}
 
             {/* Shopping Assistant Button (Dialog Trigger) */}
             <Dialog open={giftFinderOpen} onOpenChange={setGiftFinderOpen}>
@@ -1040,7 +1040,7 @@ export function ProductListPage() {
               <span style={{ fontSize: "14px" }}>Back</span>
             </Button>
 
-            {fromGiftFinder && (
+            {/* {fromGiftFinder && (
               <Button
                 onClick={() => navigate("/?openGiftFinder=true")}
                 style={{
@@ -1058,7 +1058,7 @@ export function ProductListPage() {
                 <Sparkles size={16} />
                 Restart Shopping Assistant
               </Button>
-            )}
+            )} */}
           </div>
 
           <div style={{ textAlign: "center" }}>
